@@ -13,8 +13,10 @@ PDFFactory::PDFFactory()
 
 void PDFFactory::createWidgets()
 {
+    // Set central widget to be the container root
     centralWidget = new QWidget();
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->setContentsMargins(2,2,2,2);
     centralWidget->setLayout(layout);
     setCentralWidget(centralWidget);
 
@@ -28,9 +30,16 @@ void PDFFactory::createWidgets()
     ribbon->setFixedHeight(100);
     layout->addWidget(ribbon);
 
+    // Create main area (table)
+    pdfTableView = new QWidget();
+    pdfTableView->setLayout(new QVBoxLayout());
+    pdfTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea = new QScrollArea();
+    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setWidget(pdfTableView);
+    layout->addWidget(scrollArea);
 
-
-    //setWindowIcon(QIcon(":/images/PDFFactory.png"));
+    setWindowIcon(QIcon(":/images/pdffactory.png"));
     setGeometry(0, 0, 550, 650);
 }
 
@@ -44,13 +53,13 @@ void PDFFactory::createActions()
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
     exportAction = new QAction(tr("&Export"), this);
-    exportAction->setIcon(QIcon(":/images/save.png"));
+    exportAction->setIcon(QIcon(":/images/export.png"));
     exportAction->setShortcut(tr("Ctrl+S"));
     exportAction->setStatusTip(tr("Export the selected frame to a new PDF"));
     //connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
 
     exportAllAction = new QAction(tr("Combine all and export"), this);
-    exportAllAction->setIcon(QIcon(":/images/saveas.png"));
+    exportAllAction->setIcon(QIcon(":/images/exportall.png"));
     exportAllAction->setShortcut(tr("Shift+Ctrl+S"));
     exportAllAction->setStatusTip(tr("Combine all and export as one PDF"));
     //connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveAs()));
@@ -70,9 +79,12 @@ void PDFFactory::createActions()
     pasteAction = new QAction(tr("&Paste"), this);
     pasteAction->setIcon(QIcon(":/images/paste.png"));
     pasteAction->setShortcut(tr("Ctrl+V"));
-    pasteAction->setStatusTip(tr("Paste clipboard's contents into current"
-                                 "selection"));
+    pasteAction->setStatusTip(tr("Paste clipboard's contents into current selection"));
     //connect(pasteAction, SIGNAL(triggered()), textEdit, SLOT(paste()));
+
+    aboutAction = new QAction(tr("A&bout"), this);
+    aboutAction->setIcon(QIcon(":/images/about.png"));
+    aboutAction->setStatusTip(tr("About this program"));
 }
 
 void PDFFactory::createToolBars()
@@ -81,21 +93,38 @@ void PDFFactory::createToolBars()
     fileToolBar->addAction(openAction);
     fileToolBar->addAction(exportAction);
     fileToolBar->addAction(exportAllAction);
+    fileToolBar->setIconSize(QSize(48, 48));
 
     editToolBar = new QToolBar(tr("Edit"));
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
+    editToolBar->setIconSize(QSize(48, 48));
+
+    helpToolBar = new QToolBar(tr("Help"));
+    helpToolBar->addAction(aboutAction);
+    helpToolBar->setIconSize(QSize(48, 48));
 }
 
 void PDFFactory::createRibbon()
 {
     QWidget *tabFile = ribbon->widget(0);
     QVBoxLayout *layoutTabFile = new QVBoxLayout();
-    tabFile->setLayout(layoutTabFile);
+    layoutTabFile->setContentsMargins(2,0,2,0);
     layoutTabFile->addWidget(fileToolBar);
+    tabFile->setLayout(layoutTabFile);
 
+    QWidget *tabEdit = ribbon->widget(1);
+    QVBoxLayout *layoutTabEdit = new QVBoxLayout();
+    layoutTabEdit->setContentsMargins(2,0,2,0);
+    layoutTabEdit->addWidget(editToolBar);
+    tabEdit->setLayout(layoutTabEdit);
 
+    QWidget *tabHelp = ribbon->widget(3);
+    QVBoxLayout *layoutTabHelp = new QVBoxLayout();
+    layoutTabHelp->setContentsMargins(2,0,2,0);
+    layoutTabHelp->addWidget(helpToolBar);
+    tabHelp->setLayout(layoutTabHelp);
 }
 
 void PDFFactory::createStatusBar()

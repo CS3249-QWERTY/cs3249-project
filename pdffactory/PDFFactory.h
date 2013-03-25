@@ -8,6 +8,7 @@ class QAction;
 class QToolBar;
 class QTabWidget;
 class QWidget;
+class QScrollArea;
 
 class PDFFactory: public QMainWindow
 {
@@ -44,9 +45,12 @@ private:
     QWidget *centralWidget;
 
     QTabWidget *ribbon;
+    QScrollArea *scrollArea;
+    QWidget *pdfTableView;
 
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
+    QToolBar *helpToolBar;
 };
 
 #endif
