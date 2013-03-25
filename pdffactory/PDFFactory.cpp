@@ -1,7 +1,6 @@
+
 #include <QtGui>
 #include "PDFFactory.h"
-
-// Constructor
 
 PDFFactory::PDFFactory()
 {
@@ -12,44 +11,48 @@ PDFFactory::PDFFactory()
     createStatusBar();
 }
 
-
-// Protected methods
-
-void PDFFactory::closeEvent(QCloseEvent *event)
-{
-    event->accept();
-}
-
-
-// Create widgets, actions, menus, toolbars, status bar.
-
 void PDFFactory::createWidgets()
 {
+    centralWidget = new QWidget();
+    QVBoxLayout *layout = new QVBoxLayout();
+    centralWidget->setLayout(layout);
+    setCentralWidget(centralWidget);
 
-    //setCentralWidget(textEdit);
+    // Create ribbon
+    ribbon = new QTabWidget();
+    ribbon->addTab(new QWidget(), tr("File"));
+    ribbon->addTab(new QWidget(), tr("Edit"));
+    ribbon->addTab(new QWidget(), tr("View"));
+    ribbon->addTab(new QWidget(), tr("Help"));
+    ribbon->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    ribbon->setFixedHeight(100);
+    layout->addWidget(ribbon);
+
+
+
     //setWindowIcon(QIcon(":/images/PDFFactory.png"));
     setGeometry(0, 0, 550, 650);
 }
 
 
 void PDFFactory::createActions()
-{    
+{
     openAction = new QAction(tr("&Open"), this);
     openAction->setIcon(QIcon(":/images/open.png"));
     openAction->setShortcut(tr("Ctrl+O"));
-    openAction->setStatusTip(tr("Open an existing file"));
-    //connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
-    
-    exportAction = new QAction(tr("&Save"), this);
+    openAction->setStatusTip(tr("Open a PDF"));
+    connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+
+    exportAction = new QAction(tr("&Export"), this);
     exportAction->setIcon(QIcon(":/images/save.png"));
     exportAction->setShortcut(tr("Ctrl+S"));
-    exportAction->setStatusTip(tr("Save the document to a file"));
+    exportAction->setStatusTip(tr("Export the selected frame to a new PDF"));
     //connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
-    
-    exportAllAction = new QAction(tr("Sa&ve as..."), this);
+
+    exportAllAction = new QAction(tr("Combine all and export"), this);
     exportAllAction->setIcon(QIcon(":/images/saveas.png"));
     exportAllAction->setShortcut(tr("Shift+Ctrl+S"));
-    exportAllAction->setStatusTip(tr("Save the document to a new file"));
+    exportAllAction->setStatusTip(tr("Combine all and export as one PDF"));
     //connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveAs()));
 
     cutAction = new QAction(tr("C&ut"), this);
@@ -57,8 +60,8 @@ void PDFFactory::createActions()
     cutAction->setShortcut(tr("Ctrl+X"));
     cutAction->setStatusTip(tr("Cut selected contents to clipboard"));
     //connect(cutAction, SIGNAL(triggered()), textEdit, SLOT(cut()));
-    
-	copyAction = new QAction(tr("&Copy"), this);
+
+    copyAction = new QAction(tr("&Copy"), this);
     copyAction->setIcon(QIcon(":/images/copy.png"));
     copyAction->setShortcut(tr("Ctrl+C"));
     copyAction->setStatusTip(tr("Copy selected contents to clipboard"));
@@ -70,41 +73,32 @@ void PDFFactory::createActions()
     pasteAction->setStatusTip(tr("Paste clipboard's contents into current"
                                  "selection"));
     //connect(pasteAction, SIGNAL(triggered()), textEdit, SLOT(paste()));
-    
-    aboutAction = new QAction(tr("&About"), this);
-    aboutAction->setStatusTip(tr("Show information about this PDFFactory"));
-    //connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
-    
-    // Other connections
-    cutAction->setEnabled(false);
-    //connect(textEdit, SIGNAL(copyAvailable(bool)),
-            //cutAction, SLOT(setEnabled(bool)));
-   // connect(textEdit->document(), SIGNAL(contentsChanged()),
-            //this, SLOT(isModified()));
 }
 
 void PDFFactory::createToolBars()
 {
-    fileToolBar = addToolBar(tr("File"));
+    fileToolBar = new QToolBar(tr("File"));
     fileToolBar->addAction(openAction);
     fileToolBar->addAction(exportAction);
     fileToolBar->addAction(exportAllAction);
 
-    editToolBar = addToolBar(tr("Edit"));
+    editToolBar = new QToolBar(tr("Edit"));
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
 }
 
-
 void PDFFactory::createRibbon()
 {
+    QWidget *tabFile = ribbon->widget(0);
+    QVBoxLayout *layoutTabFile = new QVBoxLayout();
+    tabFile->setLayout(layoutTabFile);
+    layoutTabFile->addWidget(fileToolBar);
+
 
 }
-
 
 void PDFFactory::createStatusBar()
 {
     statusBar()->showMessage(tr(""));
 }
-

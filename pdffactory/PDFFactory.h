@@ -6,7 +6,8 @@
 // Class declaration without loading .h files. Faster compilation.
 class QAction;
 class QToolBar;
-class QTabBar;
+class QTabWidget;
+class QWidget;
 
 class PDFFactory: public QMainWindow
 {
@@ -18,12 +19,12 @@ public:
     // Constant
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    //void closeEvent(QCloseEvent *event);
 
 private slots:
-    void openFile();
-    bool exportFile();
-    bool exportAllFiles();
+    //void openFile();
+    //bool exportFile();
+    //bool exportAllFiles();
 
 private:
     void createWidgets();
@@ -40,11 +41,12 @@ private:
     QAction *pasteAction;
     QAction *aboutAction;
 
-    QTabBar *ribbon;
+    QWidget *centralWidget;
+
+    QTabWidget *ribbon;
 
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
-
 };
 
 #endif
