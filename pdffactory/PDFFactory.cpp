@@ -1,6 +1,8 @@
-
 #include <QtGui>
+#include <QtGlobal>
 #include "PDFFactory.h"
+#include "PDFFile.h"
+#include "PDFPageWidget.h"
 
 PDFFactory::PDFFactory()
 {
@@ -33,13 +35,20 @@ void PDFFactory::createWidgets()
     // Create main area (table)
     pdfTableView = new QWidget();
     pdfTableView->setLayout(new QVBoxLayout());
+    //pdfTableView->setMinimumSize(1000, 1000);
     pdfTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea = new QScrollArea();
     scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea->setWidget(pdfTableView);
     layout->addWidget(scrollArea);
 
+    //PDFFile *pdfFile = new PDFFile("/home/zuyetawarmatik/Desktop/imagewidget.pdf");
+    //PDFPageWidget *pdfPage = new PDFPageWidget();
+    //pdfPage->setPageImage(pdfFile->getPageImage(0));
+    //pdfTableView->layout()->addWidget(pdfPage);
+
     setWindowIcon(QIcon(":/images/pdffactory.png"));
+    setWindowTitle(tr("PDF Factory"));
     setGeometry(0, 0, 550, 650);
 }
 

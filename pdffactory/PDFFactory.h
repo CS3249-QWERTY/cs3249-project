@@ -3,11 +3,9 @@
 
 #include <QMainWindow>
 
-// Class declaration without loading .h files. Faster compilation.
 class QAction;
-class QToolBar;
-class QTabWidget;
 class QWidget;
+class QTabWidget;
 class QScrollArea;
 
 class PDFFactory: public QMainWindow
@@ -16,8 +14,6 @@ class PDFFactory: public QMainWindow
 
 public:
     PDFFactory();
-
-    // Constant
 
 protected:
     //void closeEvent(QCloseEvent *event);
