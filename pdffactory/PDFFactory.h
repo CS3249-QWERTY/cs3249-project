@@ -2,11 +2,13 @@
 #define PDFFACTORY_H
 
 #include <QMainWindow>
+#include <TableView.h>
 
 class QAction;
 class QWidget;
 class QTabWidget;
 class QScrollArea;
+class QSplitter;
 
 class PDFFactory: public QMainWindow
 {
@@ -29,7 +31,7 @@ private:
     void createToolBars();
     void createRibbon();
     void createStatusBar();
-	
+
     QAction *openAction;
     QAction *exportAction;
     QAction *exportAllAction;
@@ -42,7 +44,9 @@ private:
 
     QTabWidget *ribbon;
     QScrollArea *scrollArea;
-    QWidget *pdfTableView;
+    TableView *pdfTableView;
+    QSplitter *pdfSplitter;
+    QWidget *pdfPreview;
 
     QToolBar *fileToolBar;
     QToolBar *editToolBar;

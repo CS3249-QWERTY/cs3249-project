@@ -2,6 +2,7 @@
 #include <QtGlobal>
 #include "PDFFactory.h"
 #include "PDFFile.h"
+#include "TableView.h"
 #include "PDFPageWidget.h"
 
 PDFFactory::PDFFactory()
@@ -33,14 +34,21 @@ void PDFFactory::createWidgets()
     layout->addWidget(ribbon);
 
     // Create main area (table)
-    pdfTableView = new QWidget();
-    pdfTableView->setLayout(new QVBoxLayout());
+
+
+    pdfTableView = new TableView();
+    //pdfTableView->setLayout(new QVBoxLayout());
     //pdfTableView->setMinimumSize(1000, 1000);
     pdfTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scrollArea = new QScrollArea();
-    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scrollArea->setWidget(pdfTableView);
-    layout->addWidget(scrollArea);
+
+    pdfSplitter = new QSplitter();
+    //TODO: to change to pdfPreview widget
+    pdfPreview = new QWidget();
+    pdfPreview->setMinimumWidth(100);
+    pdfSplitter->setOrientation(Qt::Horizontal);
+    pdfSplitter->addWidget(pdfTableView);
+    pdfSplitter->addWidget(pdfPreview);
+    layout->addWidget(pdfSplitter);
 
     //PDFFile *pdfFile = new PDFFile("/home/zuyetawarmatik/Desktop/imagewidget.pdf");
     //PDFPageWidget *pdfPage = new PDFPageWidget();
