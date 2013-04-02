@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += /usr/include/poppler/qt4/
-
+LIBS += -L/usr/lib -lpoppler-qt4
 # Input
 HEADERS += PDFFactory.h \
            PDFPageWidget.h \

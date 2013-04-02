@@ -37,17 +37,29 @@ TableView::TableView(QWidget* parent) : QWidget(parent)
         test[i] = new PDFFileWidget();
         //test[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
         test[i]->setAncestor(this);
-        layout->addWidget(test[i]);
+        //layout->addWidget(test[i]);
     }
     // end of TODO
     frame->adjustSize();
 }
 
+void TableView::loadFile ( QString  fileName ){
+
+    filenames.append(fileName);
+    Poppler::Document *doc = Poppler::Document::load(fileName);
+    files.append(doc);
+    PDFFileWidget *pfw = new PDFFileWidget();
+    pfw->setAncestor(this);
+    pfw->setDocument(doc,fileName);
+
+    fileWidgets.append(pfw);
+    layout->addWidget(pfw);
+}
 void TableView::paintEvent ( QPaintEvent * event ){
     frame->adjustSize();
     int newWidth = width() - 50;
-    for (int i = 0; i < 10; i++) {
-        test[i]->resize(newWidth,test[i]->height());
+    for (int i = 0; i < fileWidgets.size(); i++) {
+        fileWidgets.at(i)->resize(newWidth,test[i]->height());
     }
     frame->resize(newWidth,frame->height());
 }
