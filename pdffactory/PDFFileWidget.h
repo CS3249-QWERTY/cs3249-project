@@ -35,6 +35,7 @@ private:
     QHBoxLayout*                    mainLayout;
 
     void    addChild(QString name);
+    void    addChild(QImage *image);
     int     findClickEventChild(QPoint pos);
     int     findChildPositionInLayout(PDFPageWidget *child);
     int     getChildCount() const;
@@ -51,7 +52,7 @@ public:
 
 public:
     void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
-    void setDocument(Poppler::Document* document, QString filename) { };
+    void setDocument(Poppler::Document* document, QString filename);
 
     bool isCollapsed(){ return collapsed; }
     void setCollapsed(bool collapsed);
