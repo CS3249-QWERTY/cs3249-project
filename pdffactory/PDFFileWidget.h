@@ -23,6 +23,8 @@ public:
     FileWidget(QWidget *parent = 0);
     QSize sizeHint() const;
 
+    void    addChild(QString name);
+    void    addChild(QImage *image);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
@@ -34,8 +36,6 @@ private:
 
     QHBoxLayout*                    mainLayout;
 
-    void    addChild(QString name);
-    void    addChild(QImage *image);
     int     findClickEventChild(QPoint pos);
     int     findChildPositionInLayout(PDFPageWidget *child);
     int     getChildCount() const;
@@ -48,7 +48,7 @@ class PDFFileWidget : public QWidget{
 
 public:
     PDFFileWidget(QWidget *parent = 0);
-    QSize sizeHint() const;
+    //QSize sizeHint() const;
 
 public:
     void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }

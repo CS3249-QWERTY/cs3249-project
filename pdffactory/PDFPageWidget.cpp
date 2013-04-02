@@ -8,6 +8,7 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     //resize widget
     this->resize(150, 150);
     this->setMinimumHeight(150);
+    this->setMinimumWidth(150);
 
     this->setMouseTracking(true);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
