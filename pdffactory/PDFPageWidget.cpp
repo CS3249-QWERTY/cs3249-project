@@ -47,14 +47,14 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     this->setLayout(vbox);
 
 
-    this->setPageImage(new QImage("images/img.jpg"));
+    this->setThumbnail(new QImage("images/img.jpg"));
 }
 
 void PDFPageWidget::setButton(QPushButton *btn) {
     button = btn;
     update();
 }
-void PDFPageWidget::setPageImage(QImage *pageImage) {
+void PDFPageWidget::setThumbnail(QImage *pageImage) {
     image = pageImage;
     pixmap = QPixmap::fromImage(*image);
     update();

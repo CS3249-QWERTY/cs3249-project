@@ -13,6 +13,8 @@
 
 #include <vector>
 
+#include <poppler-qt4.h>
+
 #include "PDFPageWidget.h"
 
 class FileWidget : public QWidget{
@@ -20,6 +22,7 @@ class FileWidget : public QWidget{
 public:
     FileWidget(QWidget *parent = 0);
     QSize sizeHint() const;
+
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
@@ -47,6 +50,9 @@ public:
     QSize sizeHint() const;
 
 public:
+    void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
+    void setDocument(Poppler::Document* document, QString filename) { };
+
     bool isCollapsed(){ return collapsed; }
     void setCollapsed(bool collapsed);
 
@@ -61,8 +67,8 @@ private:
     QLabel          *widgetName;
     QPushButton     *collapseButton;
     QScrollArea     *scrollArea;
-    FileWidget  *mainChild;
-
+    FileWidget      *mainChild;
+    QWidget         *ancestor;
     bool            collapsed;
 };
 

@@ -36,12 +36,11 @@ TableView::TableView(QWidget* parent) : QWidget(parent)
     for (i = 0; i < 10; i++) {
         test[i] = new PDFFileWidget();
         //test[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
-
+        test[i]->setAncestor(this);
         layout->addWidget(test[i]);
     }
     // end of TODO
     frame->adjustSize();
-
 }
 
 void TableView::paintEvent ( QPaintEvent * event ){

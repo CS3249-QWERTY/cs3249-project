@@ -9,6 +9,8 @@
 #include "PDFPageWidget.h"
 #include "QFrame"
 
+#include <poppler-qt4.h>
+
 class QPushButon;
 class QWidget;
 class QScrollArea;
@@ -17,7 +19,6 @@ class TableView: public QWidget
     Q_OBJECT
     public:
         TableView(QWidget *parent = 0);
-        //QVector<PDFFile> files;
     protected:
     private:
         QScrollArea *scrollArea;
@@ -26,5 +27,7 @@ class TableView: public QWidget
         QVBoxLayout *outerLayout;
         void paintEvent ( QPaintEvent * event );
 
+        QVector<Poppler::Document*> files;
+        QVector<QString>            filenames;
 };
 #endif

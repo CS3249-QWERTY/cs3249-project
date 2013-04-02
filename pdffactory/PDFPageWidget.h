@@ -15,7 +15,7 @@ class PDFPageWidget : public QWidget
 
 public:
     PDFPageWidget(QWidget *parent = 0);
-    void setPageImage(QImage *pageImage);
+    void setThumbnail(QImage *pageImage);
     void setButton(QPushButton *btn);
     QSize sizeHint() const;
     //void setButtonImage(QImage *pageImage);
