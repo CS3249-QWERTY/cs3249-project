@@ -1,12 +1,13 @@
 #include <QtGui>
 #include "PDFPageWidget.h"
+#include <QSize>
 
 PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QWidget(parent)
 {
     //resize widget
-    this->resize(500, 500);
-    this->setMinimumHeight(500);
+    this->resize(150, 150);
+    this->setMinimumHeight(150);
 
     this->setMouseTracking(true);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -70,4 +71,8 @@ void PDFPageWidget::enterEvent(QEvent *event) {
 void PDFPageWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.drawPixmap(QRect(0, 0, width(), height()), pixmap);
+}
+
+QSize PDFPageWidget::sizeHint() const {
+    return QSize(150,150);
 }

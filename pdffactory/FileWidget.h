@@ -5,10 +5,11 @@
 #include <QHBoxLayout>
 #include <QImage>
 #include <QString>
-#include <QLabel>
 #include <QPoint>
 
 #include <vector>
+
+#include "PDFPageWidget.h"
 
 class FileWidget : public QWidget{
     Q_OBJECT
@@ -22,13 +23,13 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 
 private:
-    std::vector<QLabel*>    child;
+    std::vector<PDFPageWidget*>     child;
 
-    QHBoxLayout             *mainLayout;
+    QHBoxLayout*                    mainLayout;
 
     void    addChild(QString name);
     int     findClickEventChild(QPoint pos);
-    int     findChildPositionInLayout(QLabel *child);
+    int     findChildPositionInLayout(PDFPageWidget *child);
     int     getChildCount() const;
 };
 

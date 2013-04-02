@@ -1,6 +1,5 @@
 #include <FileWidget.h>
 #include <QPixmap>
-#include <QLabel>
 #include <QSize>
 #include <QDrag>
 #include <QDragEnterEvent>
@@ -8,8 +7,10 @@
 #include <QDropEvent>
 #include <QDebug>
 
+#include "PDFPageWidget.h"
+
 #define CHILD_AREA_WIDTH     150
-#define CHILD_AREA_HEIGHT    180
+#define CHILD_AREA_HEIGHT    150
 
 FileWidget::FileWidget(QWidget *parent){
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
@@ -28,14 +29,16 @@ int FileWidget::getChildCount() const{
 }
 
 QSize FileWidget::sizeHint() const{
-    return QSize(CHILD_AREA_WIDTH*getChildCount() , CHILD_AREA_HEIGHT + 50);
+    return QSize(CHILD_AREA_WIDTH*getChildCount() , CHILD_AREA_HEIGHT + 20);
 }
 
 void FileWidget::addChild(QString name){
-    QLabel* newchild;
-    newchild = new QLabel();
-    newchild->setText(name);
-    newchild->setStyleSheet("QLabel { background-color : red; color : blue; }");
+    PDFPageWidget* newchild;
+    newchild = new PDFPageWidget();
+    newchild ->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    newchild->resize(CHILD_AREA_WIDTH, CHILD_AREA_HEIGHT);
+    //newchild->setText(name);
+    //newchild->setStyleSheet("QLabel { background-color : red; color : blue; }");
 
     child.push_back(newchild);
 
@@ -80,7 +83,7 @@ int FileWidget:: findClickEventChild(QPoint pos){
     return getChildCount()-1;
 }
 
-int FileWidget:: findChildPositionInLayout(QLabel *child){
+int FileWidget:: findChildPositionInLayout(PDFPageWidget *child){
     for (int i= 0;i<getChildCount();i++)
         if (mainLayout->itemAt(i)->widget() == child)
             return i;
