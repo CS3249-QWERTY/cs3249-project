@@ -8,16 +8,14 @@ DEPENDPATH += .
 INCLUDEPATH += /usr/include/poppler/qt4/
 
 # Input
-HEADERS += FileWidget.h \
-           PDFFactory.h \
+HEADERS += PDFFactory.h \
            PDFPageWidget.h \
            TableView.h \
-           FileFrameWidget.h
+           PDFFileWidget.h
 SOURCES += main.cpp \
-           FileWidget.cpp \
            PDFFactory.cpp \
            PDFPageWidget.cpp \
            TableView.cpp \
-           FileFrameWidget.cpp
+           PDFFileWidget.cpp
 
 RESOURCES += pdffactory.qrc

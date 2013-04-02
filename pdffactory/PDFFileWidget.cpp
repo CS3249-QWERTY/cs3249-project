@@ -1,4 +1,9 @@
-#include <FileWidget.h>
+#include "PDFFileWidget.h"
+#include "PDFPageWidget.h"
+
+#include <QDebug>
+#include <QSizePolicy>
+
 #include <QPixmap>
 #include <QSize>
 #include <QDrag>
@@ -7,7 +12,8 @@
 #include <QDropEvent>
 #include <QDebug>
 
-#include "PDFPageWidget.h"
+#define COLLAPSE_BUTTON_WIDTH   60
+#define COLLAPSE_BUTTON_HEIGHT  40
 
 #define CHILD_AREA_WIDTH     150
 #define CHILD_AREA_HEIGHT    150
@@ -88,4 +94,55 @@ int FileWidget:: findChildPositionInLayout(PDFPageWidget *child){
         if (mainLayout->itemAt(i)->widget() == child)
             return i;
     return getChildCount()-1;
+}
+PDFFileWidget::PDFFileWidget(QWidget *parent){
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    topLayout       = new QGridLayout();
+
+    scrollArea      = new QScrollArea();
+    mainChild       = new FileWidget();
+
+    widgetName      = new QLabel();
+    widgetName->setText(tr("File 1"));
+    topLayout->addWidget(widgetName, 0, 1);
+
+    collapseButton  = new QPushButton(tr("X"));
+    collapseButton->setMinimumSize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
+    collapseButton->setMaximumSize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
+    connect(collapseButton, SIGNAL(released()), this, SLOT(collapsedButtonClick() ));
+    topLayout->addWidget(collapseButton,0,0);
+
+    topLayout->addWidget(scrollArea,1,0,1,5);
+    scrollArea->setWidget(mainChild);
+
+    setLayout(topLayout);
+
+    setCollapsed(false);
+    adjustSize();
+}
+
+QSize PDFFileWidget::sizeHint() const {
+    if (collapsed == true)
+        return QSize(mainChild->width(), collapseButton->height() );
+    else
+        return QSize(mainChild->width(), collapseButton->height() + mainChild->height() + 50);
+}
+
+void PDFFileWidget::setCollapsed(bool state){
+    if (state == true){
+        collapsed = true;
+        scrollArea->hide();
+    }else {
+        collapsed = false;
+        scrollArea->show();
+    }
+    adjustSize();
+}
+
+void PDFFileWidget::collapsedButtonClick(){
+    if (collapsed == true)
+        setCollapsed(false);
+    else
+        setCollapsed(true);
 }

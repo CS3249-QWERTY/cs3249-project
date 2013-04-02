@@ -1,8 +1,12 @@
-#ifndef FILEWIDGET_H
-#define FILEWIDGET_H
+#ifndef FILE_FRAME_H
+#define FILE_FRAME_H
 
 #include <QWidget>
+#include <QScrollArea>
 #include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QGridLayout>
 #include <QImage>
 #include <QString>
 #include <QPoint>
@@ -31,6 +35,35 @@ private:
     int     findClickEventChild(QPoint pos);
     int     findChildPositionInLayout(PDFPageWidget *child);
     int     getChildCount() const;
+};
+
+class PDFFileWidget : public QWidget{
+
+    Q_OBJECT
+    Q_PROPERTY(bool collapsed READ isCollapsed WRITE setCollapsed)
+
+public:
+    PDFFileWidget(QWidget *parent = 0);
+    QSize sizeHint() const;
+
+public:
+    bool isCollapsed(){ return collapsed; }
+    void setCollapsed(bool collapsed);
+
+protected:
+
+private slots:
+    void collapsedButtonClick();
+
+private:
+    QGridLayout     *topLayout;
+
+    QLabel          *widgetName;
+    QPushButton     *collapseButton;
+    QScrollArea     *scrollArea;
+    FileWidget  *mainChild;
+
+    bool            collapsed;
 };
 
 #endif

@@ -4,9 +4,9 @@
 #include <assert.h>
 #include "PDFPageWidget.h"
 
-#include "FileFrameWidget.h"
+#include "PDFFileWidget.h"
 
-FileFrameWidget* test[10];
+PDFFileWidget* test[10];
 
 // Constructor
 TableView::TableView(QWidget* parent) : QWidget(parent)
@@ -34,7 +34,7 @@ TableView::TableView(QWidget* parent) : QWidget(parent)
     }*/
 
     for (i = 0; i < 10; i++) {
-        test[i] = new FileFrameWidget();
+        test[i] = new PDFFileWidget();
         //test[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
 
         layout->addWidget(test[i]);
