@@ -46,7 +46,7 @@ TableView::TableView(QWidget* parent) : QWidget(parent)
 
 void TableView::paintEvent ( QPaintEvent * event ){
     frame->adjustSize();
-    int newWidth = width();
+    int newWidth = width() - 50;
     for (int i = 0; i < 10; i++) {
         test[i]->resize(newWidth,test[i]->height());
     }

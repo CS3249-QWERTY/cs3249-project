@@ -7,7 +7,6 @@
 #include "QScrollArea"
 #include "QPushButton"
 #include "PDFPageWidget.h"
-#include "PDFFile.h"
 #include "QFrame"
 
 class QPushButon;
@@ -18,7 +17,7 @@ class TableView: public QWidget
     Q_OBJECT
     public:
         TableView(QWidget *parent = 0);
-        QVector<PDFFile> files;
+        //QVector<PDFFile> files;
     protected:
     private:
         QScrollArea *scrollArea;

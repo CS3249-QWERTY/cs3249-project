@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
-INCLUDEPATH += /usr/include/poppler/qt4
+INCLUDEPATH += /usr/include/poppler/qt4/
 
 # Input
 HEADERS += FileWidget.h \

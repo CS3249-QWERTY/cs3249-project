@@ -1,7 +1,6 @@
 #include <QtGui>
 #include <QtGlobal>
 #include "PDFFactory.h"
-#include "PDFFile.h"
 #include "TableView.h"
 #include "PDFPageWidget.h"
 
