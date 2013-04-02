@@ -4,7 +4,9 @@
 #include <assert.h>
 #include "PDFPageWidget.h"
 
-PDFPageWidget* test[10];
+#include "FileFrameWidget.h"
+
+FileFrameWidget* test[10];
 
 // Constructor
 TableView::TableView(QWidget* parent) : QWidget(parent)
@@ -23,10 +25,17 @@ TableView::TableView(QWidget* parent) : QWidget(parent)
     //TODO: page widget is placed for testing only
     //to remove pagewidget and add filewidgets later
     //use QVector<PDFFile> files to store files
-
+    /*
     for (i = 0; i < 10; i++) {
         test[i] = new PDFPageWidget();
         test[i]->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+        layout->addWidget(test[i]);
+    }*/
+
+    for (i = 0; i < 10; i++) {
+        test[i] = new FileFrameWidget();
+        //test[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
 
         layout->addWidget(test[i]);
     }
