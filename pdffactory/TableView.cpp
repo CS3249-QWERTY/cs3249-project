@@ -7,7 +7,6 @@
 // Constructor
 TableView::TableView(QWidget* parent) : QFrame(parent)
 {
-    // Table View (outer Layout)
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 

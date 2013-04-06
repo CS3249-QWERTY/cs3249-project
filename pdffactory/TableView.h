@@ -18,7 +18,7 @@ class TableView: public QFrame
     protected:
     private:
         QVBoxLayout *outerLayout;
-        void loadFile ( QString  fileName );
+        void loadFile (QString fileName);
 
         QVector<Poppler::Document*> files;
         QVector<QString>            fileNames;

@@ -39,7 +39,7 @@ protected:
 private:
     std::vector<PDFPageWidget*>     pageWidgets;
 
-    QHBoxLayout*                    mainLayout;
+    QHBoxLayout                    *mainLayout;
 
     int     findPageContainingClickEvent(QPoint pos);
     int     findPageWidgetInLayout(PDFPageWidget *pageWidgets);
@@ -55,7 +55,6 @@ class PDFFileWidget : public QWidget {
 
 public:
     PDFFileWidget(QWidget *parent = 0);
-    //QSize sizeHint() const;
 
 public:
     void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
@@ -74,8 +73,8 @@ private:
 
     QLabel          *fileNameLabel;
     QPushButton     *collapseButton;
-    QScrollArea     *scrollArea;
     FileWidget      *fileWidget;
+    QScrollArea     *scrollArea;
     QWidget         *ancestor;
     bool            collapsed;
 };

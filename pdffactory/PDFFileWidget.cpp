@@ -90,51 +90,42 @@ PDFFileWidget::PDFFileWidget(QWidget *parent){
 
     topLayout      = new QGridLayout();
 
-    scrollArea     = new QScrollArea();
-    fileWidget     = new FileWidget();
-    scrollArea->setWidget(fileWidget);
+    collapseButton = new QPushButton(tr("X"));
+    collapseButton->setMinimumSize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
+    collapseButton->setMaximumSize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
+    connect(collapseButton, SIGNAL(released()), this, SLOT(collapsedButtonClick()));
+    topLayout->addWidget(collapseButton, 0, 0);
 
     fileNameLabel  = new QLabel();
     fileNameLabel->setText(tr("File 1"));
-
     topLayout->addWidget(fileNameLabel, 0, 1);
 
-    collapseButton  = new QPushButton(tr("X"));
-    collapseButton->setMinimumSize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
-    collapseButton->setMaximumSize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
-    connect(collapseButton, SIGNAL(released()), this, SLOT(collapsedButtonClick() ));
-    topLayout->addWidget(collapseButton,0,0);
+    fileWidget     = new FileWidget();
+    scrollArea     = new QScrollArea();
+    scrollArea->setWidget(fileWidget);
+    topLayout->addWidget(scrollArea ,1, 0, 1, 5);
 
-    topLayout->addWidget(scrollArea,1,0,1,5);
     setLayout(topLayout);
 
     setCollapsed(false);
-    adjustSize();
 }
 
 void PDFFileWidget::setCollapsed(bool state){
-    if (state == true){
-        collapsed = true;
-        setFixedHeight(collapseButton->height());
+    collapsed = state;
+    if (state == true) {
         scrollArea->hide();
     } else {
-        collapsed = false;
-        setFixedHeight(collapseButton->height() + fileWidget->height());
         scrollArea->show();
     }
-    adjustSize();
 }
 
 void PDFFileWidget::collapsedButtonClick(){
-    if (collapsed == true)
-        setCollapsed(false);
-    else
-        setCollapsed(true);
+    setCollapsed(!collapsed);
 }
 
 void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
     int numPages = document -> numPages();
-    for (int i = 0; i<numPages; i++){
+    for (int i = 0; i < numPages; i++){
 
         Poppler::Page *pdfPage = document->page(i);
 
