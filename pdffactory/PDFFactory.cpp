@@ -35,7 +35,6 @@ void PDFFactory::createWidgets()
     // Create main area (table)
 
     pdfTableView = new PDFTableWidget();
-    pdfTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     splitter = new QSplitter();
 
@@ -46,7 +45,7 @@ void PDFFactory::createWidgets()
     splitter->addWidget(pdfTableView);
     splitter->addWidget(pdfPreview);
     QList<int> splitterWidgetSizes;
-    splitterWidgetSizes << 600 << 400;
+    splitterWidgetSizes << 900 << 400;
     splitter->setSizes(splitterWidgetSizes);
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 0.5);
@@ -54,7 +53,7 @@ void PDFFactory::createWidgets()
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));
     setWindowTitle(tr("PDF Factory"));
-    setGeometry(0, 0, 1000, 650);
+    setGeometry(0, 0, 1300, 650);
 }
 
 
@@ -64,7 +63,7 @@ void PDFFactory::createActions()
     openAction->setIcon(QIcon(":/images/open.png"));
     openAction->setShortcut(tr("Ctrl+O"));
     openAction->setStatusTip(tr("Open a PDF"));
-    connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+    connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
 
     exportAction = new QAction(tr("&Export"), this);
     exportAction->setIcon(QIcon(":/images/export.png"));
@@ -144,4 +143,17 @@ void PDFFactory::createRibbon()
 void PDFFactory::createStatusBar()
 {
     statusBar()->showMessage(tr(""));
+}
+
+void PDFFactory::openFile() {
+    QStringList fileNames = QFileDialog::getOpenFileNames(this,
+        tr("Open PDF file"), ".",
+        tr("PDF file (*.pdf)"));
+
+    for (int i = 0; i < fileNames.size(); i++) {
+        QString fileName = fileNames.at(i);
+        if (!fileName.isEmpty()) {
+            pdfTableView->loadFile(fileName);
+        }
+    }
 }

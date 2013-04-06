@@ -7,20 +7,31 @@
 // Constructor
 PDFTableWidget::PDFTableWidget(QWidget* parent) : QFrame(parent)
 {
+    // Frame (Expanding with VBox) - Scroll Area (Expanding) - Container (Expanding with VBox) - Children
+
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     outerLayout = new QVBoxLayout();
     outerLayout->setContentsMargins(0,0,0,0);
 
-    // Spacer item
+    scrollArea = new QScrollArea();
+    scrollArea -> setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea -> setWidgetResizable(true);
+
+    containerLayout = new QVBoxLayout();
+    containerWidget = new QWidget();
+    containerWidget -> setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QWidget *spacer = new QWidget();
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    outerLayout->addWidget(spacer);
+    spacer -> setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    containerLayout -> addWidget(spacer);
+    containerWidget -> setLayout(containerLayout);
+
+    scrollArea -> setWidget(containerWidget);
+
+    outerLayout -> addWidget(scrollArea);
 
     setLayout(outerLayout);
-
-    loadFile("/home/zuyetawarmatik/Desktop/imagewidget2.pdf");
 }
 
 void PDFTableWidget::loadFile (QString fileName){
@@ -35,5 +46,5 @@ void PDFTableWidget::loadFile (QString fileName){
 
     fileWidgets.append(fileWidget);
 
-    outerLayout->insertWidget(outerLayout->count() - 1, fileWidget);
+    containerLayout->insertWidget(containerLayout->count() - 1, fileWidget);
 }

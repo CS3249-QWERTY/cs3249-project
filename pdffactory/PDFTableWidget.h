@@ -8,6 +8,8 @@
 class QVBoxLayout;
 class QString;
 
+class QScrollArea;
+
 class PDFFileWidget;
 
 class PDFTableWidget: public QFrame
@@ -15,13 +17,19 @@ class PDFTableWidget: public QFrame
     Q_OBJECT
     public:
         PDFTableWidget(QWidget *parent = 0);
+        void loadFile (QString fileName);
+
     protected:
     private:
         QVBoxLayout *outerLayout;
-        void loadFile (QString fileName);
+
+        QScrollArea *scrollArea;
+        QWidget *containerWidget;
+        QVBoxLayout *containerLayout;
 
         QVector<Poppler::Document*> files;
         QVector<QString>            fileNames;
         QVector<PDFFileWidget *>    fileWidgets;
+
 };
 #endif

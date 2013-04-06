@@ -22,7 +22,7 @@ protected:
     //void closeEvent(QCloseEvent *event);
 
 private slots:
-    //void openFile();
+    void openFile();
     //bool exportFile();
     //bool exportAllFiles();
 
