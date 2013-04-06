@@ -1,11 +1,11 @@
 #include <QtGui>
 
-#include "TableView.h"
+#include "PDFTableWidget.h"
 #include "PDFPageWidget.h"
 #include "PDFFileWidget.h"
 
 // Constructor
-TableView::TableView(QWidget* parent) : QFrame(parent)
+PDFTableWidget::PDFTableWidget(QWidget* parent) : QFrame(parent)
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -23,17 +23,17 @@ TableView::TableView(QWidget* parent) : QFrame(parent)
     loadFile("/home/zuyetawarmatik/Desktop/imagewidget2.pdf");
 }
 
-void TableView::loadFile (QString fileName){
+void PDFTableWidget::loadFile (QString fileName){
     fileNames.append(fileName);
 
     Poppler::Document *doc = Poppler::Document::load(fileName);
     files.append(doc);
 
-    PDFFileWidget *pfw = new PDFFileWidget();
-    pfw->setAncestor(this);
-    pfw->setDocument(doc,fileName);
+    PDFFileWidget *fileWidget = new PDFFileWidget();
+    fileWidget->setAncestor(this);
+    fileWidget->setDocument(doc,fileName);
 
-    fileWidgets.append(pfw);
+    fileWidgets.append(fileWidget);
 
-    outerLayout->insertWidget(outerLayout->count() - 1, pfw);
+    outerLayout->insertWidget(outerLayout->count() - 1, fileWidget);
 }

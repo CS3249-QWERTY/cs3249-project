@@ -1,7 +1,6 @@
 #ifndef FILE_FRAME_H
 #define FILE_FRAME_H
 
-#include <vector>
 #include <poppler-qt4.h>
 
 #include <QWidget>
@@ -21,15 +20,15 @@ class QMouseEvent;
 
 class PDFPageWidget;
 
-class FileWidget : public QWidget {
+class FilesContainerWidget : public QWidget {
 
     Q_OBJECT
 
 public:
-    FileWidget(QWidget *parent = 0);
+    FilesContainerWidget(QWidget *parent = 0);
     QSize sizeHint() const;
 
-    void addPageWidget(QImage *image);
+    void addPageWidget(PDFPageWidget *pageWidget);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
@@ -37,7 +36,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 
 private:
-    std::vector<PDFPageWidget*>     pageWidgets;
+    QVector<PDFPageWidget*>         pageWidgets;
 
     QHBoxLayout                    *mainLayout;
 
@@ -73,9 +72,10 @@ private:
 
     QLabel          *fileNameLabel;
     QPushButton     *collapseButton;
-    FileWidget      *fileWidget;
+    FilesContainerWidget *filesContainerWidget;
     QScrollArea     *scrollArea;
     QWidget         *ancestor;
+
     bool            collapsed;
 };
 

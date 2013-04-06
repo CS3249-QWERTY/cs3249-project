@@ -1,7 +1,7 @@
 #include <QtGui>
 #include <QtGlobal>
 #include "PDFFactory.h"
-#include "TableView.h"
+#include "PDFTableWidget.h"
 #include "PDFPageWidget.h"
 
 PDFFactory::PDFFactory()
@@ -34,7 +34,7 @@ void PDFFactory::createWidgets()
 
     // Create main area (table)
 
-    pdfTableView = new TableView();
+    pdfTableView = new PDFTableWidget();
     pdfTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     splitter = new QSplitter();

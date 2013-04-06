@@ -8,8 +8,8 @@ class QPushButton;
 class QImage;
 class QPixmap;
 class QPaintEvent;
-class QSize;
 class QEvent;
+class QSize;
 
 class PDFPageWidget : public QFrame
 {

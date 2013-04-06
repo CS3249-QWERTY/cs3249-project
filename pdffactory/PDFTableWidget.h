@@ -1,5 +1,5 @@
-#ifndef TABLEVIEW_H
-#define TABLEVIEW_H
+#ifndef PDFTABLEWIDGET_H
+#define PDFTABLEWIDGET_H
 
 #include <poppler-qt4.h>
 
@@ -10,11 +10,11 @@ class QString;
 
 class PDFFileWidget;
 
-class TableView: public QFrame
+class PDFTableWidget: public QFrame
 {
     Q_OBJECT
     public:
-        TableView(QWidget *parent = 0);
+        PDFTableWidget(QWidget *parent = 0);
     protected:
     private:
         QVBoxLayout *outerLayout;
