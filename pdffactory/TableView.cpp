@@ -5,20 +5,21 @@
 #include "PDFFileWidget.h"
 
 // Constructor
-TableView::TableView(QWidget* parent) : QWidget(parent)
+TableView::TableView(QWidget* parent) : QFrame(parent)
 {
-    layout = new QVBoxLayout();
-    frame = new QFrame();
-    frame->setLayout(layout);
-    frame->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    frame->adjustSize();
-
-    scrollArea = new QScrollArea();
-    scrollArea->setWidget(frame);
+    // Table View (outer Layout)
+    setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     outerLayout = new QVBoxLayout();
+    outerLayout->setContentsMargins(0,0,0,0);
+
+    // Spacer item
+    QWidget *spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    outerLayout->addWidget(spacer);
+
     setLayout(outerLayout);
-    outerLayout->addWidget(scrollArea);
 
     loadFile("/home/zuyetawarmatik/Desktop/imagewidget2.pdf");
 }
@@ -34,16 +35,6 @@ void TableView::loadFile (QString fileName){
     pfw->setDocument(doc,fileName);
 
     fileWidgets.append(pfw);
-    layout->addWidget(pfw);
-}
 
-void TableView::paintEvent (QPaintEvent * event){
-    frame->adjustSize();
-    int newWidth = width() - 50;
-
-    for (int i = 0; i < fileWidgets.size(); i++) {
-        fileWidgets.at(i)->resize(newWidth,fileWidgets.at(i)->height());
-    }
-
-    frame->resize(newWidth,frame->height());
+    outerLayout->insertWidget(outerLayout->count() - 1, pfw);
 }

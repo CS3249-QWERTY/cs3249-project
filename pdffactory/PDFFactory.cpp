@@ -38,6 +38,7 @@ void PDFFactory::createWidgets()
     pdfTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     splitter = new QSplitter();
+
     //TODO: to change to pdfPreview widget
     pdfPreview = new QWidget();
     pdfPreview->setMinimumWidth(100);
@@ -45,8 +46,10 @@ void PDFFactory::createWidgets()
     splitter->addWidget(pdfTableView);
     splitter->addWidget(pdfPreview);
     QList<int> splitterWidgetSizes;
-    splitterWidgetSizes << 700 << 300;
+    splitterWidgetSizes << 600 << 400;
     splitter->setSizes(splitterWidgetSizes);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 0.5);
     layout->addWidget(splitter);
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));

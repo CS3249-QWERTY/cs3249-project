@@ -3,7 +3,7 @@
 #include "PDFPageWidget.h"
 
 PDFPageWidget::PDFPageWidget(QWidget *parent) :
-    QWidget(parent)
+    QFrame(parent)
 {
     //resize widget
     this->resize(150, 150);
@@ -13,7 +13,6 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     this->setMouseTracking(true);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    QVBoxLayout *vbox = new QVBoxLayout(this);
     QHBoxLayout *hbox = new QHBoxLayout();
 
     btn1 = new QPushButton("", this);
@@ -32,11 +31,11 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     hbox->addWidget(btn1, 1, Qt::AlignRight);
     hbox->addWidget(btn2, 0, Qt::AlignLeft);
 
+    QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addStretch(1);
     vbox->addLayout(hbox);
-
     this->setLayout(vbox);
-
+    vbox->setContentsMargins(0,0,0,0);
     this->setThumbnail(new QImage("images/img.jpg"));
 }
 

@@ -1,8 +1,9 @@
 #ifndef PDFPAGEWIDGET_H
 #define PDFPAGEWIDGET_H
 
-#include <QWidget>
+#include <QFrame>
 
+class QWidget;
 class QPushButton;
 class QImage;
 class QPixmap;
@@ -10,7 +11,7 @@ class QPaintEvent;
 class QSize;
 class QEvent;
 
-class PDFPageWidget : public QWidget
+class PDFPageWidget : public QFrame
 {
     Q_OBJECT
 

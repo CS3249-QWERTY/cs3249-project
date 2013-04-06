@@ -112,21 +112,14 @@ PDFFileWidget::PDFFileWidget(QWidget *parent){
     adjustSize();
 }
 
-/*QSize PDFFileWidget::sizeHint() const {
-    if (collapsed == true)
-        return QSize(mainChild->width(), collapseButton->height() );
-    else
-        return QSize(mainChild->width(), collapseButton->height() + mainChild->height() + 50);
-}*/
-
 void PDFFileWidget::setCollapsed(bool state){
     if (state == true){
         collapsed = true;
-        setFixedHeight(collapseButton->height() + 80);
+        setFixedHeight(collapseButton->height());
         scrollArea->hide();
     } else {
         collapsed = false;
-        setFixedHeight(collapseButton->height() + fileWidget->height() + 50);
+        setFixedHeight(collapseButton->height() + fileWidget->height());
         scrollArea->show();
     }
     adjustSize();
