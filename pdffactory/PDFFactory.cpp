@@ -34,29 +34,24 @@ void PDFFactory::createWidgets()
 
     // Create main area (table)
 
-
     pdfTableView = new TableView();
-    //pdfTableView->setLayout(new QVBoxLayout());
-    //pdfTableView->setMinimumSize(1000, 1000);
     pdfTableView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    pdfSplitter = new QSplitter();
+    splitter = new QSplitter();
     //TODO: to change to pdfPreview widget
     pdfPreview = new QWidget();
     pdfPreview->setMinimumWidth(100);
-    pdfSplitter->setOrientation(Qt::Horizontal);
-    pdfSplitter->addWidget(pdfTableView);
-    pdfSplitter->addWidget(pdfPreview);
-    layout->addWidget(pdfSplitter);
-
-    //PDFFile *pdfFile = new PDFFile("/home/zuyetawarmatik/Desktop/imagewidget.pdf");
-    //PDFPageWidget *pdfPage = new PDFPageWidget();
-    //pdfPage->setPageImage(pdfFile->getPageImage(0));
-    //pdfTableView->layout()->addWidget(pdfPage);
+    splitter->setOrientation(Qt::Horizontal);
+    splitter->addWidget(pdfTableView);
+    splitter->addWidget(pdfPreview);
+    QList<int> splitterWidgetSizes;
+    splitterWidgetSizes << 700 << 300;
+    splitter->setSizes(splitterWidgetSizes);
+    layout->addWidget(splitter);
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));
     setWindowTitle(tr("PDF Factory"));
-    setGeometry(0, 0, 550, 650);
+    setGeometry(0, 0, 1000, 650);
 }
 
 

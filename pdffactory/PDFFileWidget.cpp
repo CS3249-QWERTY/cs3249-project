@@ -10,7 +10,7 @@
 #define CHILD_AREA_WIDTH     150
 #define CHILD_AREA_HEIGHT    150
 
-FileWidget::FileWidget(QWidget *parent){
+FileWidget::FileWidget(QWidget *parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setAcceptDrops(true);
     mainLayout = new QHBoxLayout();
@@ -18,53 +18,37 @@ FileWidget::FileWidget(QWidget *parent){
     setLayout(mainLayout);
 }
 
-int FileWidget::getChildCount() const{
-    return child.size();
+int FileWidget::getPagesCount() const {
+    return pageWidgets.size();
 }
 
-QSize FileWidget::sizeHint() const{
-    qDebug() << size();
-    return QSize(CHILD_AREA_WIDTH*getChildCount(), CHILD_AREA_HEIGHT + 20);
+QSize FileWidget::sizeHint() const {
+    return QSize(CHILD_AREA_WIDTH*getPagesCount(), CHILD_AREA_HEIGHT + 20);
 }
 
-void FileWidget::addChild(QString name){
-    PDFPageWidget* newchild;
-    newchild = new PDFPageWidget();
+void FileWidget::addPageWidget(QImage *image){
+    PDFPageWidget* newPageWidget;
+    newPageWidget = new PDFPageWidget();
+    newPageWidget->setThumbnail(image);
 
-    child.push_back(newchild);
+    pageWidgets.push_back(newPageWidget);
 
-    mainLayout->addWidget(newchild);
+    mainLayout->addWidget(newPageWidget);
+
     adjustSize();
 }
 
-void FileWidget::addChild(QImage *image){
-    PDFPageWidget* newchild;
-    newchild = new PDFPageWidget();
-    newchild->setThumbnail(image);
-
-    child.push_back(newchild);
-
-    mainLayout->addWidget(newchild);
-    adjustSize();
-}
-
-void FileWidget::dragEnterEvent(QDragEnterEvent *event){
+void FileWidget::dragEnterEvent(QDragEnterEvent *event) {
     if (event->mimeData()->hasFormat("text/plain"))
         event->acceptProposedAction();
 }
 
-void FileWidget::dropEvent(QDropEvent *event){
+void FileWidget::dropEvent(QDropEvent *event) {
     int from    = event->mimeData()->text().toInt();
-    int to      = findChildPositionInLayout(child[findClickEventChild(event->pos())]);
+    int to      = findPageWidgetInLayout(pageWidgets[findPageContainingClickEvent(event->pos())]);
 
-    qDebug() << "Moving "+QString::number(from) + " "+QString::number(to);
-
-    for (int i = 0;i<child.size();i++){
-        qDebug() << child[i]->size();
-    }
-
-    mainLayout->removeWidget(child[from]);
-    mainLayout->insertWidget(to, child[from]);
+    mainLayout->removeWidget(pageWidgets[from]);
+    mainLayout->insertWidget(to, pageWidgets[from]);
 
     event->acceptProposedAction();
 }
@@ -72,7 +56,7 @@ void FileWidget::dropEvent(QDropEvent *event){
 void FileWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton){
-        int draggedChild = (findClickEventChild(event->pos()));
+        int draggedChild = (findPageContainingClickEvent(event->pos()));
 
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
@@ -85,18 +69,18 @@ void FileWidget::mousePressEvent(QMouseEvent *event)
     }
 }
 
-int FileWidget::findClickEventChild(QPoint pos){
-    for (int i= 0;i<getChildCount();i++)
-        if (child[i]->geometry().contains(pos))
+int FileWidget::findPageContainingClickEvent(QPoint pos){
+    for (int i=0; i<getPagesCount(); i++)
+        if (pageWidgets[i]->geometry().contains(pos))
             return i;
-    return getChildCount()-1;
+    return getPagesCount()-1;
 }
 
-int FileWidget::findChildPositionInLayout(PDFPageWidget *child){
-    for (int i= 0;i<getChildCount();i++)
-        if (mainLayout->itemAt(i)->widget() == child)
+int FileWidget::findPageWidgetInLayout(PDFPageWidget *pageWidget){
+    for (int i= 0;i<getPagesCount();i++)
+        if (mainLayout->itemAt(i)->widget() == pageWidget)
             return i;
-    return getChildCount()-1;
+    return getPagesCount()-1;
 }
 
 // ======================================================================
@@ -104,14 +88,16 @@ int FileWidget::findChildPositionInLayout(PDFPageWidget *child){
 PDFFileWidget::PDFFileWidget(QWidget *parent){
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    topLayout       = new QGridLayout();
+    topLayout      = new QGridLayout();
 
-    scrollArea      = new QScrollArea();
-    mainChild       = new FileWidget();
+    scrollArea     = new QScrollArea();
+    fileWidget     = new FileWidget();
+    scrollArea->setWidget(fileWidget);
 
-    widgetName      = new QLabel();
-    widgetName->setText(tr("File 1"));
-    topLayout->addWidget(widgetName, 0, 1);
+    fileNameLabel  = new QLabel();
+    fileNameLabel->setText(tr("File 1"));
+
+    topLayout->addWidget(fileNameLabel, 0, 1);
 
     collapseButton  = new QPushButton(tr("X"));
     collapseButton->setMinimumSize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
@@ -120,8 +106,6 @@ PDFFileWidget::PDFFileWidget(QWidget *parent){
     topLayout->addWidget(collapseButton,0,0);
 
     topLayout->addWidget(scrollArea,1,0,1,5);
-    scrollArea->setWidget(mainChild);
-
     setLayout(topLayout);
 
     setCollapsed(false);
@@ -140,9 +124,9 @@ void PDFFileWidget::setCollapsed(bool state){
         collapsed = true;
         setFixedHeight(collapseButton->height() + 80);
         scrollArea->hide();
-    }else {
+    } else {
         collapsed = false;
-        setFixedHeight(collapseButton->height() + mainChild->height() + 50);
+        setFixedHeight(collapseButton->height() + fileWidget->height() + 50);
         scrollArea->show();
     }
     adjustSize();
@@ -155,13 +139,15 @@ void PDFFileWidget::collapsedButtonClick(){
         setCollapsed(true);
 }
 
-void PDFFileWidget::setDocument(Poppler::Document* document, QString filename){
+void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
     int numPages = document -> numPages();
-    for (int i = 0;i<numPages;i++){
-        Poppler::Page *pdfPage = document->page(i);
-        QImage *image = new QImage();
-        *image = pdfPage->renderToImage();
+    for (int i = 0; i<numPages; i++){
 
-        mainChild->addChild(image);
+        Poppler::Page *pdfPage = document->page(i);
+
+        QImage *image = new QImage();
+        *image = pdfPage->renderToImage(144, 144);
+
+        fileWidget->addPageWidget(image);
     }
 }

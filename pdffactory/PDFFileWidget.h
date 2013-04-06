@@ -24,12 +24,12 @@ class PDFPageWidget;
 class FileWidget : public QWidget {
 
     Q_OBJECT
+
 public:
     FileWidget(QWidget *parent = 0);
     QSize sizeHint() const;
 
-    void    addChild(QString name);
-    void    addChild(QImage *image);
+    void addPageWidget(QImage *image);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
@@ -37,14 +37,16 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 
 private:
-    std::vector<PDFPageWidget*>     child;
+    std::vector<PDFPageWidget*>     pageWidgets;
 
     QHBoxLayout*                    mainLayout;
 
-    int     findClickEventChild(QPoint pos);
-    int     findChildPositionInLayout(PDFPageWidget *child);
-    int     getChildCount() const;
+    int     findPageContainingClickEvent(QPoint pos);
+    int     findPageWidgetInLayout(PDFPageWidget *pageWidgets);
+    int     getPagesCount() const;
 };
+
+// ========================================
 
 class PDFFileWidget : public QWidget {
 
@@ -57,7 +59,7 @@ public:
 
 public:
     void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
-    void setDocument(Poppler::Document* document, QString filename);
+    void setDocument(Poppler::Document* document, QString fileName);
 
     bool isCollapsed(){ return collapsed; }
     void setCollapsed(bool collapsed);
@@ -70,10 +72,10 @@ private slots:
 private:
     QGridLayout     *topLayout;
 
-    QLabel          *widgetName;
+    QLabel          *fileNameLabel;
     QPushButton     *collapseButton;
     QScrollArea     *scrollArea;
-    FileWidget      *mainChild;
+    FileWidget      *fileWidget;
     QWidget         *ancestor;
     bool            collapsed;
 };
