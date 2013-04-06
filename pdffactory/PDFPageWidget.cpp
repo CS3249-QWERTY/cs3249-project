@@ -1,6 +1,5 @@
 #include <QtGui>
 #include "PDFPageWidget.h"
-#include <QSize>
 
 PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QWidget(parent)
@@ -38,7 +37,6 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     btn1->hide();
     btn2->hide();
 
-
     hbox->addWidget(btn1, 1, Qt::AlignRight);
     hbox->addWidget(btn2, 0, Qt::AlignLeft);
 
@@ -46,7 +44,6 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     vbox->addLayout(hbox);
 
     this->setLayout(vbox);
-
 
     this->setThumbnail(new QImage("images/img.jpg"));
 }

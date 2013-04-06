@@ -1,23 +1,28 @@
 #ifndef FILE_FRAME_H
 #define FILE_FRAME_H
 
-#include <QWidget>
-#include <QScrollArea>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QImage>
-#include <QString>
-#include <QPoint>
-
 #include <vector>
-
 #include <poppler-qt4.h>
 
-#include "PDFPageWidget.h"
+#include <QWidget>
 
-class FileWidget : public QWidget{
+class QImage;
+class QHBoxLayout;
+class QGridLayout;
+class QScrollArea;
+class QPushButton;
+class QLabel;
+class QString;
+class QSize;
+class QPoint;
+class QDragEnterEvent;
+class QDropEvent;
+class QMouseEvent;
+
+class PDFPageWidget;
+
+class FileWidget : public QWidget {
+
     Q_OBJECT
 public:
     FileWidget(QWidget *parent = 0);
@@ -41,7 +46,7 @@ private:
     int     getChildCount() const;
 };
 
-class PDFFileWidget : public QWidget{
+class PDFFileWidget : public QWidget {
 
     Q_OBJECT
     Q_PROPERTY(bool collapsed READ isCollapsed WRITE setCollapsed)

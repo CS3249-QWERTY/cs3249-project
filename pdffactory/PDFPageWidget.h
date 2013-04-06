@@ -2,12 +2,13 @@
 #define PDFPAGEWIDGET_H
 
 #include <QWidget>
-#include <QPushButton>
-#include <QVector>
 
+class QPushButton;
 class QImage;
 class QPixmap;
 class QPaintEvent;
+class QSize;
+class QEvent;
 
 class PDFPageWidget : public QWidget
 {
@@ -30,7 +31,8 @@ private:
     QPushButton *button;
     QImage *image;
     QPixmap pixmap;
-    QPushButton *btn1,*btn2;
+    QPushButton *btn1, *btn2;
+
 };
 
 #endif // PDFPAGEWIDGET_H

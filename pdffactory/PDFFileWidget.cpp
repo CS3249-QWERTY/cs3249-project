@@ -1,16 +1,8 @@
+#include <QtGlobal>
+#include <QtGui>
+
 #include "PDFFileWidget.h"
 #include "PDFPageWidget.h"
-
-#include <QDebug>
-#include <QSizePolicy>
-
-#include <QPixmap>
-#include <QSize>
-#include <QDrag>
-#include <QDragEnterEvent>
-#include <QMouseEvent>
-#include <QDropEvent>
-#include <QDebug>
 
 #define COLLAPSE_BUTTON_WIDTH   60
 #define COLLAPSE_BUTTON_HEIGHT  40
@@ -19,9 +11,9 @@
 #define CHILD_AREA_HEIGHT    150
 
 FileWidget::FileWidget(QWidget *parent){
-    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setAcceptDrops(true);
-    mainLayout      = new QHBoxLayout();
+    mainLayout = new QHBoxLayout();
 
     setLayout(mainLayout);
 }
@@ -32,7 +24,7 @@ int FileWidget::getChildCount() const{
 
 QSize FileWidget::sizeHint() const{
     qDebug() << size();
-    return QSize(CHILD_AREA_WIDTH*getChildCount() , CHILD_AREA_HEIGHT + 20);
+    return QSize(CHILD_AREA_WIDTH*getChildCount(), CHILD_AREA_HEIGHT + 20);
 }
 
 void FileWidget::addChild(QString name){
@@ -60,6 +52,7 @@ void FileWidget::dragEnterEvent(QDragEnterEvent *event){
     if (event->mimeData()->hasFormat("text/plain"))
         event->acceptProposedAction();
 }
+
 void FileWidget::dropEvent(QDropEvent *event){
     int from    = event->mimeData()->text().toInt();
     int to      = findChildPositionInLayout(child[findClickEventChild(event->pos())]);
@@ -75,6 +68,7 @@ void FileWidget::dropEvent(QDropEvent *event){
 
     event->acceptProposedAction();
 }
+
 void FileWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton){
@@ -91,19 +85,22 @@ void FileWidget::mousePressEvent(QMouseEvent *event)
     }
 }
 
-int FileWidget:: findClickEventChild(QPoint pos){
+int FileWidget::findClickEventChild(QPoint pos){
     for (int i= 0;i<getChildCount();i++)
         if (child[i]->geometry().contains(pos))
             return i;
     return getChildCount()-1;
 }
 
-int FileWidget:: findChildPositionInLayout(PDFPageWidget *child){
+int FileWidget::findChildPositionInLayout(PDFPageWidget *child){
     for (int i= 0;i<getChildCount();i++)
         if (mainLayout->itemAt(i)->widget() == child)
             return i;
     return getChildCount()-1;
 }
+
+// ======================================================================
+
 PDFFileWidget::PDFFileWidget(QWidget *parent){
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
