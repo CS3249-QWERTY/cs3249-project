@@ -11,11 +11,13 @@ LIBS += -L/usr/lib -lpoppler-qt4
 HEADERS += PDFFactory.h \
            PDFPageWidget.h \
            PDFTableWidget.h \
-           PDFFileWidget.h
+           PDFFileWidget.h \
+           PDFPreviewWidget.h
 SOURCES += main.cpp \
            PDFFactory.cpp \
            PDFPageWidget.cpp \
            PDFTableWidget.cpp \
-           PDFFileWidget.cpp
+           PDFFileWidget.cpp \
+           PDFPreviewWidget.cpp
 
 RESOURCES += pdffactory.qrc

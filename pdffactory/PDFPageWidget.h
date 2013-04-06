@@ -9,6 +9,7 @@ class QImage;
 class QPixmap;
 class QPaintEvent;
 class QEvent;
+class QMouseEvent;
 class QSize;
 
 class PDFPageWidget : public QFrame
@@ -24,8 +25,9 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event);
-    void enterEvent(QEvent * event );
-    void leaveEvent(QEvent * event );
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
+    void mousePressEvent(QMouseEvent *event);
 
 private:
     //QVector<QPushButton> buttons;
@@ -33,6 +35,9 @@ private:
     QImage image;
     QPixmap pixmap;
     QPushButton *btn1, *btn2;
+
+signals:
+    void pageClicked(QMouseEvent *event, QImage pageImage);
 
 };
 

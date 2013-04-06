@@ -20,12 +20,12 @@ class QMouseEvent;
 
 class PDFPageWidget;
 
-class FilesContainerWidget : public QWidget {
+class PagesContainerWidget : public QWidget {
 
     Q_OBJECT
 
 public:
-    FilesContainerWidget(QWidget *parent = 0);
+    PagesContainerWidget(QWidget *parent = 0);
     QSize sizeHint() const;
 
     void addPageWidget(PDFPageWidget *pageWidget);
@@ -72,11 +72,14 @@ private:
 
     QLabel          *fileNameLabel;
     QPushButton     *collapseButton;
-    FilesContainerWidget *filesContainerWidget;
+    PagesContainerWidget *pagesContainerWidget;
     QScrollArea     *scrollArea;
     QWidget         *ancestor;
 
     bool            collapsed;
+
+signals:
+    void pageClicked(QMouseEvent*, QImage);
 };
 
 #endif

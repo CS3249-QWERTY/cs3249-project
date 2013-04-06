@@ -2,7 +2,9 @@
 #define PDFFACTORY_H
 
 #include <QMainWindow>
-#include <PDFTableWidget.h>
+
+class PDFTableWidget;
+class PDFPreviewWidget;
 
 class QAction;
 class QWidget;
@@ -44,10 +46,9 @@ private:
     QWidget *centralWidget;
 
     QTabWidget *ribbon;
-    QScrollArea *scrollArea;
-    PDFTableWidget *pdfTableView;
     QSplitter *splitter;
-    QWidget *pdfPreview;
+    PDFTableWidget *pdfTableView;
+    PDFPreviewWidget *pdfPreview;
 
     QToolBar *fileToolBar;
     QToolBar *editToolBar;

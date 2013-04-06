@@ -2,6 +2,7 @@
 #include <QtGlobal>
 #include "PDFFactory.h"
 #include "PDFTableWidget.h"
+#include "PDFPreviewWidget.h"
 #include "PDFPageWidget.h"
 
 PDFFactory::PDFFactory()
@@ -35,12 +36,9 @@ void PDFFactory::createWidgets()
     // Create main area (table)
 
     pdfTableView = new PDFTableWidget();
-
-    splitter = new QSplitter();
-
-    //TODO: to change to pdfPreview widget
-    pdfPreview = new QWidget();
+    pdfPreview = new PDFPreviewWidget();
     pdfPreview->setMinimumWidth(100);
+    splitter = new QSplitter();
     splitter->setOrientation(Qt::Horizontal);
     splitter->addWidget(pdfTableView);
     splitter->addWidget(pdfPreview);
@@ -50,6 +48,8 @@ void PDFFactory::createWidgets()
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 0.5);
     layout->addWidget(splitter);
+
+    connect(pdfTableView, SIGNAL(pageClicked(QMouseEvent*,QImage)), pdfPreview, SLOT(pageClicked(QMouseEvent*,QImage)));
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));
     setWindowTitle(tr("PDF Factory"));
