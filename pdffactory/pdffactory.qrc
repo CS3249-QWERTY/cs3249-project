@@ -9,5 +9,7 @@
         <file>images/exportall.png</file>
         <file>images/pdffactory.png</file>
         <file>images/about.png</file>
+        <file>images/collapse.png</file>
+        <file>images/expand.png</file>
     </qresource>
 </RCC>
