@@ -2,6 +2,7 @@
 #define FILE_FRAME_H
 
 #include <poppler-qt4.h>
+#include "ThumbGen.h"
 
 #include <QWidget>
 
@@ -17,6 +18,7 @@ class QPoint;
 class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
+class ThumbGen;
 
 class PDFPageWidget;
 
@@ -66,8 +68,11 @@ protected:
 
 private slots:
     void collapsedButtonClick();
+   void pageCLickedHandler(QMouseEvent*, QImage);
+   void updateThumbnail(QImage,PDFPageWidget*);
 
 private:
+    ThumbGen        tgen;
     QGridLayout     *topLayout;
 
     QLabel          *fileNameLabel;
@@ -80,6 +85,7 @@ private:
 
 signals:
     void pageClicked(QMouseEvent*, QImage);
+    void pageClicked(QMouseEvent*, Poppler::Page *);
 };
 
 #endif

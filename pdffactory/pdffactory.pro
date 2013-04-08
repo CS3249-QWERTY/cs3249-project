@@ -12,12 +12,16 @@ HEADERS += PDFFactory.h \
            PDFPageWidget.h \
            PDFTableWidget.h \
            PDFFileWidget.h \
+           PDFJam.h \
+           ThumbGen.h \
            PDFPreviewWidget.h
 SOURCES += main.cpp \
            PDFFactory.cpp \
            PDFPageWidget.cpp \
            PDFTableWidget.cpp \
            PDFFileWidget.cpp \
+           PDFJam.cpp \
+           ThumbGen.cpp \
            PDFPreviewWidget.cpp
 
 RESOURCES += pdffactory.qrc

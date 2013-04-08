@@ -10,10 +10,13 @@
 #define CHILD_AREA_WIDTH     150
 #define CHILD_AREA_HEIGHT    150
 
+
 PagesContainerWidget::PagesContainerWidget(QWidget *parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setAcceptDrops(true);
     mainLayout = new QHBoxLayout();
+
+
 
     setLayout(mainLayout);
 }
@@ -102,6 +105,13 @@ PDFFileWidget::PDFFileWidget(QWidget *parent){
     setLayout(topLayout);
 
     setCollapsed(false);
+
+    connect(&tgen, SIGNAL(updateThumbnail(QImage,PDFPageWidget*)), this, SLOT(updateThumbnail(QImage,PDFPageWidget*)));
+
+}
+
+void PDFFileWidget::updateThumbnail(QImage img,PDFPageWidget* pw){
+    pw->setThumbnail(img);
 }
 
 void PDFFileWidget::setCollapsed(bool state){
@@ -118,19 +128,26 @@ void PDFFileWidget::setCollapsed(bool state){
 void PDFFileWidget::collapsedButtonClick(){
     setCollapsed(!collapsed);
 }
+void PDFFileWidget::pageCLickedHandler(QMouseEvent*, QImage){
+}
 
 void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
+    document->setRenderHint(Poppler::Document::TextAntialiasing);
     int numPages = document -> numPages();
     for (int i = 0; i < numPages; i++){
         Poppler::Page *pdfPage = document->page(i);
 
-        QImage pageImage = pdfPage->renderToImage(144, 144);
-
         PDFPageWidget *pageWidget = new PDFPageWidget();
-        pageWidget->setThumbnail(pageImage);
+
+        tgen.render(pageWidget,pdfPage);
+
         connect(pageWidget, SIGNAL(pageClicked(QMouseEvent*,QImage)), this, SIGNAL(pageClicked(QMouseEvent*,QImage)));
 
         pagesContainerWidget->addPageWidget(pageWidget);
+        //process event
+        //qApp->processEvents();
     }
+        tgen.start();
+
     fileNameLabel->setText(fileName);
 }
