@@ -27,7 +27,7 @@ void ThumbGen::run(){
         mutex.lock();
         PDFPageWidget *pw = pWidgets.first();
         pWidgets.pop_front();
-        Poppler::Page *pp = pPages.last();
+        Poppler::Page *pp = pPages.first();
         pPages.pop_front();
         mutex.unlock();
 
