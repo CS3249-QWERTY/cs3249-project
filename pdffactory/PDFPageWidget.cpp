@@ -43,6 +43,9 @@ void PDFPageWidget::setButton(QPushButton *btn) {
     update();
 }
 
+void PDFPageWidget::setPopplerPage(Poppler::Page* pp) {
+    pPage = pp;
+}
 void PDFPageWidget::setThumbnail(QImage pageImage) {
     image = pageImage;
     pixmap = QPixmap::fromImage(image);
@@ -52,7 +55,11 @@ void PDFPageWidget::setThumbnail(QImage pageImage) {
 }
 
 void PDFPageWidget::mousePressEvent(QMouseEvent *event) {
-    emit pageClicked(event, image);
+    if (pPage!=NULL){
+
+        emit pageClicked(event, image);
+        emit previewUpdate(pPage);
+    }
 }
 
 void PDFPageWidget::leaveEvent(QEvent *event) {

@@ -1,6 +1,7 @@
 #ifndef PDFPAGEWIDGET_H
 #define PDFPAGEWIDGET_H
 
+#include <poppler-qt4.h>
 #include <QFrame>
 
 class QWidget;
@@ -19,6 +20,8 @@ class PDFPageWidget : public QFrame
 public:
     PDFPageWidget(QWidget *parent = 0);
     void setThumbnail(QImage pageImage);
+    void setPopplerPage(Poppler::Page*);
+
     void setButton(QPushButton *btn);
     QSize sizeHint() const;
     //void setButtonImage(QImage *pageImage);
@@ -33,11 +36,13 @@ private:
     //QVector<QPushButton> buttons;
     QPushButton *button;
     QImage image;
+    Poppler::Page *pPage;
     QPixmap pixmap;
     QPushButton *btn1, *btn2;
-
 signals:
     void pageClicked(QMouseEvent *event, QImage pageImage);
+    void previewUpdate(Poppler::Page* );
+
 
 };
 

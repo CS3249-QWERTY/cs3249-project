@@ -33,6 +33,6 @@ class PDFTableWidget: public QFrame
         QVector<PDFFileWidget *>    fileWidgets;
     signals:
         void pageClicked(QMouseEvent*, QImage);
-
+        void previewUpdate(Poppler::Page*);
 };
 #endif
