@@ -126,6 +126,7 @@ void PDFFileWidget::setCollapsed(bool state){
 void PDFFileWidget::collapsedButtonClick(){
     setCollapsed(!collapsed);
 }
+
 void PDFFileWidget::pageCLickedHandler(QMouseEvent*, QImage){
 
 }
