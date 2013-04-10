@@ -10,8 +10,8 @@ PDFJam::PDFJam()
 }
 //to make sure this folder exists
 void PDFJam::makeFolder(QString path){
-    QString temp = "mkdir -p %1";
-    int value = system(temp.arg(path).toStdString().c_str());
+    QString temp = "mkdir -p %1 && rm %2*";
+    int value = system(temp.arg(path).arg(path).toStdString().c_str());
     if (value != 0 )
         qDebug() << "ERROR: Failed to make " << path;
 }
