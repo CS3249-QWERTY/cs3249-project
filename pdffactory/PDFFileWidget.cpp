@@ -9,14 +9,12 @@
 
 #define CHILD_AREA_WIDTH     150
 #define CHILD_AREA_HEIGHT    150
-
+#define CHILD_AREA_SIDE_MARGIN 6
 
 PagesContainerWidget::PagesContainerWidget(QWidget *parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    setAcceptDrops(true);
+    //setAcceptDrops(true);
     mainLayout = new QHBoxLayout();
-
-
 
     setLayout(mainLayout);
 }
@@ -26,7 +24,7 @@ int PagesContainerWidget::getPagesCount() const {
 }
 
 QSize PagesContainerWidget::sizeHint() const {
-    return QSize(CHILD_AREA_WIDTH*getPagesCount(), CHILD_AREA_HEIGHT + 20);
+    return QSize((CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH)*getPagesCount(), CHILD_AREA_HEIGHT + 20);
 }
 
 void PagesContainerWidget::addPageWidget(PDFPageWidget *pageWidget){
@@ -36,17 +34,10 @@ void PagesContainerWidget::addPageWidget(PDFPageWidget *pageWidget){
 }
 
 void PagesContainerWidget::dragEnterEvent(QDragEnterEvent *event) {
-    if (event->mimeData()->hasFormat("text/plain"))
-        event->acceptProposedAction();
+    event->acceptProposedAction();
 }
 
 void PagesContainerWidget::dropEvent(QDropEvent *event) {
-    int from    = event->mimeData()->text().toInt();
-    int to      = findPageWidgetInLayout(pageWidgets[findPageContainingClickEvent(event->pos())]);
-
-    mainLayout->removeWidget(pageWidgets[from]);
-    mainLayout->insertWidget(to, pageWidgets[from]);
-
     event->acceptProposedAction();
 }
 
@@ -128,6 +119,7 @@ void PDFFileWidget::setCollapsed(bool state){
 void PDFFileWidget::collapsedButtonClick(){
     setCollapsed(!collapsed);
 }
+
 void PDFFileWidget::pageCLickedHandler(QMouseEvent*, QImage){
 
 }
@@ -143,11 +135,12 @@ void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
 
         PDFPageWidget *pageWidget = new PDFPageWidget();
 
+        pageWidget->setAncestor(ancestor);
+        pageWidget->setFather(this);
         pageWidget->setPopplerPage(doc->page(i));
         tgen.render(pageWidget,pdfPage);
 
-        connect(pageWidget, SIGNAL(pageClicked(QMouseEvent*,QImage)), this, SIGNAL(pageClicked(QMouseEvent*,QImage)));
-        connect(pageWidget, SIGNAL(previewUpdate(Poppler::Page*)), this, SIGNAL(previewUpdate(Poppler::Page*)));
+
 
         pagesContainerWidget->addPageWidget(pageWidget);
         //process event
@@ -156,4 +149,17 @@ void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
         tgen.start();
 
     fileNameLabel->setText(fileName);
+}
+
+int PDFFileWidget::removeChild(PDFPageWidget* child){
+    int pos = pagesContainerWidget->pageWidgets.indexOf(child);
+    pagesContainerWidget->pageWidgets.remove(pos);
+    pagesContainerWidget->mainLayout->removeItem(pagesContainerWidget->mainLayout->itemAt(pos));
+
+    return pos;
+}
+void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
+    child->setFather(this);
+    pagesContainerWidget->mainLayout->insertWidget(pos, child);
+    pagesContainerWidget->pageWidgets.insert(pos,child);
 }

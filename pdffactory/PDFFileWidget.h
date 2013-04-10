@@ -26,25 +26,25 @@ class PagesContainerWidget : public QWidget {
 
     Q_OBJECT
 
-public:
-    PagesContainerWidget(QWidget *parent = 0);
-    QSize sizeHint() const;
+    public:
+        PagesContainerWidget(QWidget *parent = 0);
+        QSize sizeHint() const;
+        QVector<PDFPageWidget*>         pageWidgets;
+        QHBoxLayout                    *mainLayout;
 
-    void addPageWidget(PDFPageWidget *pageWidget);
+        void addPageWidget(PDFPageWidget *pageWidget);
 
-protected:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
-    void mousePressEvent(QMouseEvent *event);
+    protected:
+        void dragEnterEvent(QDragEnterEvent *event);
+        void dropEvent(QDropEvent *event);
+        void mousePressEvent(QMouseEvent *event);
 
-private:
-    QVector<PDFPageWidget*>         pageWidgets;
+    private:
 
-    QHBoxLayout                    *mainLayout;
 
-    int     findPageContainingClickEvent(QPoint pos);
-    int     findPageWidgetInLayout(PDFPageWidget *pageWidgets);
-    int     getPagesCount() const;
+        int     findPageContainingClickEvent(QPoint pos);
+        int     findPageWidgetInLayout(PDFPageWidget *pageWidgets);
+        int     getPagesCount() const;
 };
 
 // ========================================
@@ -52,41 +52,39 @@ private:
 class PDFFileWidget : public QWidget {
 
     Q_OBJECT
-    Q_PROPERTY(bool collapsed READ isCollapsed WRITE setCollapsed)
+        Q_PROPERTY(bool collapsed READ isCollapsed WRITE setCollapsed)
 
-public:
-    PDFFileWidget(QWidget *parent = 0);
+    public:
+        PDFFileWidget(QWidget *parent = 0);
 
-public:
-    void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
-    void setDocument(Poppler::Document* document, QString fileName);
+    public:
+        void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
+        void setDocument(Poppler::Document* document, QString fileName);
+        int removeChild(PDFPageWidget* child);
+        void insertChildAt(PDFPageWidget* child, int pos);
 
-    bool isCollapsed(){ return collapsed; }
-    void setCollapsed(bool collapsed);
 
-protected:
+        bool isCollapsed(){ return collapsed; }
+        void setCollapsed(bool collapsed);
 
-private slots:
-    void collapsedButtonClick();
-   void pageCLickedHandler(QMouseEvent*, QImage);
-   void updateThumbnail(QImage,PDFPageWidget*);
+    protected:
 
-private:
-    ThumbGen        tgen;
-    QGridLayout     *topLayout;
+        private slots:
+        void collapsedButtonClick();
+        void pageCLickedHandler(QMouseEvent*, QImage);
+        void updateThumbnail(QImage,PDFPageWidget*);
 
-    QLabel          *fileNameLabel;
-    QPushButton     *collapseButton;
-    PagesContainerWidget *pagesContainerWidget;
-    QScrollArea     *scrollArea;
-    QWidget         *ancestor;
+    private:
+        ThumbGen        tgen;
+        QGridLayout     *topLayout;
 
-    bool            collapsed;
+        QLabel          *fileNameLabel;
+        QPushButton     *collapseButton;
+        PagesContainerWidget *pagesContainerWidget;
+        QScrollArea     *scrollArea;
+        QWidget         *ancestor;
 
-signals:
-    void pageClicked(QMouseEvent*, QImage);
-    void pageClicked(QMouseEvent*, Poppler::Page *);
-    void previewUpdate(Poppler::Page*);
+        bool            collapsed;
 };
 
 #endif

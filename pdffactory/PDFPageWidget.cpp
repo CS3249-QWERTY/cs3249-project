@@ -1,14 +1,17 @@
 #include <QtGlobal>
 #include <QtGui>
 #include "PDFPageWidget.h"
+#include "PDFTableWidget.h"
 
 PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QFrame(parent)
 {
+    setAcceptDrops(true);
     //resize widget
     this->resize(150, 150);
     this->setMinimumSize(150, 150);
     this->setMaximumSize(150, 150);
+    this->setAutoFillBackground(true);
 
     this->setMouseTracking(true);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -34,9 +37,32 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addStretch(1);
     vbox->addLayout(hbox);
+    vbox->setContentsMargins(0, 3, 0, 3);
     this->setLayout(vbox);
-    vbox->setContentsMargins(0,0,0,0);
+
 }
+
+void PDFPageWidget::dragEnterEvent(QDragEnterEvent *event) {
+    event->acceptProposedAction();
+}
+
+void PDFPageWidget::dropEvent(QDropEvent *event) {
+    emit droppedPage(event->mimeData()->text(), path);
+    event->acceptProposedAction();
+}
+
+void PDFPageWidget::setAncestor(QWidget* ancestor){
+    this->ancestor = ancestor;
+    ((PDFTableWidget*)ancestor)->registerPage(this);
+    connect(this, SIGNAL(pageClicked(QMouseEvent*,QString)), ancestor, SLOT(pageClicked(QMouseEvent*,QString)));
+    connect(this, SIGNAL(previewUpdate(Poppler::Page*)), ancestor, SIGNAL(previewUpdate(Poppler::Page*)));
+    connect(this, SIGNAL(droppedPage(QString, QString)), ancestor, SLOT(droppedPage(QString, QString)));
+}
+
+void PDFPageWidget::setFather(QWidget *father){
+    this->father = father;
+}
+
 
 void PDFPageWidget::setButton(QPushButton *btn) {
     button = btn;
@@ -49,30 +75,44 @@ void PDFPageWidget::setPopplerPage(Poppler::Page* pp) {
 void PDFPageWidget::setThumbnail(QImage pageImage) {
     image = pageImage;
     pixmap = QPixmap::fromImage(image);
-    pixmap = pixmap.scaled(size(), Qt::KeepAspectRatio);
+    pixmap = pixmap.scaled(size() - QSize(6, 6), Qt::KeepAspectRatio);
 
     update();
 }
 
 void PDFPageWidget::mousePressEvent(QMouseEvent *event) {
     if (pPage!=NULL){
-
-        emit pageClicked(event, image);
+        emit pageClicked(event, path);
         emit previewUpdate(pPage);
+
+        selected = !selected;
+        update();
     }
 }
 
 void PDFPageWidget::leaveEvent(QEvent *event) {
     btn1->hide();
     btn2->hide();
+
+    this->setFrameStyle(QFrame::Plain);
 }
 
 void PDFPageWidget::enterEvent(QEvent *event) {
     btn1->show();
     btn2->show();
+
+    this->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 }
 
 void PDFPageWidget::paintEvent(QPaintEvent *event) {
+    QPalette palette = this->palette();
+    if (selected)
+        palette.setColor( backgroundRole(), palette.color(QPalette::Highlight) );
+    else
+        palette.setColor( backgroundRole(), palette.color(QPalette::AlternateBase) );
+    this->setPalette( palette );
+
+    QFrame::paintEvent(event);
     QPainter painter(this);
     painter.drawPixmap(QRect((size().width() - pixmap.width()) / 2, (size().height() - pixmap.height()) / 2, pixmap.width(), pixmap.height()), pixmap);
 }
