@@ -77,6 +77,8 @@ void PDFTableWidget::droppedPage(QString pathFrom, QString pathTo){
 
     // Handle frontend operations here
     //
+    if (pathFrom == pathTo)
+        return;
     qDebug() << pathFrom;
     qDebug() << pathTo;
     PDFPageWidget* childFrom    = pageChilds[pathFrom];

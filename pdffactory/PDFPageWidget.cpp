@@ -6,6 +6,7 @@
 PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QFrame(parent)
 {
+    selected = false;
     setAcceptDrops(true);
     //resize widget
     this->resize(150, 150);
