@@ -50,7 +50,7 @@ private:
     QPixmap          pixmap;
     QPushButton     *btn1, *btn2;
 
-    bool selected = false;
+    bool selected;
 
 signals:
     void pageClicked(QMouseEvent *event, QString path);
