@@ -2,6 +2,7 @@
 #define PDFTABLEWIDGET_H
 
 #include <poppler-qt4.h>
+#include <PDFJam.h>
 
 #include <QFrame>
 
@@ -21,7 +22,9 @@ class PDFTableWidget: public QFrame
         void loadFile (QString fileName);
 
     protected:
+        PDFJam pdfJam;
     private:
+
         QVBoxLayout *outerLayout;
 
         QScrollArea *scrollArea;
