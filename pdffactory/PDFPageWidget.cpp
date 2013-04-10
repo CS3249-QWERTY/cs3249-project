@@ -1,10 +1,12 @@
 #include <QtGlobal>
 #include <QtGui>
 #include "PDFPageWidget.h"
+#include "PDFTableWidget.h"
 
 PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QFrame(parent)
 {
+    setAcceptDrops(true);
     //resize widget
     this->resize(150, 150);
     this->setMinimumSize(150, 150);
@@ -36,7 +38,30 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     vbox->addLayout(hbox);
     vbox->setContentsMargins(0, 3, 0, 3);
     this->setLayout(vbox);
+
 }
+
+void PDFPageWidget::dragEnterEvent(QDragEnterEvent *event) {
+    event->acceptProposedAction();
+}
+
+void PDFPageWidget::dropEvent(QDropEvent *event) {
+    emit droppedPage(event->mimeData()->text(), path);
+    event->acceptProposedAction();
+}
+
+void PDFPageWidget::setAncestor(QWidget* ancestor){
+    this->ancestor = ancestor;
+    ((PDFTableWidget*)ancestor)->registerPage(this);
+    connect(this, SIGNAL(pageClicked(QMouseEvent*,QString)), ancestor, SLOT(pageClicked(QMouseEvent*,QString)));
+    connect(this, SIGNAL(previewUpdate(Poppler::Page*)), ancestor, SIGNAL(previewUpdate(Poppler::Page*)));
+    connect(this, SIGNAL(droppedPage(QString, QString)), ancestor, SLOT(droppedPage(QString, QString)));
+}
+
+void PDFPageWidget::setFather(QWidget *father){
+    this->father = father;
+}
+
 
 void PDFPageWidget::setButton(QPushButton *btn) {
     button = btn;
@@ -56,8 +81,7 @@ void PDFPageWidget::setThumbnail(QImage pageImage) {
 
 void PDFPageWidget::mousePressEvent(QMouseEvent *event) {
     if (pPage!=NULL){
-
-        emit pageClicked(event, image);
+        emit pageClicked(event, path);
         emit previewUpdate(pPage);
     }
 }
