@@ -44,6 +44,7 @@ class PDFTableWidget: public QFrame
         void previewUpdate(Poppler::Page*);
 
     private slots:
+        void fileRemoveButtonClicked(PDFFileWidget*);
         void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
         void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
 

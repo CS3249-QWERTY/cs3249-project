@@ -70,7 +70,8 @@ class PDFFileWidget : public QFrame {
         void paintEvent(QPaintEvent *event);
 
     private slots:
-        void collapsedButtonClick();
+        void removeButtonClicked();
+        void collapsedButtonClicked();
         void updateThumbnail(QImage,PDFPageWidget*);
 
     private:
@@ -88,6 +89,7 @@ class PDFFileWidget : public QFrame {
         bool            selected;
 
     signals:
+        void fileRemoveButtonClicked(PDFFileWidget*);
         void fileClicked(PDFFileWidget*, QMouseEvent*);
 };
 

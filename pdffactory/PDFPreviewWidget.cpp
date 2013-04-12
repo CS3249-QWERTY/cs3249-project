@@ -32,12 +32,10 @@ void PDFPreviewWidget::pageClicked(QMouseEvent* mouseEvent, QImage image) {
     //setImage(image);
 }
 void PDFPreviewWidget::resizeEvent ( QResizeEvent * event ) {
-    if(pPage!=NULL)
-            regenImage();
+    if (pPage!=NULL) regenImage();
 }
 void PDFPreviewWidget::paintEvent(QPaintEvent *event) {
-    if(pPage!=NULL){
-
+    if (pPage!=NULL) {
         QPainter painter(this);
 
         QPixmap pixmap = QPixmap::fromImage(previewImage);
