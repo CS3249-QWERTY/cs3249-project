@@ -19,6 +19,7 @@ class QPoint;
 class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
+class QPaintEvent;
 class ThumbGen;
 
 class PDFPageWidget;
@@ -40,8 +41,7 @@ class PagesContainerWidget : public QWidget {
         void dropEvent(QDropEvent *event);
 
     private:
-
-        int     getPagesCount() const;
+        int getPagesCount() const;
 };
 
 // ========================================
@@ -55,20 +55,22 @@ class PDFFileWidget : public QFrame {
         PDFFileWidget(QWidget *parent = 0);
 
     public:
-        void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
+        void setAncestor(QWidget* ancestor);
         void setDocument(Poppler::Document* document, QString fileName);
         int removeChild(PDFPageWidget* child);
         void insertChildAt(PDFPageWidget* child, int pos);
 
-
+        void setSelected(bool select);
+        bool isSelected() {return selected;}
         bool isCollapsed(){ return collapsed; }
         void setCollapsed(bool collapsed);
 
     protected:
+        void mousePressEvent(QMouseEvent *event);
+        void paintEvent(QPaintEvent *event);
 
-        private slots:
+    private slots:
         void collapsedButtonClick();
-        void pageCLickedHandler(QMouseEvent*, QImage);
         void updateThumbnail(QImage,PDFPageWidget*);
 
     private:
@@ -82,6 +84,10 @@ class PDFFileWidget : public QFrame {
         QWidget         *ancestor;
 
         bool            collapsed;
+        bool            selected;
+
+    signals:
+        void fileClicked(PDFFileWidget*, QMouseEvent*);
 };
 
 #endif

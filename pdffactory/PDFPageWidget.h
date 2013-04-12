@@ -22,12 +22,11 @@ class PDFPageWidget : public QFrame
 
 public:
     PDFPageWidget(QWidget *parent = 0);
+    QSize sizeHint() const;
+
     void setThumbnail(QImage pageImage);
     void setPopplerPage(Poppler::Page*);
-
     void setButton(QPushButton *btn);
-    QSize sizeHint() const;
-    //void setButtonImage(QImage *pageImage);
     void setAncestor(QWidget *ancestor);
     void setFather(QWidget *father);
     QWidget* getFather() { return father;}
@@ -59,8 +58,8 @@ private:
     bool selected;
 
 signals:
-    void pageClicked(PDFPageWidget *sender, QMouseEvent *event, QString);
-    void pageDropped(PDFPageWidget *sender, QDropEvent *event, QString, QString);
+    void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
+    void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
     void previewUpdate(Poppler::Page* );
 };
 

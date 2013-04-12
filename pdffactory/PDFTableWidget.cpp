@@ -18,6 +18,7 @@ PDFTableWidget::PDFTableWidget(QWidget* parent) : QFrame(parent)
     scrollArea = new QScrollArea();
     scrollArea -> setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea -> setWidgetResizable(true);
+    scrollArea -> setFrameStyle(QFrame::Plain);
 
     containerLayout = new QVBoxLayout();
     containerWidget = new QWidget();
@@ -44,7 +45,6 @@ void PDFTableWidget::loadFile (QString fileName){
     pdfJam.loadFile(fileName,files.size()-1,doc->numPages());
 
     fileWidgets.append(fileWidget);
-
     fileNames.append(fileName);
 
     containerLayout->insertWidget(containerLayout->count() - 1, fileWidget);
@@ -59,10 +59,34 @@ void PDFTableWidget::registerPage(PDFPageWidget* child){
     child->registerName(name);
 }
 
+void PDFTableWidget::fileClicked(PDFFileWidget* sender, QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton){
+        if (event->modifiers() != Qt::ControlModifier) {
+            for (int i = 0; i < selectedFiles.size(); i++) {
+                selectedFiles.at(i)->setSelected(false);
+            }
+
+            selectedFiles.clear();
+
+            if (!sender->isSelected()) {
+                sender->setSelected(true);
+                selectedFiles.append(sender);
+            }
+        } else {
+            if (!sender->isSelected()) {
+                sender->setSelected(true);
+                selectedFiles.append(sender);
+            } else {
+                sender->setSelected(false);
+                selectedFiles.remove(selectedFiles.indexOf(sender));
+            }
+        }
+    }
+}
+
 void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QString path){
     if (event->button() == Qt::LeftButton){
         // Handle selection
-
         if (event->modifiers() != Qt::ControlModifier) {
             for (int i = 0; i < selectedPages.size(); i++) {
                 selectedPages.at(i)->setSelected(false);
@@ -120,6 +144,5 @@ void PDFTableWidget::pageDropped(PDFPageWidget *sender, QDropEvent *event, QStri
 
     fileTo->insertChildAt(childFrom, posTo);
     fileFrom->insertChildAt(childTo, posFrom);
-
 }
 

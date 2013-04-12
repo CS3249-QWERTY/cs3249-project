@@ -30,9 +30,9 @@ private:
     void resizeEvent ( QResizeEvent * event );
     //PreviewGen tgen;
     Poppler::Page* pPage;
+
 signals:
     void updatePreview(QImage);
-
 
 };
 

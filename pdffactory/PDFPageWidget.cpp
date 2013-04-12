@@ -40,7 +40,6 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     vbox->addLayout(hbox);
     vbox->setContentsMargins(0, 3, 0, 3);
     this->setLayout(vbox);
-
 }
 
 void PDFPageWidget::setAncestor(QWidget* ancestor){
