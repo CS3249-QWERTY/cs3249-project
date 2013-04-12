@@ -13,6 +13,7 @@ class QVBoxLayout;
 class QString;
 class QScrollArea;
 class QMouseEvent;
+class QPoint;
 
 class PDFFileWidget;
 
@@ -38,11 +39,15 @@ class PDFTableWidget: public QFrame
         QVector<PDFFileWidget *>    fileWidgets;
 
         QHash<QString, PDFPageWidget*> pageChilds;
+
     signals:
         void previewUpdate(Poppler::Page*);
 
-private slots:
-        void pageClicked(QMouseEvent*, QString path);
-        void droppedPage(QString pathFrom, QString pathTo);
+    private slots:
+        void pageClicked(PDFPageWidget *sender, QMouseEvent *event, QString path);
+        void pageDropped(PDFPageWidget *sender, QDropEvent *event, QString, QString);
+
+    private:
+        QPoint pageSelectionPos;
 };
 #endif

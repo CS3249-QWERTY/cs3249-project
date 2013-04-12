@@ -5,6 +5,7 @@
 #include "ThumbGen.h"
 
 #include <QWidget>
+#include <QFrame>
 
 class QImage;
 class QHBoxLayout;
@@ -45,7 +46,7 @@ class PagesContainerWidget : public QWidget {
 
 // ========================================
 
-class PDFFileWidget : public QWidget {
+class PDFFileWidget : public QFrame {
 
     Q_OBJECT
         Q_PROPERTY(bool collapsed READ isCollapsed WRITE setCollapsed)

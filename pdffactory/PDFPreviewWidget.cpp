@@ -11,7 +11,6 @@ void PDFPreviewWidget::setImage(QImage image) {
     update();
 }
 
-
 void PDFPreviewWidget::regenImage() {
     double dpi;
     double dpi2;

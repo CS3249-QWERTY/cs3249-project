@@ -8,10 +8,13 @@ class QWidget;
 class QPushButton;
 class QImage;
 class QPixmap;
-class QPaintEvent;
 class QEvent;
 class QMouseEvent;
+class QPaintEvent;
+class QDragEnterEvent;
+class QDropEvent;
 class QSize;
+class QString;
 
 class PDFPageWidget : public QFrame
 {
@@ -29,6 +32,9 @@ public:
     void setFather(QWidget *father);
     QWidget* getFather() { return father;}
     void registerName(QString name) { path = name;}
+
+    void setSelected(bool select);
+    bool isSelected() {return selected;}
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -53,9 +59,9 @@ private:
     bool selected;
 
 signals:
-    void pageClicked(QMouseEvent *event, QString path);
+    void pageClicked(PDFPageWidget *sender, QMouseEvent *event, QString);
+    void pageDropped(PDFPageWidget *sender, QDropEvent *event, QString, QString);
     void previewUpdate(Poppler::Page* );
-    void droppedPage(QString, QString);
 };
 
 #endif // PDFPAGEWIDGET_H

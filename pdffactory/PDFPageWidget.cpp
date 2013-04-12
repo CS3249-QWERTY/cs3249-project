@@ -43,27 +43,17 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
 
 }
 
-void PDFPageWidget::dragEnterEvent(QDragEnterEvent *event) {
-    event->acceptProposedAction();
-}
-
-void PDFPageWidget::dropEvent(QDropEvent *event) {
-    emit droppedPage(event->mimeData()->text(), path);
-    event->acceptProposedAction();
-}
-
 void PDFPageWidget::setAncestor(QWidget* ancestor){
     this->ancestor = ancestor;
     ((PDFTableWidget*)ancestor)->registerPage(this);
-    connect(this, SIGNAL(pageClicked(QMouseEvent*,QString)), ancestor, SLOT(pageClicked(QMouseEvent*,QString)));
     connect(this, SIGNAL(previewUpdate(Poppler::Page*)), ancestor, SIGNAL(previewUpdate(Poppler::Page*)));
-    connect(this, SIGNAL(droppedPage(QString, QString)), ancestor, SLOT(droppedPage(QString, QString)));
+    connect(this, SIGNAL(pageClicked(PDFPageWidget*, QMouseEvent*, QString)), ancestor, SLOT(pageClicked(PDFPageWidget*, QMouseEvent*, QString)));
+    connect(this, SIGNAL(pageDropped(PDFPageWidget*, QDropEvent*, QString, QString)), ancestor, SLOT(pageDropped(PDFPageWidget*, QDropEvent*, QString, QString)));
 }
 
 void PDFPageWidget::setFather(QWidget *father){
     this->father = father;
 }
-
 
 void PDFPageWidget::setButton(QPushButton *btn) {
     button = btn;
@@ -73,6 +63,7 @@ void PDFPageWidget::setButton(QPushButton *btn) {
 void PDFPageWidget::setPopplerPage(Poppler::Page* pp) {
     pPage = pp;
 }
+
 void PDFPageWidget::setThumbnail(QImage pageImage) {
     image = pageImage;
     pixmap = QPixmap::fromImage(image);
@@ -81,14 +72,25 @@ void PDFPageWidget::setThumbnail(QImage pageImage) {
     update();
 }
 
+void PDFPageWidget::setSelected(bool select) {
+    selected = select;
+    update();
+}
+
 void PDFPageWidget::mousePressEvent(QMouseEvent *event) {
     if (pPage!=NULL){
-        emit pageClicked(event, path);
+        emit pageClicked(this, event, path);
         emit previewUpdate(pPage);
-
-        selected = !selected;
-        update();
     }
+}
+
+void PDFPageWidget::dragEnterEvent(QDragEnterEvent *event) {
+    event->acceptProposedAction();
+}
+
+void PDFPageWidget::dropEvent(QDropEvent *event) {
+    emit pageDropped(this, event, event->mimeData()->text(), path);
+    event->acceptProposedAction();
 }
 
 void PDFPageWidget::leaveEvent(QEvent *event) {

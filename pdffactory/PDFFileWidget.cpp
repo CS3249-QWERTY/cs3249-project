@@ -45,8 +45,9 @@ void PagesContainerWidget::dropEvent(QDropEvent *event) {
 }
 // ======================================================================
 
-PDFFileWidget::PDFFileWidget(QWidget *parent){
+PDFFileWidget::PDFFileWidget(QWidget *parent):QFrame(parent){
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 
     topLayout      = new QGridLayout();
 
