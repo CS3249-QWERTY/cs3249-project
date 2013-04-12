@@ -36,7 +36,7 @@ class PDFTableWidget: public QFrame
 
         QVector<Poppler::Document*> files;
         QVector<QString>            fileNames;
-        QVector<PDFFileWidget *>    fileWidgets;
+        QVector<PDFFileWidget*>    fileWidgets;
 
         QHash<QString, PDFPageWidget*> pageChilds;
 
@@ -48,6 +48,6 @@ class PDFTableWidget: public QFrame
         void pageDropped(PDFPageWidget *sender, QDropEvent *event, QString, QString);
 
     private:
-        QPoint pageSelectionPos;
+        QVector<PDFPageWidget*> selectedPages;
 };
 #endif
