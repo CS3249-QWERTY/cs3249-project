@@ -36,7 +36,7 @@ PDFTableWidget::PDFTableWidget(QWidget* parent) : QFrame(parent)
     setLayout(outerLayout);
 }
 
-void PDFTableWidget::loadFile (QString fileName){
+void PDFTableWidget::loadFile(QString fileName){
     Poppler::Document *doc = Poppler::Document::load(fileName);
     files.append(doc);
 
