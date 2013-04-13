@@ -93,9 +93,9 @@ void PDFJam::run(){
     while(!isQueueEmpty()){
         QString cmd = nextCommand();
         int value = system(cmd.toStdString().c_str());
-        if (value != 0 )
-            qDebug() << "ERROR: Failed to execute " << cmd;
-        else
-            qDebug() << "SUCCESS: executed " << cmd;
+        //if (value != 0 )
+            //qDebug() << "ERROR: Failed to execute " << cmd;
+        //else
+            //qDebug() << "SUCCESS: executed " << cmd;
     }
 }
