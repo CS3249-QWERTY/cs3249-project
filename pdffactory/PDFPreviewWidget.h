@@ -6,7 +6,8 @@
 
 class QImage;
 class QSize;
-class QResizeEvent;
+class QPoint;
+class QWheelEvent;
 class QPaintEvent;
 class QMouseEvent;
 
@@ -17,12 +18,11 @@ public:
     explicit PDFPreviewWidget(QWidget *parent = 0);
 
 public slots:
-    void setImage(QImage image);
     void regenImage();
     void previewUpdate(Poppler::Page*);
 
 protected:
-    void resizeEvent(QResizeEvent *event);
+    void wheelEvent(QWheelEvent *event);
     void paintEvent(QPaintEvent *event);
 
 private:
@@ -30,6 +30,7 @@ private:
     Poppler::Page* pPage;
 
     QSize currentPixmapSize;
+    QPoint currentPixmapPos;
 
 signals:
     void updatePreview(QImage);
