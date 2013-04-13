@@ -49,9 +49,7 @@ void PDFFactory::createWidgets()
     splitter->setStretchFactor(1, 0.5);
     layout->addWidget(splitter);
 
-    connect(pdfTableView, SIGNAL(pageClicked(QMouseEvent*,QImage)), pdfPreview, SLOT(pageClicked(QMouseEvent*,QImage)));
     connect(pdfTableView, SIGNAL(previewUpdate(Poppler::Page*)), pdfPreview, SLOT(previewUpdate(Poppler::Page*)));
-
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));
     setWindowTitle(tr("PDF Factory"));

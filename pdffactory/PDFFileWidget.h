@@ -5,6 +5,7 @@
 #include "ThumbGen.h"
 
 #include <QWidget>
+#include <QFrame>
 
 class QImage;
 class QHBoxLayout;
@@ -18,6 +19,7 @@ class QPoint;
 class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
+class QPaintEvent;
 class ThumbGen;
 
 class PDFPageWidget;
@@ -37,19 +39,14 @@ class PagesContainerWidget : public QWidget {
     protected:
         void dragEnterEvent(QDragEnterEvent *event);
         void dropEvent(QDropEvent *event);
-        void mousePressEvent(QMouseEvent *event);
 
     private:
-
-
-        int     findPageContainingClickEvent(QPoint pos);
-        int     findPageWidgetInLayout(PDFPageWidget *pageWidgets);
-        int     getPagesCount() const;
+        int getPagesCount() const;
 };
 
 // ========================================
 
-class PDFFileWidget : public QWidget {
+class PDFFileWidget : public QFrame {
 
     Q_OBJECT
         Q_PROPERTY(bool collapsed READ isCollapsed WRITE setCollapsed)
@@ -58,20 +55,23 @@ class PDFFileWidget : public QWidget {
         PDFFileWidget(QWidget *parent = 0);
 
     public:
-        void setAncestor(QWidget* ancestor) { this->ancestor = ancestor; }
+        void setAncestor(QWidget* ancestor);
         void setDocument(Poppler::Document* document, QString fileName);
         int removeChild(PDFPageWidget* child);
         void insertChildAt(PDFPageWidget* child, int pos);
 
-
+        void setSelected(bool select);
+        bool isSelected() {return selected;}
         bool isCollapsed(){ return collapsed; }
         void setCollapsed(bool collapsed);
 
     protected:
+        void mousePressEvent(QMouseEvent *event);
+        void paintEvent(QPaintEvent *event);
 
-        private slots:
-        void collapsedButtonClick();
-        void pageCLickedHandler(QMouseEvent*, QImage);
+    private slots:
+        void removeButtonClicked();
+        void collapsedButtonClicked();
         void updateThumbnail(QImage,PDFPageWidget*);
 
     private:
@@ -80,11 +80,17 @@ class PDFFileWidget : public QWidget {
 
         QLabel          *fileNameLabel;
         QPushButton     *collapseButton;
+        QPushButton     *removeButton;
         PagesContainerWidget *pagesContainerWidget;
         QScrollArea     *scrollArea;
         QWidget         *ancestor;
 
         bool            collapsed;
+        bool            selected;
+
+    signals:
+        void fileRemoveButtonClicked(PDFFileWidget*);
+        void fileClicked(PDFFileWidget*, QMouseEvent*);
 };
 
 #endif

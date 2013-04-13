@@ -13,6 +13,7 @@ class QVBoxLayout;
 class QString;
 class QScrollArea;
 class QMouseEvent;
+class QPoint;
 
 class PDFFileWidget;
 
@@ -26,8 +27,8 @@ class PDFTableWidget: public QFrame
 
     protected:
         PDFJam pdfJam;
-    private:
 
+    private:
         QVBoxLayout     *outerLayout;
         QScrollArea     *scrollArea;
         QWidget         *containerWidget;
@@ -35,14 +36,22 @@ class PDFTableWidget: public QFrame
 
         QVector<Poppler::Document*> files;
         QVector<QString>            fileNames;
-        QVector<PDFFileWidget *>    fileWidgets;
+        QVector<PDFFileWidget*>     fileWidgets;
 
         QHash<QString, PDFPageWidget*> pageChilds;
+
     signals:
         void previewUpdate(Poppler::Page*);
 
-private slots:
-        void pageClicked(QMouseEvent*, QString path);
-        void droppedPage(QString pathFrom, QString pathTo);
+    private slots:
+        void fileRemoveButtonClicked(PDFFileWidget*);
+        void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
+        void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
+
+        void fileClicked(PDFFileWidget*, QMouseEvent*);
+
+    private:
+        QVector<PDFPageWidget*> selectedPages;
+        QVector<PDFFileWidget*> selectedFiles;
 };
 #endif

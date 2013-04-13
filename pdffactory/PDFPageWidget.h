@@ -8,10 +8,13 @@ class QWidget;
 class QPushButton;
 class QImage;
 class QPixmap;
-class QPaintEvent;
 class QEvent;
 class QMouseEvent;
+class QPaintEvent;
+class QDragEnterEvent;
+class QDropEvent;
 class QSize;
+class QString;
 
 class PDFPageWidget : public QFrame
 {
@@ -19,16 +22,17 @@ class PDFPageWidget : public QFrame
 
 public:
     PDFPageWidget(QWidget *parent = 0);
+    QSize sizeHint() const;
+
     void setThumbnail(QImage pageImage);
     void setPopplerPage(Poppler::Page*);
-
-    void setButton(QPushButton *btn);
-    QSize sizeHint() const;
-    //void setButtonImage(QImage *pageImage);
     void setAncestor(QWidget *ancestor);
     void setFather(QWidget *father);
     QWidget* getFather() { return father;}
     void registerName(QString name) { path = name;}
+
+    void setSelected(bool select);
+    bool isSelected() {return selected;}
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -44,18 +48,17 @@ private:
     QWidget         *ancestor;
     QWidget         *father;
 
-    QPushButton     *button;
     QImage           image;
     Poppler::Page   *pPage;
     QPixmap          pixmap;
-    QPushButton     *btn1, *btn2;
+    QPushButton     *btnCut, *btnCopy;
 
     bool selected;
 
 signals:
-    void pageClicked(QMouseEvent *event, QString path);
+    void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
+    void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
     void previewUpdate(Poppler::Page* );
-    void droppedPage(QString, QString);
 };
 
 #endif // PDFPAGEWIDGET_H

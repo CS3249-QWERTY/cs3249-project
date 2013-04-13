@@ -9,11 +9,11 @@
 
 #define CHILD_AREA_WIDTH     150
 #define CHILD_AREA_HEIGHT    150
-#define CHILD_AREA_SIDE_MARGIN 6
+#define CHILD_AREA_SIDE_MARGIN 20
 
 PagesContainerWidget::PagesContainerWidget(QWidget *parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    //setAcceptDrops(true);
+    setAcceptDrops(true);
     mainLayout = new QHBoxLayout();
 
     setLayout(mainLayout);
@@ -24,7 +24,7 @@ int PagesContainerWidget::getPagesCount() const {
 }
 
 QSize PagesContainerWidget::sizeHint() const {
-    return QSize((CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH)*getPagesCount(), CHILD_AREA_HEIGHT + 20);
+    return QSize((CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH) * getPagesCount(), CHILD_AREA_HEIGHT + 30);
 }
 
 void PagesContainerWidget::addPageWidget(PDFPageWidget *pageWidget){
@@ -38,43 +38,17 @@ void PagesContainerWidget::dragEnterEvent(QDragEnterEvent *event) {
 }
 
 void PagesContainerWidget::dropEvent(QDropEvent *event) {
-    event->acceptProposedAction();
-}
-
-void PagesContainerWidget::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton){
-        int draggedChild = (findPageContainingClickEvent(event->pos()));
-
-        QDrag *drag = new QDrag(this);
-        QMimeData *mimeData = new QMimeData;
-
-        mimeData->setText(QString::number(draggedChild));
-        drag->setMimeData(mimeData);
-        drag->setPixmap(QPixmap(":/images/copy.png"));
-
-        Qt::DropAction dropAction = drag->exec();
-    }
-}
-
-int PagesContainerWidget::findPageContainingClickEvent(QPoint pos){
-    for (int i=0; i < getPagesCount(); i++)
-        if (pageWidgets[i]->geometry().contains(pos))
-            return i;
-    return getPagesCount()-1;
-}
-
-int PagesContainerWidget::findPageWidgetInLayout(PDFPageWidget *pageWidget){
-    for (int i= 0; i<getPagesCount(); i++)
-        if (mainLayout->itemAt(i)->widget() == pageWidget)
-            return i;
-    return getPagesCount()-1;
+   QPoint pos = event->pos();
+   qDebug() << "FILE DROP";
+   qDebug() << (pos.x() / (CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH));
+   event->acceptProposedAction();
 }
 
 // ======================================================================
 
-PDFFileWidget::PDFFileWidget(QWidget *parent){
+PDFFileWidget::PDFFileWidget(QWidget *parent):QFrame(parent){
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    setFrameStyle(QFrame::Box);
 
     topLayout      = new QGridLayout();
 
@@ -82,27 +56,67 @@ PDFFileWidget::PDFFileWidget(QWidget *parent){
     collapseButton->resize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
     collapseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     collapseButton->setIcon(QIcon(":/images/collapse.png"));
-    connect(collapseButton, SIGNAL(released()), this, SLOT(collapsedButtonClick()));
+    connect(collapseButton, SIGNAL(released()), this, SLOT(collapsedButtonClicked()));
     topLayout->addWidget(collapseButton, 0, 0);
 
     fileNameLabel = new QLabel();
+    fileNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     topLayout->addWidget(fileNameLabel, 0, 1);
+
+    removeButton = new QPushButton();
+    removeButton->resize(QSize(COLLAPSE_BUTTON_WIDTH,COLLAPSE_BUTTON_HEIGHT));
+    removeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    removeButton->setIcon(QIcon(":/images/remove.png"));
+    connect(removeButton, SIGNAL(released()), this, SLOT(removeButtonClicked()));
+    topLayout->addWidget(removeButton, 0, 2);
 
     pagesContainerWidget = new PagesContainerWidget();
     scrollArea = new QScrollArea();
     scrollArea->setWidget(pagesContainerWidget);
-    topLayout->addWidget(scrollArea, 1, 0, 1, 5);
+    scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    topLayout->addWidget(scrollArea, 1, 0, 1, 3);
 
+    topLayout->setContentsMargins(6, 10, 6, 10);
     setLayout(topLayout);
 
     setCollapsed(false);
+    selected = false;
 
     connect(&tgen, SIGNAL(updateThumbnail(QImage,PDFPageWidget*)), this, SLOT(updateThumbnail(QImage,PDFPageWidget*)));
-
 }
 
-void PDFFileWidget::updateThumbnail(QImage img,PDFPageWidget* pw){
-    pw->setThumbnail(img);
+void PDFFileWidget::setAncestor(QWidget* ancestor) {
+    this->ancestor = ancestor;
+    connect(this, SIGNAL(fileClicked(PDFFileWidget*, QMouseEvent*)), ancestor, SLOT(fileClicked(PDFFileWidget*, QMouseEvent*)));
+}
+
+void PDFFileWidget::setSelected(bool select) {
+    selected = select;
+    update();
+}
+
+void PDFFileWidget::mousePressEvent(QMouseEvent *event) {
+    emit fileClicked(this, event);
+}
+
+void PDFFileWidget::paintEvent(QPaintEvent *event) {
+    QPalette palette = this->palette();
+    QPalette labelPalette = fileNameLabel->palette();
+    if (selected) {
+        palette.setColor( foregroundRole(), palette.color(QPalette::Highlight) );
+        labelPalette.setColor( foregroundRole(), palette.color(QPalette::Highlight) );
+    } else {
+        palette.setColor( foregroundRole(), palette.color(QPalette::Dark) );
+        labelPalette.setColor( foregroundRole(), palette.color(QPalette::Text) );
+    }
+    this->setPalette(palette);
+    fileNameLabel->setPalette(labelPalette);
+
+    QFrame::paintEvent(event);
+}
+
+void PDFFileWidget::updateThumbnail(QImage img, PDFPageWidget* pageWidget){
+    pageWidget->setThumbnail(img);
 }
 
 void PDFFileWidget::setCollapsed(bool state){
@@ -116,12 +130,12 @@ void PDFFileWidget::setCollapsed(bool state){
     }
 }
 
-void PDFFileWidget::collapsedButtonClick(){
+void PDFFileWidget::collapsedButtonClicked(){
     setCollapsed(!collapsed);
 }
 
-void PDFFileWidget::pageCLickedHandler(QMouseEvent*, QImage){
-
+void PDFFileWidget::removeButtonClicked() {
+    emit fileRemoveButtonClicked(this);
 }
 
 void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
@@ -140,13 +154,9 @@ void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
         pageWidget->setPopplerPage(doc->page(i));
         tgen.render(pageWidget,pdfPage);
 
-
-
         pagesContainerWidget->addPageWidget(pageWidget);
-        //process event
-        //qApp->processEvents();
     }
-        tgen.start();
+    tgen.start();
 
     fileNameLabel->setText(fileName);
 }

@@ -18,8 +18,10 @@ PDFTableWidget::PDFTableWidget(QWidget* parent) : QFrame(parent)
     scrollArea = new QScrollArea();
     scrollArea -> setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea -> setWidgetResizable(true);
+    scrollArea -> setFrameStyle(QFrame::Plain);
 
     containerLayout = new QVBoxLayout();
+    containerLayout -> setSpacing(10);
     containerWidget = new QWidget();
     containerWidget -> setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QWidget *spacer = new QWidget();
@@ -34,7 +36,7 @@ PDFTableWidget::PDFTableWidget(QWidget* parent) : QFrame(parent)
     setLayout(outerLayout);
 }
 
-void PDFTableWidget::loadFile (QString fileName){
+void PDFTableWidget::loadFile(QString fileName){
     Poppler::Document *doc = Poppler::Document::load(fileName);
     files.append(doc);
 
@@ -44,23 +46,90 @@ void PDFTableWidget::loadFile (QString fileName){
     pdfJam.loadFile(fileName,files.size()-1,doc->numPages());
 
     fileWidgets.append(fileWidget);
-
     fileNames.append(fileName);
 
     containerLayout->insertWidget(containerLayout->count() - 1, fileWidget);
+    connect(fileWidget, SIGNAL(fileRemoveButtonClicked(PDFFileWidget*)), this, SLOT(fileRemoveButtonClicked(PDFFileWidget*)));
 }
 
 void PDFTableWidget::registerPage(PDFPageWidget* child){
     //come up with a new name here
     QString name = QString("/home/pdfpage").append(QString::number(pageChilds.size()));
+    qDebug()<<"Registering name:";
+    qDebug()<<name;
     pageChilds[name] = child;
     child->registerName(name);
 }
 
-void PDFTableWidget::pageClicked(QMouseEvent* event, QString path){
+void PDFTableWidget::fileClicked(PDFFileWidget* sender, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton){
-        //left click -> start dragging
+        if (event->modifiers() != Qt::ControlModifier) {
+            for (int i = 0; i < selectedFiles.size(); i++) {
+                selectedFiles.at(i)->setSelected(false);
+            }
 
+            selectedFiles.clear();
+
+            if (!sender->isSelected()) {
+                sender->setSelected(true);
+                selectedFiles.append(sender);
+            }
+        } else {
+            if (!sender->isSelected()) {
+                sender->setSelected(true);
+                selectedFiles.append(sender);
+            } else {
+                sender->setSelected(false);
+                selectedFiles.remove(selectedFiles.indexOf(sender));
+            }
+        }
+    }
+}
+
+void PDFTableWidget::fileRemoveButtonClicked(PDFFileWidget* sender) {
+    selectedFiles.remove(selectedFiles.indexOf(sender));
+
+    QVector<int> pagesToRemove;
+    for (int i = 0; i < selectedPages.size(); i++) {
+        if (selectedPages.at(i)->getFather() == sender) {
+            pagesToRemove.append(i);
+        }
+    }
+
+    for (int i = 0; i < pagesToRemove.size(); i++) {
+        selectedPages.remove(pagesToRemove.at(i));
+    }
+
+    // Handle remove file
+
+}
+
+void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QString path){
+    if (event->button() == Qt::LeftButton){
+        // Handle selection
+        if (event->modifiers() != Qt::ControlModifier) {
+            for (int i = 0; i < selectedPages.size(); i++) {
+                selectedPages.at(i)->setSelected(false);
+            }
+
+            selectedPages.clear();
+
+            if (!sender->isSelected()) {
+                sender->setSelected(true);
+                selectedPages.append(sender);
+            }
+        } else {
+            if (!sender->isSelected()) {
+                sender->setSelected(true);
+                selectedPages.append(sender);
+            } else {
+                sender->setSelected(false);
+                selectedPages.remove(selectedPages.indexOf(sender));
+            }
+        }
+
+
+        // Handle drag
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
 
@@ -68,17 +137,20 @@ void PDFTableWidget::pageClicked(QMouseEvent* event, QString path){
         drag->setMimeData(mimeData);
         drag->setPixmap(QPixmap(":/images/copy.png"));
 
-        Qt::DropAction dropAction = drag->exec();
+        drag->exec();
     }
 }
-void PDFTableWidget::droppedPage(QString pathFrom, QString pathTo){
+
+void PDFTableWidget::pageDropped(PDFPageWidget *sender, QDropEvent *event, QString pathFrom, QString pathTo){
     // Page was dragged and dropped
     // Handle backend operations here
 
     // Handle frontend operations here
     //
+
     if (pathFrom == pathTo)
         return;
+
     qDebug() << pathFrom;
     qDebug() << pathTo;
     PDFPageWidget* childFrom    = pageChilds[pathFrom];

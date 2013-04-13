@@ -1,39 +1,50 @@
 #ifndef PDFPREVIEWWIDGET_H
 #define PDFPREVIEWWIDGET_H
 
-#include <QWidget>
-//#include "PreviewGen.h"
+#include <QFrame>
 #include <poppler-qt4.h>
 
-
 class QImage;
+class QPixmap;
+class QSize;
+class QPoint;
+class QResizeEvent;
+class QWheelEvent;
 class QPaintEvent;
 class QMouseEvent;
 
-class PDFPreviewWidget : public QWidget
+class PDFPreviewWidget : public QFrame
 {
     Q_OBJECT
 public:
     explicit PDFPreviewWidget(QWidget *parent = 0);
 
 public slots:
-    void setImage(QImage image);
     void regenImage();
-    void pageClicked(QMouseEvent* mouseEvent, QImage image);
+    void regenPixmap();
+    void repositionPixmap();
     void previewUpdate(Poppler::Page*);
 
 protected:
+    void wheelEvent(QWheelEvent *event);
     void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     QImage previewImage;
-    void resizeEvent ( QResizeEvent * event );
-    //PreviewGen tgen;
+    QPixmap pixmap;
     Poppler::Page* pPage;
+
+    QSize currentPixmapSize;
+    QPoint currentPixmapPos;
+    QPoint lastPixmapPos;
+    QPoint dragStartPos;
+
 signals:
     void updatePreview(QImage);
-
-
 };
 
 #endif // PDFPREVIEWWIDGET_H
