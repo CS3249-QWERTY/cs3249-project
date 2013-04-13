@@ -1,6 +1,6 @@
 #include <QtGui>
 #include "PDFPreviewWidget.h"
-int test;
+
 PDFPreviewWidget::PDFPreviewWidget(QWidget *parent) :
     QWidget(parent)
 {
@@ -24,16 +24,14 @@ void PDFPreviewWidget::regenImage() {
 }
 void PDFPreviewWidget::previewUpdate(Poppler::Page* pp) {
     pPage = pp;
-    qDebug() << "set new popler page" << pp;
     regenImage();
     update();
 }
-void PDFPreviewWidget::pageClicked(QMouseEvent* mouseEvent, QImage image) {
-    //setImage(image);
-}
-void PDFPreviewWidget::resizeEvent ( QResizeEvent * event ) {
+
+void PDFPreviewWidget::resizeEvent (QResizeEvent * event) {
     if (pPage!=NULL) regenImage();
 }
+
 void PDFPreviewWidget::paintEvent(QPaintEvent *event) {
     if (pPage!=NULL) {
         QPainter painter(this);

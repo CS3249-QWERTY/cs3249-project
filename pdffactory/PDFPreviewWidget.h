@@ -2,11 +2,11 @@
 #define PDFPREVIEWWIDGET_H
 
 #include <QWidget>
-//#include "PreviewGen.h"
 #include <poppler-qt4.h>
 
-
 class QImage;
+class QSize;
+class QResizeEvent;
 class QPaintEvent;
 class QMouseEvent;
 
@@ -19,21 +19,20 @@ public:
 public slots:
     void setImage(QImage image);
     void regenImage();
-    void pageClicked(QMouseEvent* mouseEvent, QImage image);
     void previewUpdate(Poppler::Page*);
 
 protected:
+    void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *event);
 
 private:
     QImage previewImage;
-    void resizeEvent ( QResizeEvent * event );
-    //PreviewGen tgen;
     Poppler::Page* pPage;
+
+    QSize currentPixmapSize;
 
 signals:
     void updatePreview(QImage);
-
 };
 
 #endif // PDFPREVIEWWIDGET_H
