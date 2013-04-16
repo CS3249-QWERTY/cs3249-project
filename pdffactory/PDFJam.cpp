@@ -44,37 +44,71 @@ bool PDFJam::removePage(int fileIndex,int numPages, int deletedPageIndex){
     QString cmd = rmTemp.arg(QString::number(fileIndex)).arg(QString::number(deletedPageIndex));
     QString temp = "mv /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/%3/%4.pdf ";
 
+
+
     for (int i = deletedPageIndex+1; i < numPages; i++) {
         cmd += "&& " + temp.arg(QString::number(fileIndex)).arg(QString::number(i)).arg(QString::number(fileIndex)).arg(QString::number(i-1));
     }
     pushCommand(cmd);
 
 }
+void PDFJam::movePage(int fromFileIndex, int fromPageIndex, int toFileIndex, int toPageIndex ){
+
+}
+void PDFJam::savePageAsImage(Poppler::Page pp, QString dest,double dpi = 72){
+
+}
 //to export file number "fileIndex" to destination
-void PDFJam::exportFile(int fileIndex,int numPages, QString dest){
+//supported n-up, orientation, offset options
+void PDFJam::exportFile(int fileIndex,int numPages, QString dest, QSize nup = QSize(1,1), bool isLandscape = false, bool hasTwoSideOffset = false, int leftOffset=0, int rightOffset =0){
+
     QString cmd = "pdfjam ";
     QString temp = "/tmp/pdffactory/%1/%2.pdf '-' ";
 
     for (int i = 0; i < numPages; i++) {
         cmd += temp.arg(QString::number(fileIndex)).arg(QString::number(i));
     }
-    QString outTemp = "--outfile %1";
+    QString orientation = isLandscape?" --landscape ": " --no-landscape ";
+    cmd += orientation;
+    if ((nup.width()==1)||(nup.height()!=1)) {
+        QString nupTemp = " --nup '%1x%1' --frame true ";
+        cmd += nupTemp.arg(QString::number(nup.width())).arg(QString::number(nup.height()));
+    }
+
+
+    QString outTemp = " --outfile %1 ";
     cmd += outTemp.arg(dest);
     pushCommand(cmd);
+    //offset after this
+
 
 }
 
-void PDFJam::loadFile(QString fileName, int fileIndex,int numPages){
+
+void PDFJam::loadFile(QString fileName, int fileIndex,Poppler::Document* pd){
+    int numPages = pd->numPages();
     QString path= "/tmp/pdffactory/%1/";
     path = path.arg(QString::number(fileIndex));
     makeFolder(path);
 
-    QString temp = "pdfjam %1 %2 --outfile %3%4.pdf";
+    QString temp = "pdfjam %1 %2 --outfile %3%4.pdf %5";
     QString cmd="";
     for (int i = 0; i < numPages; i++) {
-        cmd += temp.arg(fileName).arg(QString::number(i+1)).arg(path).arg(QString::number(i)) + ";";
+        QString orientation = " --no-landscape ";
+        QSizeF pageSize = pd->page(i)->pageSizeF();
+        if(pageSize.width() > pageSize.height()){
+            orientation = " --landscape ";
+        }
+        cmd += temp.arg(fileName).arg(QString::number(i+1)).arg(path).arg(QString::number(i)).arg(orientation) + " ; ";
     }
     pushCommand(cmd);
+
+
+    //test all backend functions
+    //removePage(0,numPages,5);
+    //rotatePage(0,5,270);
+    //exportFile(0,numPages-1,"/home/navieh/Desktop/conco.pdf",QSize(2,2),true,true,1,0);
+    //end of test
 }
 QString PDFJam::nextCommand(){
 
@@ -93,9 +127,9 @@ void PDFJam::run(){
     while(!isQueueEmpty()){
         QString cmd = nextCommand();
         int value = system(cmd.toStdString().c_str());
-        //if (value != 0 )
-            //qDebug() << "ERROR: Failed to execute " << cmd;
-        //else
-            //qDebug() << "SUCCESS: executed " << cmd;
+        if (value != 0 )
+            qDebug() << "ERROR: Failed to execute " << cmd;
+        else
+            qDebug() << "SUCCESS: executed " << cmd;
     }
 }
