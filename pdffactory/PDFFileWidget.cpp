@@ -169,6 +169,7 @@ int PDFFileWidget::removeChild(PDFPageWidget* child){
     pagesContainerWidget->pageWidgets.remove(pos);
     pagesContainerWidget->mainLayout->removeItem(pagesContainerWidget->mainLayout->itemAt(pos));
 
+    pagesContainerWidget->adjustSize();
     return pos;
 }
 
@@ -181,4 +182,6 @@ void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
     child->setFather(this);
     pagesContainerWidget->mainLayout->insertWidget(pos, child);
     pagesContainerWidget->pageWidgets.insert(pos,child);
+
+    pagesContainerWidget->adjustSize();
 }
