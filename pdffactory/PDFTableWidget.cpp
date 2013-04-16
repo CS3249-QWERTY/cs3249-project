@@ -202,17 +202,18 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
     }
     int posTo               = fileTo->indexChild(childTo);
     for (int i = selectedPages.size() - 1; i>=0 ;i--){
-        PDFPageWidget* childFrom    = selectedPages[i];
-        PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
-        fileTo->insertChildAt(childFrom, posTo);
-
         pdfJam.pastePage(
                 fileWidgets.indexOf(fileTo),
                 fileTo->pagesContainerWidget->pageWidgets.size(),
                 posTo,
                 i
                 );
-        //fileFrom->insertChildAt(childTo, posFrom);
+
+        PDFPageWidget* childFrom    = selectedPages[i];
+        PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
+        fileTo->insertChildAt(childFrom, posTo);
+
+                //fileFrom->insertChildAt(childTo, posFrom);
     }
 
 }
