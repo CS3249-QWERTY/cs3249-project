@@ -54,6 +54,7 @@ bool PDFJam::removePage(int fileIndex,int numPages, int deletedPageIndex){
 
 }
 void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex,int slot=0) {
+    qDebug()<<"cuting page"<<fileIndex << " " << pageIndex;
     if ((pageIndex<0)||(pageIndex>=numPages)) {
         return ;
     }
@@ -68,6 +69,7 @@ void PDFJam::copyPage(int fileIndex,int numPages, int pageIndex,int slot=0){
     pushCommand(cmd);
 }
 void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex, int slot=0){
+    qDebug()<<"pasting page"<<fileIndex << " " << pageIndex;
     //TODO: check if clipboard file exists
     QString cmd = "";
     QString mvTemp = "mv /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/%3/%4.pdf ";
@@ -167,9 +169,9 @@ void PDFJam::run(){
     while(!isQueueEmpty()){
         QString cmd = nextCommand();
         int value = system(cmd.toStdString().c_str());
-        if (value != 0 )
-            qDebug() << "ERROR: Failed to execute " << cmd;
-        else
-            qDebug() << "SUCCESS: executed " << cmd;
+        //if (value != 0 )
+            //qDebug() << "ERROR: Failed to execute " << cmd;
+        //else
+            //qDebug() << "SUCCESS: executed " << cmd;
     }
 }
