@@ -28,8 +28,9 @@ public:
     void setPopplerPage(Poppler::Page*);
     void setAncestor(QWidget *ancestor);
     void setFather(QWidget *father);
-    QWidget* getFather() { return father;}
+    QWidget* getFather() const { return father;}
     void registerName(QString name) { path = name;}
+    QString getName() { return path;}
 
     void setSelected(bool select);
     bool isSelected() {return selected;}
