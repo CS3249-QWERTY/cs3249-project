@@ -35,6 +35,7 @@ class PagesContainerWidget : public QWidget {
         QHBoxLayout                    *mainLayout;
 
         void addPageWidget(PDFPageWidget *pageWidget);
+        void setAncestor(QWidget* ancestor){ this-> ancestor = ancestor;}
 
     protected:
         void dragEnterEvent(QDragEnterEvent *event);
@@ -42,6 +43,7 @@ class PagesContainerWidget : public QWidget {
 
     private:
         int getPagesCount() const;
+        QWidget *ancestor;
 };
 
 // ========================================
@@ -58,6 +60,7 @@ class PDFFileWidget : public QFrame {
         void setAncestor(QWidget* ancestor);
         void setDocument(Poppler::Document* document, QString fileName);
         int removeChild(PDFPageWidget* child);
+        int indexChild(PDFPageWidget* child);
         void insertChildAt(PDFPageWidget* child, int pos);
 
         void setSelected(bool select);
