@@ -53,7 +53,7 @@ bool PDFJam::removePage(int fileIndex,int numPages, int deletedPageIndex){
     pushCommand(cmd);
 
 }
-void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex,int slot) =0{
+void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex,int slot=0) {
     if ((pageIndex<0)||(pageIndex>=numPages)) {
         return ;
     }
