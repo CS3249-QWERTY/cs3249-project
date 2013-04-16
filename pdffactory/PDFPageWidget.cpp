@@ -17,24 +17,31 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     this->setMouseTracking(true);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    QHBoxLayout *hbox = new QHBoxLayout();
+    QHBoxLayout *topHBox = new QHBoxLayout();
+    btnRotate = new QPushButton("", this);
+    btnRotate->setObjectName("rotate");
+    btnRotate->setIcon(QPixmap::fromImage(QImage("images/rotate.png")));
+    btnRotate->hide();
+    topHBox->addWidget(btnRotate, 0, Qt::AlignLeft);
 
+    QHBoxLayout *bottomHBox = new QHBoxLayout();
     btnCut = new QPushButton("", this);
     btnCut->setObjectName("cut");
+    btnCut->setIcon(QPixmap::fromImage(QImage("images/cut.png")));
+    btnCut->hide();
+
     btnCopy = new QPushButton("", this);
     btnCopy->setObjectName("copy");
-
-    btnCut->setIcon(QPixmap::fromImage(QImage("images/cut.png")));
     btnCopy->setIcon(QPixmap::fromImage(QImage("images/copy.png")));
-    btnCut->hide();
     btnCopy->hide();
 
-    hbox->addWidget(btnCut, 0, Qt::AlignLeft);
-    hbox->addWidget(btnCopy, 1, Qt::AlignRight);
+    bottomHBox->addWidget(btnCut, 0, Qt::AlignLeft);
+    bottomHBox->addWidget(btnCopy, 1, Qt::AlignRight);
 
     QVBoxLayout *vbox = new QVBoxLayout();
+    vbox->addLayout(topHBox);
     vbox->addStretch(1);
-    vbox->addLayout(hbox);
+    vbox->addLayout(bottomHBox);
     vbox->setContentsMargins(0, 3, 0, 3);
     this->setLayout(vbox);
 }
@@ -85,6 +92,7 @@ void PDFPageWidget::dropEvent(QDropEvent *event) {
 }
 
 void PDFPageWidget::leaveEvent(QEvent *event) {
+    btnRotate->hide();
     btnCut->hide();
     btnCopy->hide();
 
@@ -92,6 +100,7 @@ void PDFPageWidget::leaveEvent(QEvent *event) {
 }
 
 void PDFPageWidget::enterEvent(QEvent *event) {
+    btnRotate->show();
     btnCut->show();
     btnCopy->show();
 

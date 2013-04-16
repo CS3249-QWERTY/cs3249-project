@@ -51,7 +51,7 @@ private:
     QImage           image;
     Poppler::Page   *pPage;
     QPixmap          pixmap;
-    QPushButton     *btnCut, *btnCopy;
+    QPushButton     *btnRotate, *btnCut, *btnCopy;
 
     bool selected;
 

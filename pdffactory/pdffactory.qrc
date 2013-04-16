@@ -12,5 +12,6 @@
         <file>images/collapse.png</file>
         <file>images/expand.png</file>
         <file>images/remove.png</file>
+        <file>images/rotate.png</file>
     </qresource>
 </RCC>
