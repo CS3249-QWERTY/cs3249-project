@@ -53,21 +53,21 @@ bool PDFJam::removePage(int fileIndex,int numPages, int deletedPageIndex){
     pushCommand(cmd);
 
 }
-void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex){
+void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex,int slot){
     if ((pageIndex<0)||(pageIndex>=numPages)) {
         return ;
     }
 
-    copyPage(fileIndex,numPages,pageIndex);
+    copyPage(fileIndex,numPages,pageIndex,0);
     removePage(fileIndex,numPages,pageIndex);
 
 }
-void PDFJam::copyPage(int fileIndex,int numPages, int pageIndex){
-    QString cpTemp = "cp /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/clipboard.pdf";
-    QString cmd = cpTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex));
+void PDFJam::copyPage(int fileIndex,int numPages, int pageIndex,int slot){
+    QString cpTemp = "cp /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/clipboard%3.pdf";
+    QString cmd = cpTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex)).arg(QString::number(slot));
     pushCommand(cmd);
 }
-void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex){
+void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex, int slot){
     //TODO: check if clipboard file exists
     QString cmd = "";
     QString mvTemp = "mv /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/%3/%4.pdf ";
@@ -76,8 +76,8 @@ void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex){
         if (i>pageIndex) cmd+=" && ";
     }
 
-    QString pasteTemp = "cp /tmp/pdffactory/clipboard.pdf /tmp/pdffactory/%1/%2.pdf ";
-    cmd += " && " + pasteTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex));
+    QString pasteTemp = "cp /tmp/pdffactory/clipboard%3.pdf /tmp/pdffactory/%1/%2.pdf ";
+    cmd += " && " + pasteTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex)).arg(QString::number(slot));
     pushCommand(cmd);
 
 }
@@ -90,8 +90,8 @@ void PDFJam::movePage(int fromFileIndex, int fromFileNumPage, int fromPageIndex,
             toPageIndex--;
         toPageIndex--;
     }
-    cutPage(fromFileIndex,fromFileNumPage,fromPageIndex);
-    pastePage(toFileIndex,toFileNumPage,toPageIndex);
+    cutPage(fromFileIndex,fromFileNumPage,fromPageIndex,0);
+    pastePage(toFileIndex,toFileNumPage,toPageIndex,0);
 }
 void PDFJam::savePageAsImage(Poppler::Page pp, QString dest,double dpi = 72){
 
