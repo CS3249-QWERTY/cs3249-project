@@ -201,5 +201,3 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
     }
 
 }
-
-
