@@ -188,7 +188,6 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
     for (int i = selectedPages.size() - 1; i>=0 ;i--){
         PDFPageWidget* childFrom    = selectedPages[i];
         PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
-        fileFrom->removeChild(childFrom);
 
         pdfJam.cutPage(
                 fileWidgets.indexOf(fileFrom),
@@ -196,9 +195,9 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
                 fileFrom->indexChild(childFrom),
                 i
                 );
-        //PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
 
-        //int posFrom = fileFrom->removeChild(childFrom);
+                fileFrom->removeChild(childFrom);
+
     }
     int posTo               = fileTo->indexChild(childTo);
     for (int i = selectedPages.size() - 1; i>=0 ;i--){

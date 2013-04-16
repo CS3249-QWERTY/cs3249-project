@@ -59,7 +59,7 @@ void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex,int slot=0) {
         return ;
     }
 
-    copyPage(fileIndex,numPages,pageIndex,0);
+    copyPage(fileIndex,numPages,pageIndex,slot);
     removePage(fileIndex,numPages,pageIndex);
 
 }
@@ -69,7 +69,7 @@ void PDFJam::copyPage(int fileIndex,int numPages, int pageIndex,int slot=0){
     pushCommand(cmd);
 }
 void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex, int slot=0){
-    qDebug()<<"pasting page"<<fileIndex << " " << pageIndex;
+    qDebug()<<"pasting page"<<fileIndex << " " << pageIndex<<slot;
     //TODO: check if clipboard file exists
     QString cmd = "";
     QString mvTemp = "mv /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/%3/%4.pdf ";
@@ -78,8 +78,8 @@ void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex, int slot=0){
         if (i>pageIndex) cmd+=" && ";
     }
 
-    QString pasteTemp = "cp /tmp/pdffactory/clipboard%3.pdf /tmp/pdffactory/%1/%2.pdf ";
-    cmd += " && " + pasteTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex)).arg(QString::number(slot));
+    QString pasteTemp = "cp /tmp/pdffactory/clipboard%1.pdf /tmp/pdffactory/%2/%3.pdf ";
+    cmd += " && " + pasteTemp.arg(QString::number(slot)).arg(QString::number(fileIndex)).arg(QString::number(pageIndex));
     pushCommand(cmd);
 
 }
@@ -143,13 +143,13 @@ void PDFJam::loadFile(QString fileName, int fileIndex,Poppler::Document* pd){
     }
     pushCommand(cmd);
 
-
+/*
     //test all backend functions
     rotatePage(0,5,270);
     movePage(0,numPages,5,0,numPages,10);
     //removePage(0,numPages,5);
     exportFile(0,numPages,"/home/navieh/Desktop/conco.pdf",QSize(2,2),true,true,1,0);
-
+*/
     //end of test
 }
 QString PDFJam::nextCommand(){
@@ -169,9 +169,10 @@ void PDFJam::run(){
     while(!isQueueEmpty()){
         QString cmd = nextCommand();
         int value = system(cmd.toStdString().c_str());
-        //if (value != 0 )
+        /*
             //qDebug() << "ERROR: Failed to execute " << cmd;
         //else
             //qDebug() << "SUCCESS: executed " << cmd;
+            qDebug() << "SUCCESS: executed " << cmd;*/
     }
 }
