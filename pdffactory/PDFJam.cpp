@@ -34,6 +34,7 @@ bool PDFJam::rotatePage(int fileIndex,int rotatedPageIndex,int degree){
     pushCommand(cmd);
 
 }
+
 //to remove a page in a pdf file
 bool PDFJam::removePage(int fileIndex,int numPages, int deletedPageIndex){
     if ((deletedPageIndex<0)||(deletedPageIndex>=numPages)) {
@@ -52,8 +53,45 @@ bool PDFJam::removePage(int fileIndex,int numPages, int deletedPageIndex){
     pushCommand(cmd);
 
 }
-void PDFJam::movePage(int fromFileIndex, int fromPageIndex, int toFileIndex, int toPageIndex ){
+void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex){
+    if ((pageIndex<0)||(pageIndex>=numPages)) {
+        return ;
+    }
 
+    copyPage(fileIndex,numPages,pageIndex);
+    removePage(fileIndex,numPages,pageIndex);
+
+}
+void PDFJam::copyPage(int fileIndex,int numPages, int pageIndex){
+    QString cpTemp = "cp /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/clipboard.pdf";
+    QString cmd = cpTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex));
+    pushCommand(cmd);
+}
+void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex){
+    //TODO: check if clipboard file exists
+    QString cmd = "";
+    QString mvTemp = "mv /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/%3/%4.pdf ";
+    for (int i = numPages-1; i >= pageIndex; i--) {
+        cmd += mvTemp.arg(QString::number(fileIndex)).arg(QString::number(i)).arg(QString::number(fileIndex)).arg(QString::number(i+1));
+        if (i>pageIndex) cmd+=" && ";
+    }
+
+    QString pasteTemp = "cp /tmp/pdffactory/clipboard.pdf /tmp/pdffactory/%1/%2.pdf ";
+    cmd += " && " + pasteTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex));
+    pushCommand(cmd);
+
+}
+void PDFJam::movePage(int fromFileIndex, int fromFileNumPage, int fromPageIndex, int toFileIndex, int toFileNumPage, int toPageIndex ){
+    //TODO:back up clipboard
+    //if this is page moving within files, update to file Index.
+    if (toFileIndex == fromFileIndex) {
+        toFileNumPage--;
+        if(toPageIndex>fromPageIndex)
+            toPageIndex--;
+        toPageIndex--;
+    }
+    cutPage(fromFileIndex,fromFileNumPage,fromPageIndex);
+    pastePage(toFileIndex,toFileNumPage,toPageIndex);
 }
 void PDFJam::savePageAsImage(Poppler::Page pp, QString dest,double dpi = 72){
 
@@ -105,9 +143,11 @@ void PDFJam::loadFile(QString fileName, int fileIndex,Poppler::Document* pd){
 
 
     //test all backend functions
+    rotatePage(0,5,270);
+    movePage(0,numPages,5,0,numPages,10);
     //removePage(0,numPages,5);
-    //rotatePage(0,5,270);
-    //exportFile(0,numPages-1,"/home/navieh/Desktop/conco.pdf",QSize(2,2),true,true,1,0);
+    exportFile(0,numPages,"/home/navieh/Desktop/conco.pdf",QSize(2,2),true,true,1,0);
+
     //end of test
 }
 QString PDFJam::nextCommand(){
