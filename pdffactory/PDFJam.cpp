@@ -141,13 +141,13 @@ void PDFJam::loadFile(QString fileName, int fileIndex,Poppler::Document* pd){
     }
     pushCommand(cmd);
 
-
+/*
     //test all backend functions
     rotatePage(0,5,270);
     movePage(0,numPages,5,0,numPages,10);
     //removePage(0,numPages,5);
     exportFile(0,numPages,"/home/navieh/Desktop/conco.pdf",QSize(2,2),true,true,1,0);
-
+*/
     //end of test
 }
 QString PDFJam::nextCommand(){
@@ -167,9 +167,10 @@ void PDFJam::run(){
     while(!isQueueEmpty()){
         QString cmd = nextCommand();
         int value = system(cmd.toStdString().c_str());
+        /*
         if (value != 0 )
             qDebug() << "ERROR: Failed to execute " << cmd;
         else
-            qDebug() << "SUCCESS: executed " << cmd;
+            qDebug() << "SUCCESS: executed " << cmd;*/
     }
 }
