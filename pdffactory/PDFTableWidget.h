@@ -54,10 +54,13 @@ class PDFTableWidget: public QFrame
         QVector<PDFPageWidget*> selectedPages;
         QVector<PDFFileWidget*> selectedFiles;
 
+    public:
+        QVector<PDFFileWidget*> getSelectedFiles();
+        QVector<int> getSelectedIndices();
 
         //bool operator()(PDFPageWidget* e1, PDFPageWidget* e2);
 
-    public :
+    public:
         void moveSelectedPages(QString, QString);
         void moveSelectedPages(QString, PDFPageWidget* page);
 

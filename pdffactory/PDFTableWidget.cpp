@@ -54,6 +54,17 @@ void PDFTableWidget::loadFile(QString fileName){
     connect(fileWidget, SIGNAL(fileRemoveButtonClicked(PDFFileWidget*)), this, SLOT(fileRemoveButtonClicked(PDFFileWidget*)));
 }
 
+QVector<PDFFileWidget*> PDFTableWidget::getSelectedFiles() {
+    return selectedFiles;
+}
+
+QVector<int> PDFTableWidget::getSelectedIndices() {
+    QVector<int> retVector;
+    for (int i = 0; i < selectedFiles.size(); i++) {
+        retVector.append(fileWidgets.indexOf(selectedFiles.at(i)));
+    }
+}
+
 void PDFTableWidget::registerPage(PDFPageWidget* child){
     //come up with a new name here
     QString name = QString("/home/pdfpage").append(QString::number(pageChilds.size()));
@@ -154,8 +165,7 @@ void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QStr
         for (int i = 0; i < selectedPages.size(); i++) {
                 selectedPages.at(i)->setSelected(false);
             }
-            selectedPages.clear();
-
+        selectedPages.clear();
     }
 }
 
@@ -214,5 +224,4 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
 
                 //fileFrom->insertChildAt(childTo, posFrom);
     }
-
 }

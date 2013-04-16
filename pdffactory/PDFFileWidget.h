@@ -36,13 +36,13 @@ class PagesContainerWidget : public QWidget {
 
         void addPageWidget(PDFPageWidget *pageWidget);
         void setAncestor(QWidget* ancestor){ this-> ancestor = ancestor;}
+        int getPagesCount() const;
 
     protected:
         void dragEnterEvent(QDragEnterEvent *event);
         void dropEvent(QDropEvent *event);
 
     private:
-        int getPagesCount() const;
         QWidget *ancestor;
 };
 
@@ -62,6 +62,7 @@ class PDFFileWidget : public QFrame {
         int removeChild(PDFPageWidget* child);
         int indexChild(PDFPageWidget* child);
         void insertChildAt(PDFPageWidget* child, int pos);
+        int getChildCount();
 
         void setSelected(bool select);
         bool isSelected() {return selected;}
