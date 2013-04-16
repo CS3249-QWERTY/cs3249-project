@@ -77,6 +77,8 @@ class PDFFileWidget : public QFrame {
         void collapsedButtonClicked();
         void updateThumbnail(QImage,PDFPageWidget*);
 
+    public :
+        PagesContainerWidget *pagesContainerWidget;
     private:
         ThumbGen        tgen;
         QGridLayout     *topLayout;
@@ -84,7 +86,6 @@ class PDFFileWidget : public QFrame {
         QLabel          *fileNameLabel;
         QPushButton     *collapseButton;
         QPushButton     *removeButton;
-        PagesContainerWidget *pagesContainerWidget;
         QScrollArea     *scrollArea;
         QWidget         *ancestor;
 

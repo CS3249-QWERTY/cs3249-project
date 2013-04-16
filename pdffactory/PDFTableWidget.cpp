@@ -4,6 +4,7 @@
 #include "PDFPageWidget.h"
 #include "PDFFileWidget.h"
 #include <QtAlgorithms>
+#include "PDFJam.h"
 
 // Constructor
 PDFTableWidget::PDFTableWidget(QWidget* parent) : QFrame(parent)
@@ -188,6 +189,13 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
         PDFPageWidget* childFrom    = selectedPages[i];
         PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
         fileFrom->removeChild(childFrom);
+
+        pdfJam.cutPage(
+                fileWidgets.indexOf(fileFrom),
+                fileFrom->pagesContainerWidget->pageWidgets.size(),
+                fileFrom->indexChild(childFrom),
+                i
+                );
         //PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
 
         //int posFrom = fileFrom->removeChild(childFrom);
@@ -197,6 +205,13 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
         PDFPageWidget* childFrom    = selectedPages[i];
         PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
         fileTo->insertChildAt(childFrom, posTo);
+
+        pdfJam.pastePage(
+                fileWidgets.indexOf(fileTo),
+                fileTo->pagesContainerWidget->pageWidgets.size(),
+                posTo,
+                i
+                );
         //fileFrom->insertChildAt(childTo, posFrom);
     }
 
