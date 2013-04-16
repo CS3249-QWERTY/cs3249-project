@@ -135,7 +135,7 @@ void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QStr
                     int targetPID = targetF->indexChild(target);
                     int targetFID = fileWidgets.indexOf(targetF);
 
-                    if (targetFID == senderFID && targetFID > senderFID)
+                    if (targetFID == senderFID && targetPID > senderPID)
                         break;
 
                     if (targetFID > senderFID)
@@ -177,17 +177,28 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
             accept=true;
     if (!accept)
         return;
-
+/*
     for (int i = 0;i<selectedPages.size();i++)
         if (selectedPages.at(i)->getName() == pathTo)
-            return;
+            return;*/
 
     PDFPageWidget* childTo  = pageChilds[pathTo];
     PDFFileWidget* fileTo   = (PDFFileWidget*) childTo->getFather();
 
+    int posTo=  -1;
+    PDFFileWidget* file = NULL;
     for (int i = selectedPages.size() - 1; i>=0 ;i--){
         PDFPageWidget* childFrom    = selectedPages[i];
         PDFFileWidget* fileFrom     = (PDFFileWidget*) childFrom->getFather();
+        if (file == fileFrom){
+            posTo-=1;
+        }
+
+        if (pathTo==childFrom->getName() ){
+            file = fileFrom;
+            posTo = fileFrom->indexChild(childFrom);
+        }
+
 
         pdfJam.cutPage(
                 fileWidgets.indexOf(fileFrom),
@@ -196,10 +207,11 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
                 i
                 );
 
-                fileFrom->removeChild(childFrom);
+        fileFrom->removeChild(childFrom);
 
     }
-    int posTo               = fileTo->indexChild(childTo);
+    if (posTo ==-1)
+        posTo               = fileTo->indexChild(childTo);
     for (int i = selectedPages.size() - 1; i>=0 ;i--){
         pdfJam.pastePage(
                 fileWidgets.indexOf(fileTo),
