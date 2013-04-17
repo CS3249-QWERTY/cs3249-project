@@ -15,7 +15,7 @@ public:
     PDFJam();
     void pushCommand(QString);
     void loadFile(QString fileName,int,Poppler::Document*);
-    void exportFile(int ,int , QString , QSize , bool , bool, int ,int );
+    void exportFile(int, int, QString, QSize, bool, bool, int, int);
     void savePageAsImage(Poppler::Page pp, QString dest, double);
     void movePage(int , int , int , int , int , int );
 

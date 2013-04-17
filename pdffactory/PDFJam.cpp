@@ -109,11 +109,9 @@ void PDFJam::exportFile(int fileIndex,int numPages, QString dest, QSize nup = QS
     }
     QString orientation = isLandscape?" --landscape ": " --no-landscape ";
     cmd += orientation;
-    if ((nup.width()==1)||(nup.height()!=1)) {
-        QString nupTemp = " --nup '%1x%1' --frame true ";
-        cmd += nupTemp.arg(QString::number(nup.width())).arg(QString::number(nup.height()));
-    }
 
+    QString nupTemp = " --nup '%1x%2' --frame true ";
+    cmd += nupTemp.arg(QString::number(nup.width())).arg(QString::number(nup.height()));
 
     QString outTemp = " --outfile %1 ";
     cmd += outTemp.arg(dest);
@@ -122,7 +120,6 @@ void PDFJam::exportFile(int fileIndex,int numPages, QString dest, QSize nup = QS
 
 
 }
-
 
 void PDFJam::loadFile(QString fileName, int fileIndex,Poppler::Document* pd){
     int numPages = pd->numPages();

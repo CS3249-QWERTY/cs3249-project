@@ -25,7 +25,7 @@ protected:
 
 private slots:
     void openFile();
-    //bool exportFile();
+    void exportFile();
     //bool exportAllFiles();
 
 private:

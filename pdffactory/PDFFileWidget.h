@@ -37,6 +37,7 @@ class PagesContainerWidget : public QWidget {
         void addPageWidget(PDFPageWidget *pageWidget);
         void setAncestor(QWidget* ancestor){ this-> ancestor = ancestor;}
         void setFather(QWidget* father){this->father = father;}
+        int getPagesCount() const;
         QWidget* getFather(){return father;}
 
     protected:
@@ -44,7 +45,6 @@ class PagesContainerWidget : public QWidget {
         void dropEvent(QDropEvent *event);
 
     private:
-        int getPagesCount() const;
         QWidget *ancestor;
         QWidget *father;
     private slots:
@@ -67,6 +67,7 @@ class PDFFileWidget : public QFrame {
         int removeChild(PDFPageWidget* child);
         int indexChild(PDFPageWidget* child);
         void insertChildAt(PDFPageWidget* child, int pos);
+        int getChildCount();
 
         void setSelected(bool select);
         bool isSelected() {return selected;}

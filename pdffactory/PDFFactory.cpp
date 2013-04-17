@@ -1,6 +1,7 @@
 #include <QtGui>
 #include <QtGlobal>
 #include "PDFFactory.h"
+#include "PDFExportDialog.h"
 #include "PDFTableWidget.h"
 #include "PDFPreviewWidget.h"
 #include "PDFPageWidget.h"
@@ -69,7 +70,7 @@ void PDFFactory::createActions()
     exportAction->setIcon(QIcon(":/images/export.png"));
     exportAction->setShortcut(tr("Ctrl+S"));
     exportAction->setStatusTip(tr("Export the selected file to a new PDF"));
-    //connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
+    connect(exportAction, SIGNAL(triggered()), this, SLOT(exportFile()));
 
     exportAllAction = new QAction(tr("Export all"), this);
     exportAllAction->setIcon(QIcon(":/images/exportall.png"));
@@ -156,4 +157,15 @@ void PDFFactory::openFile() {
             pdfTableView->loadFile(fileName);
         }
     }
+}
+
+void PDFFactory::exportFile() {
+    PDFExportDialog *exportDialog = new PDFExportDialog();
+
+    QVector<PDFFileWidget*> selectedFiles = pdfTableView->getSelectedFiles();
+    if (selectedFiles.size() > 0) {
+        exportDialog->setFilesToExport(selectedFiles, pdfTableView->getSelectedFileNames(), pdfTableView->getSelectedIndices());
+        exportDialog->show();
+    }
+
 }

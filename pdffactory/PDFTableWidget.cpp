@@ -54,6 +54,27 @@ void PDFTableWidget::loadFile(QString fileName){
     connect(fileWidget, SIGNAL(fileRemoveButtonClicked(PDFFileWidget*)), this, SLOT(fileRemoveButtonClicked(PDFFileWidget*)));
 }
 
+QVector<PDFFileWidget*> PDFTableWidget::getSelectedFiles() {
+    return selectedFiles;
+}
+
+QVector<int> PDFTableWidget::getSelectedIndices() {
+    QVector<int> retVector;
+    for (int i = 0; i < selectedFiles.size(); i++) {
+        retVector.append(fileWidgets.indexOf(selectedFiles.at(i)));
+    }
+    return retVector;
+}
+
+QVector<QString> PDFTableWidget::getSelectedFileNames() {
+    QVector<QString> retVector;
+    QVector<int> indices = getSelectedIndices();
+    for (int i = 0; i < indices.size(); i++) {
+        retVector.append(fileNames.at(indices.at(i)));
+    }
+    return retVector;
+}
+
 void PDFTableWidget::registerPage(PDFPageWidget* child){
     //come up with a new name here
     QString name = QString("/home/pdfpage").append(QString::number(pageChilds.size()));
@@ -99,11 +120,12 @@ void PDFTableWidget::fileRemoveButtonClicked(PDFFileWidget* sender) {
     }
 
     for (int i = 0; i < pagesToRemove.size(); i++) {
+        selectedPages.at(pagesToRemove.at(i))->setSelected(false);
         selectedPages.remove(pagesToRemove.at(i));
     }
 
     // Handle remove file
-
+    sender->hide();
 }
 
 void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QString path){
@@ -154,8 +176,7 @@ void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QStr
         for (int i = 0; i < selectedPages.size(); i++) {
                 selectedPages.at(i)->setSelected(false);
             }
-            selectedPages.clear();
-
+        selectedPages.clear();
     }
 }
 
@@ -273,5 +294,4 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
 
                 //fileFrom->insertChildAt(childTo, posFrom);
     }
-
 }

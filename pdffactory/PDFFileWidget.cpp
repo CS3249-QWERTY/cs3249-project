@@ -208,7 +208,6 @@ int PDFFileWidget::indexChild(PDFPageWidget* child){
     return pagesContainerWidget->pageWidgets.indexOf(child);
 }
 
-
 void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
     child->setFather(this);
     pagesContainerWidget->mainLayout->insertWidget(pos, child);
@@ -219,4 +218,8 @@ void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
 
 
     pagesContainerWidget->adjustSize();
+}
+
+int PDFFileWidget::getChildCount() {
+    return pagesContainerWidget->getPagesCount();
 }
