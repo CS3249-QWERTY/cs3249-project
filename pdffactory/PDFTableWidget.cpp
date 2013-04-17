@@ -226,41 +226,47 @@ void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
 
 void PDFTableWidget::cutPage(PDFPageWidget* pageWidget){
     deletePage(pageWidget);
-    copiedPages.clear();
+    int id = copiedPages.size();
     copiedPages.push_back(pageWidget);
 
     PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
     int pageID = daddy->indexChild(pageWidget);
 
-    pdfJam.cutPage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID,0);
+    pdfJam.cutPage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID, id);
 
 }
 
-void PDFTableWidget::copyPage(PDFPageWidget* pageWidget){
+void PDFTableWidget::clearClipboard(){
     copiedPages.clear();
+}
+
+void PDFTableWidget::copyPage(PDFPageWidget* pageWidget){
+    int id = copiedPages.size();
     copiedPages.push_back(pageWidget);
 
     PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
     int pageID = daddy->indexChild(pageWidget);
 
-    pdfJam.copyPage(daddyID, pageID,0);
+    pdfJam.copyPage(daddyID, pageID, id);
 }
 
 void PDFTableWidget::pastePage(PDFFileWidget* fileWidget, int pageID){
     if (copiedPages.size() > 0){
-        PDFPageWidget* page =copiedPages.at(0);
+        for (int i = 0;i<copiedPages.size(); i++){
+            PDFPageWidget* page =copiedPages.at(i);
 
-        PDFPageWidget* pageWidget = new PDFPageWidget();
-        pageWidget->setAncestor(this);
-        pageWidget->setFather(page->getFather());
-        pageWidget->setPopplerPage(page->getPage());
+            PDFPageWidget* pageWidget = new PDFPageWidget();
+            pageWidget->setAncestor(this);
+            pageWidget->setFather(page->getFather());
+            pageWidget->setPopplerPage(page->getPage());
 
-        int fileID = fileWidgets.indexOf(fileWidget);
-        pdfJam.pastePage(fileID, fileWidget->pagesContainerWidget->pageWidgets.size(), pageID, 0);
+            int fileID = fileWidgets.indexOf(fileWidget);
+            pdfJam.pastePage(fileID, fileWidget->pagesContainerWidget->pageWidgets.size(), pageID, i);
 
-        fileWidget->insertChildAt(pageWidget,pageID);
+            fileWidget->insertChildAt(pageWidget,pageID+i);
+        }
     }
 }
 
