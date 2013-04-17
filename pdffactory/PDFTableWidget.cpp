@@ -212,11 +212,28 @@ void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
     if (spos!=-1){
         selectedPages.remove(spos);
     }
+    spos = copiedPages.indexOf(pageWidget);
+    if (spos!=-1){
+        copiedPages.remove(spos);
+    }
     pageChilds.remove(pageWidget->getName());
 
     // PLS ACTIVATE THIS LINE ONCE EVERYTHING HAS BEEN FIXED
     // :D :D :D :D :D :D
     //delete page;
+
+}
+
+void PDFTableWidget::cutPage(PDFPageWidget* pageWidget){
+    deletePage(pageWidget);
+    copiedPages.clear();
+    copiedPages.push_back(pageWidget);
+
+    PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
+    int daddyID = fileWidgets.indexOf(daddy);
+    int pageID = daddy->indexChild(pageWidget);
+
+    pdfJam.cutPage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID,0);
 
 }
 
