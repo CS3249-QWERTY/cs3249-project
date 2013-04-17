@@ -78,8 +78,6 @@ QVector<QString> PDFTableWidget::getSelectedFileNames() {
 void PDFTableWidget::registerPage(PDFPageWidget* child){
     //come up with a new name here
     QString name = QString("/home/pdfpage").append(QString::number(pageChilds.size()));
-    qDebug()<<"Registering name:";
-    qDebug()<<name;
     pageChilds[name] = child;
     child->registerName(name);
 }

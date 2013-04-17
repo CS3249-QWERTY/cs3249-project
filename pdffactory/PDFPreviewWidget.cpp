@@ -31,7 +31,7 @@ void PDFPreviewWidget::regenImage() {
 
 void PDFPreviewWidget::regenPixmap() {
     pixmap = QPixmap::fromImage(previewImage);
-    pixmap = pixmap.scaled(currentPixmapSize, Qt::KeepAspectRatioByExpanding);
+    pixmap = pixmap.scaled(currentPixmapSize, Qt::KeepAspectRatio);
     currentPixmapSize = pixmap.size();
 }
 
@@ -42,6 +42,7 @@ void PDFPreviewWidget::repositionPixmap() {
 void PDFPreviewWidget::previewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
     pPage = pp;
     this->rotation = rotation;
+    currentPixmapSize = this->size();
     regenImage();
     regenPixmap();
     repositionPixmap();

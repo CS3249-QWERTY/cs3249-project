@@ -58,7 +58,6 @@ int PagesContainerWidget::getPagesCount() const {
 
 QSize PagesContainerWidget::sizeHint() const {
     QSize temp = QSize((CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH) * getPagesCount(), CHILD_AREA_HEIGHT + 30);
-    qDebug() << temp;
     return temp;
 }
 
