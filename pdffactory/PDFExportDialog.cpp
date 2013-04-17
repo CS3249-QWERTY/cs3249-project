@@ -1,6 +1,5 @@
 #include <QtGui>
 #include <QtGlobal>
-#include "PDFJam.h"
 #include "PDFExportDialog.h"
 
 PDFExportDialog::PDFExportDialog(QWidget *parent) :
@@ -29,6 +28,9 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
 
     // n-up
     nupBox = new QGroupBox("N-up option");
+    nupBox->setCheckable(true);
+    nupBox->setChecked(false);
+    connect(nupBox, SIGNAL(toggled(bool)), this, SLOT(nupBoxToggled(bool)));
     QGridLayout *nupLayout = new QGridLayout();
     QLabel *lblRow = new QLabel("Row:");
     QLabel *lblCol = new QLabel("Col:");
@@ -43,21 +45,16 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     nupBox->setLayout(nupLayout);
 
     // offsets
-    offsetBox = new QGroupBox("Offset option");
+    offsetBox = new QGroupBox("Two-sided offset");
+    offsetBox->setCheckable(true);
+    offsetBox->setChecked(false);
+    connect(offsetBox, SIGNAL(toggled(bool)), this, SLOT(offsetBoxToggled(bool)));
     QGridLayout *offsetLayout = new QGridLayout();
     QLabel *lblLeft = new QLabel("Left Offset:");
-    QLabel *lblRight = new QLabel("Right Offset:");
     txtLeftOffset = new QLineEdit("0");
     connect(txtLeftOffset, SIGNAL(textEdited(const QString &)), this, SLOT(txtLeftChanged(const QString &)));
-    txtRightOffset = new QLineEdit("0");
-    connect(txtRightOffset, SIGNAL(textEdited(const QString &)), this, SLOT(txtRightChanged(const QString &)));
     offsetLayout->addWidget(lblLeft, 0, 0, 1, 1);
     offsetLayout->addWidget(txtLeftOffset, 0, 1, 1, 2);
-    offsetLayout->addWidget(lblRight, 1, 0, 1, 1);
-    offsetLayout->addWidget(txtRightOffset, 1, 1, 1, 2);
-    chkTwoSideOffset = new QCheckBox("Two Side Offset");
-    connect(chkTwoSideOffset, SIGNAL(stateChanged(int)), this, SLOT(chkTwoSideChanged(int)));
-    offsetLayout->addWidget(chkTwoSideOffset, 2, 0);
     offsetBox->setLayout(offsetLayout);
 
     QVBoxLayout *midLayout = new QVBoxLayout();
@@ -101,11 +98,11 @@ void PDFExportDialog::setFilesToExport(QVector<PDFFileWidget*> fileWidgets, QVec
         QVector<QVariant> option; // Landscape, row, col, left, right, twosided
         bool ok;
         option.append(QVariant(chkLandscape->isChecked()));
+        option.append(QVariant(nupBox->isChecked()));
         option.append(QVariant(txtRow->text().toInt(&ok)));
         option.append(QVariant(txtCol->text().toInt(&ok)));
+        option.append(QVariant(offsetBox->isChecked()));
         option.append(QVariant(txtLeftOffset->text().toInt(&ok)));
-        option.append(QVariant(txtRightOffset->text().toInt(&ok)));
-        option.append(QVariant(chkTwoSideOffset->isChecked()));
 
         options.append(option);
     }
@@ -114,8 +111,6 @@ void PDFExportDialog::setFilesToExport(QVector<PDFFileWidget*> fileWidgets, QVec
 }
 
 void PDFExportDialog::btnSaveClicked() {
-    PDFJam *pdfJam = new PDFJam();
-
     int selectedIndex = fileList->currentRow();
     QVector<QVariant> option = options.at(selectedIndex);
 
@@ -125,21 +120,20 @@ void PDFExportDialog::btnSaveClicked() {
     if (!fileName.isEmpty()) {
         QSize nup;
         if (option.at(0).toBool())
-            nup = QSize(option.at(2).toInt(), option.at(1).toInt());
+            nup = QSize(option.at(3).toInt(), option.at(2).toInt());
         else
-            nup = QSize(option.at(1).toInt(), option.at(2).toInt());
+            nup = QSize(option.at(2).toInt(), option.at(3).toInt());
 
-        //pdfJam->exportFile(fileIndices.at(selectedIndex), fileWidgets.at(selectedIndex)->getChildCount(), fileName,
-                           //nup,
-                           //option.at(0).toBool(), option.at(5).toBool(),
-                           //option.at(3).toInt(), option.at(4).toInt());
+        pdfJam.exportFile(fileIndices.at(selectedIndex), fileWidgets.at(selectedIndex)->getChildCount(), fileName,
+                           option.at(1).toBool(), nup, // nup
+                           option.at(0).toBool(), // landscape
+                           option.at(4).toBool(), option.at(5).toInt()); //offset
 
         QMessageBox::information(this, tr("PDFFactory"), tr("Exported succesfully to\n%1.").arg(fileName));
     }
 }
 
 void PDFExportDialog::btnSaveAllClicked() {
-    PDFJam *pdfJam = new PDFJam();
     bool ok;
     for (int i = 0; i < fileNames.size(); i++) {
         QString fileName = QFileDialog::getSaveFileName(this,
@@ -153,10 +147,10 @@ void PDFExportDialog::btnSaveAllClicked() {
             nup = QSize(txtRow->text().toInt(&ok), txtCol->text().toInt(&ok));
 
         if (!fileName.isEmpty()) {
-            //pdfJam->exportFile(fileIndices.at(i), fileWidgets.at(i)->getChildCount(), fileName,
-                               //nup,
-                               //chkLandscape->isChecked(), chkTwoSideOffset->isChecked(),
-                               //txtLeftOffset->text().toInt(&ok), txtRightOffset->text().toInt(&ok));
+            pdfJam.exportFile(fileIndices.at(i), fileWidgets.at(i)->getChildCount(), fileName,
+                               nupBox->isChecked(), nup,
+                               chkLandscape->isChecked(),
+                               offsetBox->isChecked(), txtLeftOffset->text().toInt(&ok));
             QMessageBox::information(this, tr("PDFFactory"), tr("Exported succesfully to\n%1.").arg(fileName));
         }
     }
@@ -169,23 +163,14 @@ void PDFExportDialog::btnCancelClicked() {
 void PDFExportDialog::fileListChanged(int row) {
     QVector<QVariant> option = options.at(row);
     chkLandscape->setChecked(option.at(0).toBool());
-    txtRow->setText(QString::number(option.at(1).toInt()));
-    txtCol->setText(QString::number(option.at(2).toInt()));
-    txtLeftOffset->setText(QString::number(option.at(3).toInt()));
-    txtRightOffset->setText(QString::number(option.at(4).toInt()));
-    chkTwoSideOffset->setChecked(option.at(5).toBool());
+    nupBox->setChecked(option.at(1).toBool());
+    txtRow->setText(QString::number(option.at(2).toInt()));
+    txtCol->setText(QString::number(option.at(3).toInt()));
+    offsetBox->setChecked(option.at(4).toBool());
+    txtLeftOffset->setText(QString::number(option.at(5).toInt()));
 }
 
 void PDFExportDialog::txtRowChanged(const QString &txt) {
-    bool ok;
-    QVector<QVariant> option = options.at(fileList->currentRow());
-    option.remove(1);
-    option.insert(1, QVariant(txt.toInt(&ok)));
-    options.remove(fileList->currentRow());
-    options.insert(fileList->currentRow(), option);
-}
-
-void PDFExportDialog::txtColChanged(const QString &txt) {
     bool ok;
     QVector<QVariant> option = options.at(fileList->currentRow());
     option.remove(2);
@@ -194,7 +179,7 @@ void PDFExportDialog::txtColChanged(const QString &txt) {
     options.insert(fileList->currentRow(), option);
 }
 
-void PDFExportDialog::txtLeftChanged(const QString &txt) {
+void PDFExportDialog::txtColChanged(const QString &txt) {
     bool ok;
     QVector<QVariant> option = options.at(fileList->currentRow());
     option.remove(3);
@@ -203,11 +188,11 @@ void PDFExportDialog::txtLeftChanged(const QString &txt) {
     options.insert(fileList->currentRow(), option);
 }
 
-void PDFExportDialog::txtRightChanged(const QString &txt) {
+void PDFExportDialog::txtLeftChanged(const QString &txt) {
     bool ok;
     QVector<QVariant> option = options.at(fileList->currentRow());
-    option.remove(4);
-    option.insert(4, QVariant(txt.toInt(&ok)));
+    option.remove(5);
+    option.insert(5, QVariant(txt.toInt(&ok)));
     options.remove(fileList->currentRow());
     options.insert(fileList->currentRow(), option);
 }
@@ -220,10 +205,18 @@ void PDFExportDialog::chkLandscapeChanged(int state) {
     options.insert(fileList->currentRow(), option);
 }
 
-void PDFExportDialog::chkTwoSideChanged(int state) {
+void PDFExportDialog::nupBoxToggled(bool checked) {
     QVector<QVariant> option = options.at(fileList->currentRow());
-    option.remove(5);
-    option.insert(5, QVariant(chkTwoSideOffset->isChecked()));
+    option.remove(1);
+    option.insert(1, QVariant(nupBox->isChecked()));
+    options.remove(fileList->currentRow());
+    options.insert(fileList->currentRow(), option);
+}
+
+void PDFExportDialog::offsetBoxToggled(bool checked) {
+    QVector<QVariant> option = options.at(fileList->currentRow());
+    option.remove(4);
+    option.insert(4, QVariant(offsetBox->isChecked()));
     options.remove(fileList->currentRow());
     options.insert(fileList->currentRow(), option);
 }

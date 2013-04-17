@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "PDFFileWidget.h"
+#include "PDFJam.h"
 
 class QGridLayout;
 class QGroupBox;
@@ -24,6 +25,7 @@ private:
     QVector<QVector<QVariant> > options;
 
 private:
+    PDFJam pdfJam;
     QGroupBox *fileListBox, *landscapeBox, *nupBox, *offsetBox;
 
     QPushButton *btnSave, *btnSaveAll, *btnCancel;
@@ -32,8 +34,7 @@ private:
     QListWidget *fileList;
     QLineEdit *txtRow, *txtCol;
     QCheckBox *chkLandscape;
-    QLineEdit *txtLeftOffset, *txtRightOffset;
-    QCheckBox *chkTwoSideOffset;
+    QLineEdit *txtLeftOffset;
 
 public:
     void setFilesToExport(QVector<PDFFileWidget*> fileWidgets, QVector<QString> fileNames, QVector<int> fileIndices);
@@ -46,10 +47,9 @@ private slots:
     void txtRowChanged(const QString &);
     void txtColChanged(const QString &);
     void txtLeftChanged(const QString &);
-    void txtRightChanged(const QString &);
     void chkLandscapeChanged(int);
-    void chkTwoSideChanged(int);
-
+    void nupBoxToggled(bool);
+    void offsetBoxToggled(bool);
 };
 
 #endif // PDFEXPORTDIALOG_H

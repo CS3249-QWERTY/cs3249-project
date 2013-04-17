@@ -66,6 +66,7 @@ void PDFPageWidget::setAncestor(QWidget* ancestor){
 }
 
 void PDFPageWidget::pageCut(){
+    ((PDFTableWidget*)ancestor)->clearClipboard();
     ((PDFTableWidget*)ancestor)->cutPage(this);
 }
 
@@ -74,6 +75,7 @@ void PDFPageWidget::pageDelete(){
 }
 
 void PDFPageWidget::pageCopy(){
+    ((PDFTableWidget*)ancestor)->clearClipboard();
     ((PDFTableWidget*)ancestor)->copyPage(this);
 }
 

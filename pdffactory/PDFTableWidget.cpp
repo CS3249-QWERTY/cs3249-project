@@ -85,10 +85,12 @@ void PDFTableWidget::registerPage(PDFPageWidget* child){
 }
 
 void PDFTableWidget::copySelected(){
+    clearClipboard();
     for (int i = 0;i<selectedPages.size();i++)
         copyPage(selectedPages.at(i));
 }
 void PDFTableWidget::cutSelected(){
+    clearClipboard();
     for (int i = 0;i<selectedPages.size();i++){
         cutPage(selectedPages.at(i));
         i=-1;
