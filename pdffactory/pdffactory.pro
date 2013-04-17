@@ -14,6 +14,7 @@ HEADERS += PDFFactory.h \
            PDFFileWidget.h \
            PDFJam.h \
            ThumbGen.h \
+           PreviewGen.h \
            PDFPreviewWidget.h \
            PDFExportDialog.h
 SOURCES += main.cpp \
@@ -23,6 +24,7 @@ SOURCES += main.cpp \
            PDFFileWidget.cpp \
            PDFJam.cpp \
            ThumbGen.cpp \
+           PreviewGen.cpp \
            PDFPreviewWidget.cpp \
            PDFExportDialog.cpp
 

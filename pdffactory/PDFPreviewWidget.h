@@ -3,6 +3,8 @@
 
 #include <QFrame>
 #include <poppler-qt4.h>
+#include "PreviewGen.h"
+
 
 class QImage;
 class QPixmap;
@@ -12,6 +14,8 @@ class QResizeEvent;
 class QWheelEvent;
 class QPaintEvent;
 class QMouseEvent;
+class PreviewGen;
+class QDebug;
 
 class PDFPreviewWidget : public QFrame
 {
@@ -48,6 +52,8 @@ private:
     QPoint lastPixmapPos;
     QPoint dragStartPos;
 
+    private slots:
+        void updateImage(QImage);
 signals:
     void updatePreview(QImage);
 };

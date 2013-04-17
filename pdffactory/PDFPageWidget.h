@@ -32,6 +32,8 @@ public:
     void setFather(QWidget *father);
     void rotate90();
     Poppler::Page::Rotation getRotation();
+    int getIntRotation(){return rotation;};
+    int setIntRotation(int r){rotation = r;};
     QWidget* getFather() const { return father;}
     void registerName(QString name) { path = name;}
     QString getName() { return path;}
@@ -67,6 +69,7 @@ private:
     QPushButton     *btnRotate, *btnCut, *btnCopy, *btnDelete;
 
     int             rotation;
+
 
     bool selected;
 

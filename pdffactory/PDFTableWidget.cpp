@@ -190,7 +190,7 @@ void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QStr
                 sender->setSelected(true);
 
                 selectedPages.insert(0,sender);
-                emit previewUpdate(sender->getPage(), sender->getRotation());
+                emit previewUpdate(sender->getNewThumbPopplerPage(), sender->getRotation());
             }
 
         } else {
@@ -329,6 +329,7 @@ void PDFTableWidget::pastePage(PDFFileWidget* fileWidget, int pageID){
             pageWidget->setPopplerPage(page->getNewThumbPopplerPage());
             pageWidget->setThumbPopplerPage(page->getNewThumbPopplerPage());
             pageWidget->setOriginInfo(page->getOriFilePath(),page->getPageNo());
+            pageWidget->setIntRotation(page->getIntRotation());
 
             int fileID = fileWidgets.indexOf(fileWidget);
             pdfJam.pastePage(fileID, fileWidget->pagesContainerWidget->pageWidgets.size(), pageID, i);
