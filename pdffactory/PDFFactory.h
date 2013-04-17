@@ -41,6 +41,7 @@ private:
     QAction *cutAction;
 	QAction *copyAction;
     QAction *pasteAction;
+    QAction *rotateAction;
     QAction *aboutAction;
 
     QWidget *centralWidget;
@@ -52,6 +53,7 @@ private:
 
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
+    QToolBar *toolsToolBar;
     QToolBar *helpToolBar;
 };
 

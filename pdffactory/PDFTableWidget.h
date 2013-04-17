@@ -51,6 +51,9 @@ class PDFTableWidget: public QFrame
 
         void fileClicked(PDFFileWidget*, QMouseEvent*);
 
+    public slots:
+        void rotateSelectedPages();
+
     private:
         QVector<PDFPageWidget*> selectedPages;
         QVector<PDFFileWidget*> selectedFiles;

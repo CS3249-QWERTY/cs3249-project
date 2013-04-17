@@ -28,7 +28,7 @@ void PDFFactory::createWidgets()
     ribbon = new QTabWidget();
     ribbon->addTab(new QWidget(), tr("File"));
     ribbon->addTab(new QWidget(), tr("Edit"));
-    ribbon->addTab(new QWidget(), tr("View"));
+    ribbon->addTab(new QWidget(), tr("Tools"));
     ribbon->addTab(new QWidget(), tr("Help"));
     ribbon->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ribbon->setFixedHeight(100);
@@ -97,6 +97,12 @@ void PDFFactory::createActions()
     pasteAction->setStatusTip(tr("Paste clipboard's contents into current selection"));
     //connect(pasteAction, SIGNAL(triggered()), textEdit, SLOT(paste()));
 
+    rotateAction = new QAction(tr("&Rotate"), this);
+    rotateAction->setIcon(QIcon(":/images/rotate.png"));
+    rotateAction->setShortcut(tr("Ctrl+R"));
+    rotateAction->setStatusTip(tr("Rotate selected pages"));
+    connect(rotateAction, SIGNAL(triggered()), pdfTableView, SLOT(rotateSelectedPages()));
+
     aboutAction = new QAction(tr("A&bout"), this);
     aboutAction->setIcon(QIcon(":/images/about.png"));
     aboutAction->setStatusTip(tr("About this program"));
@@ -116,6 +122,10 @@ void PDFFactory::createToolBars()
     editToolBar->addAction(pasteAction);
     editToolBar->setIconSize(QSize(48, 48));
 
+    toolsToolBar = new QToolBar(tr("Tools"));
+    toolsToolBar->addAction(rotateAction);
+    toolsToolBar->setIconSize(QSize(48, 48));
+
     helpToolBar = new QToolBar(tr("Help"));
     helpToolBar->addAction(aboutAction);
     helpToolBar->setIconSize(QSize(48, 48));
@@ -134,6 +144,12 @@ void PDFFactory::createRibbon()
     layoutTabEdit->setContentsMargins(2,0,2,0);
     layoutTabEdit->addWidget(editToolBar);
     tabEdit->setLayout(layoutTabEdit);
+
+    QWidget *tabTools = ribbon->widget(2);
+    QVBoxLayout *layoutTabTools = new QVBoxLayout();
+    layoutTabTools->setContentsMargins(2,0,2,0);
+    layoutTabTools->addWidget(toolsToolBar);
+    tabTools->setLayout(layoutTabTools);
 
     QWidget *tabHelp = ribbon->widget(3);
     QVBoxLayout *layoutTabHelp = new QVBoxLayout();
