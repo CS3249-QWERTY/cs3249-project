@@ -56,6 +56,7 @@ void PDFPreviewWidget::repositionPixmap() {
 }
 
 void PDFPreviewWidget::previewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
+    qDebug()<<"previewUpdate in previewwidet"<< rotation;
     pPage = pp;
     this->rotation = rotation;
     currentPixmapSize = this->size();
@@ -66,9 +67,7 @@ void PDFPreviewWidget::previewUpdate(Poppler::Page* pp, Poppler::Page::Rotation 
 }
 
 void PDFPreviewWidget::checkPreviewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
-    if (pPage != NULL && pPage == pp) {
         previewUpdate(pp, rotation);
-    }
 }
 
 void PDFPreviewWidget::checkPagePreviewExisted(Poppler::Page* pp) {

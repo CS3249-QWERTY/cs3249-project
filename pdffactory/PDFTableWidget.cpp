@@ -196,7 +196,7 @@ void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QStr
         } else {
             if (!sender->isSelected()) {
                 sender->setSelected(true);
-                emit previewUpdate(sender->getPage(), sender->getRotation());
+                emit previewUpdate(sender->getNewThumbPopplerPage(), sender->getRotation());
 
                 PDFFileWidget* senderF = (PDFFileWidget*)sender->getFather();
                 int senderPID = senderF->indexChild(sender);
@@ -344,8 +344,9 @@ void PDFTableWidget::rotatePage(PDFPageWidget* pageWidget) {
 
     int fileIndex = fileWidgets.indexOf((PDFFileWidget *)pageWidget->getFather());
     int pageIndex = fileWidgets.at(fileIndex)->indexChild(pageWidget);
-    pdfJam.rotatePage(fileIndex, pageIndex, 90);
+    pdfJam.rotatePage(fileIndex, pageIndex, pageWidget->getIntRotation());
 
+    qDebug()<<"PDFTableWidget"<<pageWidget->getRotation();
     emit checkPreviewUpdate(pageWidget->getPage(), pageWidget->getRotation());
 }
 
