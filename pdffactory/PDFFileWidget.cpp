@@ -34,7 +34,11 @@ void PagesContainerWidget::ShowContextMenu(const QPoint& pos){
         QAction* selectedItem = myMenu.exec(globalPos);
         if (selectedItem)
         {
-            int page = (pos.x() / (CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH));
+            int page = (pos.x() / 169);
+/*
+            for (int i = 0;i< pageWidgets.size();i++)
+                qDebug() << pageWidgets.at(i)->geometry();*/
+
 
             PDFTableWidget *grandpa = (PDFTableWidget*) ancestor;
             grandpa->pastePage((PDFFileWidget*)father, page);
@@ -212,7 +216,7 @@ void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
     child->setFather(this);
     pagesContainerWidget->mainLayout->insertWidget(pos, child);
     pagesContainerWidget->pageWidgets.insert(pos,child);
-    tgen.render(child,child->getPage());
+    //tgen.render(child,child->getPage());
     tgen.start();
     child->show();
 
