@@ -124,7 +124,6 @@ void PDFJam::exportFile(int fileIndex,int numPages, QString dest, QSize nup = QS
 
 }
 
-
 void PDFJam::loadFile(QString fileName, int fileIndex,Poppler::Document* pd){
     int numPages = pd->numPages();
     QString path= "/tmp/pdffactory/%1/";

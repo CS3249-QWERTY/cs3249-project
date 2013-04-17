@@ -120,11 +120,12 @@ void PDFTableWidget::fileRemoveButtonClicked(PDFFileWidget* sender) {
     }
 
     for (int i = 0; i < pagesToRemove.size(); i++) {
+        selectedPages.at(pagesToRemove.at(i))->setSelected(false);
         selectedPages.remove(pagesToRemove.at(i));
     }
 
     // Handle remove file
-
+    sender->hide();
 }
 
 void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QString path){
