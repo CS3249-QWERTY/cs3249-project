@@ -9,7 +9,7 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     mainLayout->setSpacing(15);
 
     // File list
-    fileListBox = new QGroupBox("Files selected");
+    fileListBox = new QGroupBox("Selected files");
     QVBoxLayout *fileListLayout = new QVBoxLayout();
     fileList = new QListWidget();
     connect(fileList, SIGNAL(currentRowChanged(int)), this, SLOT(fileListChanged(int)));
@@ -71,7 +71,7 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     btnSave = new QPushButton("&Export...");
     connect(btnSave, SIGNAL(clicked()), this, SLOT(btnSaveClicked()));
     rightLayout->addWidget(btnSave);
-    btnSaveAll = new QPushButton("Export &all using\nthe same settings...");
+    btnSaveAll = new QPushButton("Export &all using\nthese settings...");
     connect(btnSaveAll, SIGNAL(clicked()), this, SLOT(btnSaveAllClicked()));
     rightLayout->addWidget(btnSaveAll);
     btnCancel = new QPushButton("&Done");
