@@ -77,7 +77,7 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     btnSaveAll = new QPushButton("Export &all using\nthe same settings...");
     connect(btnSaveAll, SIGNAL(clicked()), this, SLOT(btnSaveAllClicked()));
     rightLayout->addWidget(btnSaveAll);
-    btnCancel = new QPushButton("&Cancel");
+    btnCancel = new QPushButton("&Done");
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(btnCancelClicked()));
     rightLayout->addWidget(btnCancel);
     rightLayout->addStretch(1);
@@ -117,15 +117,20 @@ void PDFExportDialog::btnSaveClicked() {
     PDFJam *pdfJam = new PDFJam();
 
     int selectedIndex = fileList->currentRow();
+    QVector<QVariant> option = options.at(selectedIndex);
 
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save PDF file"), ".",
                                                     tr("PDF file (*.pdf)"));
-    if (!fileName.isEmpty())
+    if (!fileName.isEmpty()) {
         pdfJam->exportFile(fileIndices.at(selectedIndex), fileWidgets.at(selectedIndex)->getChildCount(), fileName,
-                           QSize(options.at(selectedIndex).at(1).toInt(), options.at(selectedIndex).at(2).toInt()),
-                           options.at(selectedIndex).at(0).toBool(), options.at(selectedIndex).at(5).toBool(),
-                           options.at(selectedIndex).at(3).toInt(), options.at(selectedIndex).at(4).toInt());
+                           QSize(option.at(1).toInt(), option.at(2).toInt()),
+                           option.at(0).toBool(), option.at(5).toBool(),
+                           option.at(3).toInt(), option.at(4).toInt());
+
+
+        QMessageBox::information(this, tr("PDFFactory"), tr("Exported succesfully to\n%1.").arg(fileName));
+    }
 }
 
 void PDFExportDialog::btnSaveAllClicked() {
@@ -133,7 +138,7 @@ void PDFExportDialog::btnSaveAllClicked() {
 }
 
 void PDFExportDialog::btnCancelClicked() {
-
+    accept();
 }
 
 void PDFExportDialog::fileListChanged(int row) {
