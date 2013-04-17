@@ -275,7 +275,9 @@ void PDFTableWidget::pastePage(PDFFileWidget* fileWidget, int pageID){
             PDFPageWidget* pageWidget = new PDFPageWidget();
             pageWidget->setAncestor(this);
             pageWidget->setFather(page->getFather());
-            pageWidget->setPopplerPage(page->getPage());
+            pageWidget->setPopplerPage(page->getNewThumbPopplerPage());
+            pageWidget->setThumbPopplerPage(page->getNewThumbPopplerPage());
+            pageWidget->setOriginInfo(page->getOriFilePath(),page->getPageNo());
 
             int fileID = fileWidgets.indexOf(fileWidget);
             pdfJam.pastePage(fileID, fileWidget->pagesContainerWidget->pageWidgets.size(), pageID, i);

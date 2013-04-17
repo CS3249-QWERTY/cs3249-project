@@ -7,6 +7,7 @@
 #include <QFrame>
 #include <QHash>
 #include "PDFPageWidget.h"
+#include "ThumbGen.h"
 
 class QImage;
 class QVBoxLayout;
@@ -25,8 +26,10 @@ public:
     void loadFile (QString fileName);
     void registerPage(PDFPageWidget *child);
 
+
 public:
     PDFJam pdfJam;
+    ThumbGen mainTgen;
 
 private:
     QVBoxLayout     *outerLayout;

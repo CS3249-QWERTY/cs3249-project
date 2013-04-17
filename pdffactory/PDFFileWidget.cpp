@@ -178,8 +178,10 @@ void PDFFileWidget::removeButtonClicked() {
 
 void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
     document->setRenderHint(Poppler::Document::TextAntialiasing);
-    Poppler::Document *doc = Poppler::Document::load(fileName);
-    doc->setRenderHint(Poppler::Document::TextAntialiasing);
+    Poppler::Document *previewDoc = Poppler::Document::load(fileName);
+    previewDoc->setRenderHint(Poppler::Document::TextAntialiasing);
+    Poppler::Document *thumbDoc = Poppler::Document::load(fileName);
+    thumbDoc->setRenderHint(Poppler::Document::TextAntialiasing);
 
     int numPages = document -> numPages();
     for (int i = 0; i < numPages; i++){
@@ -189,7 +191,9 @@ void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
 
         pageWidget->setAncestor(ancestor);
         pageWidget->setFather(this);
-        pageWidget->setPopplerPage(doc->page(i));
+        pageWidget->setPopplerPage(previewDoc->page(i));
+        pageWidget->setThumbPopplerPage(thumbDoc->page(i));
+        pageWidget->setOriginInfo(fileName,i);
         tgen.render(pageWidget,pdfPage);
 
         pagesContainerWidget->addPageWidget(pageWidget);
@@ -218,10 +222,9 @@ void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
     child->setFather(this);
     pagesContainerWidget->mainLayout->insertWidget(pos, child);
     pagesContainerWidget->pageWidgets.insert(pos,child);
-    //tgen.render(child,child->getPage());
+    tgen.render(child,child->getThumbPage());
     tgen.start();
     child->show();
-
 
     pagesContainerWidget->adjustSize();
 }
