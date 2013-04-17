@@ -9,7 +9,7 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     mainLayout->setSpacing(15);
 
     // File list
-    fileListBox = new QGroupBox("Referenced names");
+    fileListBox = new QGroupBox("Files selected");
     QVBoxLayout *fileListLayout = new QVBoxLayout();
     fileList = new QListWidget();
     connect(fileList, SIGNAL(currentRowChanged(int)), this, SLOT(fileListChanged(int)));
@@ -19,7 +19,7 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     mainLayout->addWidget(fileListBox, 0, 0, 4, 2);
 
     // is landscape
-    landscapeBox = new QGroupBox("Landscape output");
+    landscapeBox = new QGroupBox("Output Orientation");
     QVBoxLayout *landscapeLayout = new QVBoxLayout();
     chkLandscape = new QCheckBox("Landscape");
     connect(chkLandscape, SIGNAL(stateChanged(int)), this, SLOT(chkLandscapeChanged(int)));
