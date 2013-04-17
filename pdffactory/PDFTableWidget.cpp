@@ -200,19 +200,19 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, PDFPageWidget* page){
     moveSelectedPages(pathFrom, page->getName());
 }
 
-void PDFTableWidget::deletePage(PDFPageWidget* page){
-    PDFFileWidget *daddy = (PDFFileWidget*)page->getFather();
+void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
+    PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
-    int pageID = daddy->indexChild(page);
+    int pageID = daddy->indexChild(pageWidget);
 
     pdfJam.removePage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID);
-    daddy->removeChild(page);
+    daddy->removeChild(pageWidget);
 
-    int spos = selectedPages.indexOf(page);
+    int spos = selectedPages.indexOf(pageWidget);
     if (spos!=-1){
         selectedPages.remove(spos);
     }
-    pageChilds.remove(page->getName());
+    pageChilds.remove(pageWidget->getName());
 
     // PLS ACTIVATE THIS LINE ONCE EVERYTHING HAS BEEN FIXED
     // :D :D :D :D :D :D
@@ -220,18 +220,18 @@ void PDFTableWidget::deletePage(PDFPageWidget* page){
 
 }
 
-void PDFTableWidget::copyPage(PDFPageWidget* page){
+void PDFTableWidget::copyPage(PDFPageWidget* pageWidget){
     copiedPages.clear();
-    copiedPages.push_back(page);
+    copiedPages.push_back(pageWidget);
 
-    PDFFileWidget *daddy = (PDFFileWidget*)page->getFather();
+    PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
-    int pageID = daddy->indexChild(page);
+    int pageID = daddy->indexChild(pageWidget);
 
     pdfJam.copyPage(daddyID, pageID,0);
 }
 
-void PDFTableWidget::pastePage(PDFFileWidget* file, int pageID){
+void PDFTableWidget::pastePage(PDFFileWidget* fileWidget, int pageID){
     if (copiedPages.size() > 0){
         PDFPageWidget* page =copiedPages.at(0);
 
@@ -240,16 +240,21 @@ void PDFTableWidget::pastePage(PDFFileWidget* file, int pageID){
         pageWidget->setFather(page->getFather());
         pageWidget->setPopplerPage(page->getPage());
 
-        int fileID = fileWidgets.indexOf(file);
-        pdfJam.pastePage(fileID, file->pagesContainerWidget->pageWidgets.size(), pageID, 0);
+        int fileID = fileWidgets.indexOf(fileWidget);
+        pdfJam.pastePage(fileID, fileWidget->pagesContainerWidget->pageWidgets.size(), pageID, 0);
 
-        file->insertChildAt(pageWidget,pageID);
+        fileWidget->insertChildAt(pageWidget,pageID);
     }
 }
 
-void PDFTableWidget::rotatePage(PDFPageWidget* page) {
-    page->rotate90();
-    emit checkPreviewUpdate(page->getPage(), page->getRotation());
+void PDFTableWidget::rotatePage(PDFPageWidget* pageWidget) {
+    pageWidget->rotate90();
+
+    int fileIndex = fileWidgets.indexOf((PDFFileWidget *)pageWidget->getFather());
+    int pageIndex = fileWidgets.at(fileIndex)->indexChild(pageWidget);
+    pdfJam.rotatePage(fileIndex, pageIndex, 90);
+
+    emit checkPreviewUpdate(pageWidget->getPage(), pageWidget->getRotation());
 }
 
 void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
