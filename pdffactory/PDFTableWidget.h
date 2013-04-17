@@ -25,7 +25,7 @@ class PDFTableWidget: public QFrame
         void loadFile (QString fileName);
         void registerPage(PDFPageWidget *child);
 
-    protected:
+    public:
         PDFJam pdfJam;
 
     private:

@@ -99,7 +99,7 @@ void PDFJam::savePageAsImage(Poppler::Page pp, QString dest,double dpi = 72){
 }
 //to export file number "fileIndex" to destination
 //supported n-up, orientation, offset options
-void PDFJam::exportFile(int fileIndex,int numPages, QString dest, QSize nup = QSize(1,1), bool isLandscape = false, bool hasTwoSideOffset = false, int leftOffset=0, int rightOffset =0){
+void PDFJam::exportFile(int fileIndex,int numPages, QString dest, bool isNup,QSize nup, bool isLandscape , bool hasTwoSidedOffset, int leftOffset){
 
     QString cmd = "pdfjam ";
     QString temp = "/tmp/pdffactory/%1/%2.pdf '-' ";
@@ -110,8 +110,27 @@ void PDFJam::exportFile(int fileIndex,int numPages, QString dest, QSize nup = QS
     QString orientation = isLandscape?" --landscape ": " --no-landscape ";
     cmd += orientation;
 
-    QString nupTemp = " --nup '%1x%2' --frame true ";
-    cmd += nupTemp.arg(QString::number(nup.width())).arg(QString::number(nup.height()));
+    if (isNup) {
+        QString nupTemp = " --nup '%1x%2' --frame true ";
+        cmd += nupTemp.arg(QString::number(nup.width())).arg(QString::number(nup.height()));
+    }
+    //offset
+    if(hasTwoSidedOffset){
+        //pipe to pdfjam offset
+        QString outStdout = " --outfile /dev/stdout | pdfjam ";
+        cmd += outStdout.arg(dest);
+
+        cmd+=" --twoside ";
+        QString offsetTemp =" --offset \"%1cm 0cm\" ";
+        cmd+=offsetTemp.arg(QString::number(leftOffset));
+
+        //TODO: 2 orientation, this is after n-up, need to fix argument list?
+        QString orientation = isLandscape?" --landscape ": " --no-landscape ";
+        cmd += orientation;
+
+
+
+    }
 
     QString outTemp = " --outfile %1 ";
     cmd += outTemp.arg(dest);
@@ -139,13 +158,17 @@ void PDFJam::loadFile(QString fileName, int fileIndex,Poppler::Document* pd){
     }
     pushCommand(cmd);
 
-/*
+
     //test all backend functions
-    rotatePage(0,5,270);
-    movePage(0,numPages,5,0,numPages,10);
+    //rotatePage(0,5,270);
+    //movePage(0,numPages,5,0,numPages,10);
     //removePage(0,numPages,5);
-    exportFile(0,numPages,"/home/navieh/Desktop/conco.pdf",QSize(2,2),true,true,1,0);
-*/
+    //exportFile(0,numPages-1,"/home/navieh/Desktop/conco.pdf",true,QSize(2,2),true,true,true,2,1);
+    //exportFile(0,numPages-1,"/home/navieh/Desktop/conco2.pdf",false,QSize(2,2),true,true,true,2,1);
+    //exportFile(0,numPages-1,"/home/navieh/Desktop/conco3.pdf",false,QSize(2,2),true,true,false,2,1);
+    //exportFile(0,numPages-1,"/home/navieh/Desktop/conco4.pdf",false,QSize(2,2),false,true,false,2,1);
+    //exportFile(0,numPages-1,"/home/navieh/Desktop/conco5.pdf",false,QSize(2,2),false,true,1);
+
     //end of test
 }
 QString PDFJam::nextCommand(){
@@ -165,10 +188,10 @@ void PDFJam::run(){
     while(!isQueueEmpty()){
         QString cmd = nextCommand();
         int value = system(cmd.toStdString().c_str());
-        /*
-            //qDebug() << "ERROR: Failed to execute " << cmd;
-        //else
-            //qDebug() << "SUCCESS: executed " << cmd;
-            qDebug() << "SUCCESS: executed " << cmd;*/
+        if(value)
+            qDebug() << "ERROR: Failed to execute " << cmd;
+        else
+            qDebug() << "SUCCESS: executed " << cmd;
+            qDebug() << "SUCCESS: executed " << cmd;
     }
 }
