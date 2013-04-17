@@ -52,6 +52,7 @@ void PDFFactory::createWidgets()
 
     connect(pdfTableView, SIGNAL(previewUpdate(Poppler::Page*, Poppler::Page::Rotation)), pdfPreview, SLOT(previewUpdate(Poppler::Page*, Poppler::Page::Rotation)));
     connect(pdfTableView, SIGNAL(checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation)), pdfPreview, SLOT(checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation)));
+    connect(pdfTableView, SIGNAL(checkPagePreviewExisted(Poppler::Page*)), pdfPreview, SLOT(checkPagePreviewExisted(Poppler::Page*)));
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));
     setWindowTitle(tr("PDF Factory"));
@@ -77,7 +78,7 @@ void PDFFactory::createActions()
     exportAllAction->setIcon(QIcon(":/images/exportall.png"));
     exportAllAction->setShortcut(tr("Shift+Ctrl+S"));
     exportAllAction->setStatusTip(tr("Export all to multiple PDF files"));
-    //connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveAs()));
+    connect(exportAllAction, SIGNAL(triggered()), this, SLOT(exportAllFiles()));
 
     cutAction = new QAction(tr("C&ut"), this);
     cutAction->setIcon(QIcon(":/images/cut.png"));
@@ -97,15 +98,22 @@ void PDFFactory::createActions()
     pasteAction->setStatusTip(tr("Paste clipboard's contents into current selection"));
     //connect(pasteAction, SIGNAL(triggered()), textEdit, SLOT(paste()));
 
+    deleteAction = new QAction(tr("&Delete"), this);
+    deleteAction->setIcon(QIcon(":/images/delete.png"));
+    deleteAction->setShortcut(tr("Ctrl+D"));
+    deleteAction->setStatusTip(tr("Delete selected contents"));
+    connect(deleteAction, SIGNAL(triggered()), pdfTableView, SLOT(deleteSelected()));
+
     rotateAction = new QAction(tr("&Rotate"), this);
     rotateAction->setIcon(QIcon(":/images/rotate.png"));
     rotateAction->setShortcut(tr("Ctrl+R"));
     rotateAction->setStatusTip(tr("Rotate selected pages"));
-    connect(rotateAction, SIGNAL(triggered()), pdfTableView, SLOT(rotateSelectedPages()));
+    connect(rotateAction, SIGNAL(triggered()), pdfTableView, SLOT(rotateSelected()));
 
     aboutAction = new QAction(tr("A&bout"), this);
     aboutAction->setIcon(QIcon(":/images/about.png"));
     aboutAction->setStatusTip(tr("About this program"));
+    connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 }
 
 void PDFFactory::createToolBars()
@@ -120,6 +128,8 @@ void PDFFactory::createToolBars()
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
+    editToolBar->addSeparator();
+    editToolBar->addAction(deleteAction);
     editToolBar->setIconSize(QSize(48, 48));
 
     toolsToolBar = new QToolBar(tr("Tools"));
@@ -184,5 +194,19 @@ void PDFFactory::exportFile() {
         exportDialog->setFilesToExport(selectedFiles, pdfTableView->getSelectedFileNames(), pdfTableView->getSelectedIndices());
         exportDialog->show();
     }
+}
 
+void PDFFactory::exportAllFiles() {
+    PDFExportDialog *exportDialog = new PDFExportDialog();
+
+    QVector<PDFFileWidget*> visibleFiles = pdfTableView->getVisibleFiles();
+
+    if (visibleFiles.size() > 0) {
+        exportDialog->setFilesToExport(visibleFiles, pdfTableView->getVisibleFileNames(), pdfTableView->getVisibleIndices());
+        exportDialog->show();
+    }
+}
+
+void PDFFactory::about() {
+    QMessageBox::information(this, tr("PDFFactory"), tr("PDFFactory version 0.1.0"));
 }

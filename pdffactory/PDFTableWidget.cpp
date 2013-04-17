@@ -75,11 +75,36 @@ QVector<QString> PDFTableWidget::getSelectedFileNames() {
     return retVector;
 }
 
+QVector<PDFFileWidget*> PDFTableWidget::getVisibleFiles() {
+    QVector<PDFFileWidget*> retVector;
+    for (int i = 0; i < fileWidgets.size(); i++) {
+        if (fileWidgets.at(i)->isVisible())
+            retVector.append(fileWidgets.at(i));
+    }
+    return retVector;
+}
+
+QVector<int> PDFTableWidget::getVisibleIndices() {
+    QVector<int> retVector;
+    QVector<PDFFileWidget*> visibleFiles = getVisibleFiles();
+    for (int i = 0; i < visibleFiles.size(); i++) {
+        retVector.append(fileWidgets.indexOf(visibleFiles.at(i)));
+    }
+    return retVector;
+}
+
+QVector<QString> PDFTableWidget::getVisibleFileNames() {
+    QVector<QString> retVector;
+    QVector<int> indices = getVisibleIndices();
+    for (int i = 0; i < indices.size(); i++) {
+        retVector.append(fileNames.at(indices.at(i)));
+    }
+    return retVector;
+}
+
 void PDFTableWidget::registerPage(PDFPageWidget* child){
     //come up with a new name here
     QString name = QString("/home/pdfpage").append(QString::number(pageChilds.size()));
-    qDebug()<<"Registering name:";
-    qDebug()<<name;
     pageChilds[name] = child;
     child->registerName(name);
 }
@@ -98,7 +123,8 @@ void PDFTableWidget::cutSelected(){
 }
 void PDFTableWidget::deleteSelected(){
     for (int i = 0;i<selectedPages.size();i++)
-        deletePage(selectedPages.at(i));
+        deletePageSkipSelection(selectedPages.at(i));
+    selectedPages.clear();
 }
 
 void PDFTableWidget::fileClicked(PDFFileWidget* sender, QMouseEvent* event) {
@@ -127,18 +153,15 @@ void PDFTableWidget::fileClicked(PDFFileWidget* sender, QMouseEvent* event) {
 }
 
 void PDFTableWidget::fileRemoveButtonClicked(PDFFileWidget* sender) {
-    selectedFiles.remove(selectedFiles.indexOf(sender));
+    if (selectedFiles.indexOf(sender) > 0)
+        selectedFiles.remove(selectedFiles.indexOf(sender));
 
-    QVector<int> pagesToRemove;
-    for (int i = 0; i < selectedPages.size(); i++) {
-        if (selectedPages.at(i)->getFather() == sender) {
-            pagesToRemove.append(i);
-        }
-    }
-
-    for (int i = 0; i < pagesToRemove.size(); i++) {
-        selectedPages.at(pagesToRemove.at(i))->setSelected(false);
-        selectedPages.remove(pagesToRemove.at(i));
+    for (int i = 0; i < sender->getChildCount(); i++) {
+        PDFPageWidget *pageWidget = sender->pagesContainerWidget->pageWidgets.at(i);
+        pageWidget->setSelected(false);
+        emit checkPagePreviewExisted(pageWidget->getPage());
+        if (selectedPages.indexOf(pageWidget) > 0)
+            selectedPages.remove(selectedPages.indexOf(pageWidget));
     }
 
     // Handle remove file
@@ -217,7 +240,33 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, PDFPageWidget* page){
     moveSelectedPages(pathFrom, page->getName());
 }
 
+void PDFTableWidget::deletePageSkipSelection(PDFPageWidget* pageWidget){
+    emit checkPagePreviewExisted(pageWidget->getPage());
+
+    PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
+    int daddyID = fileWidgets.indexOf(daddy);
+    int pageID = daddy->indexChild(pageWidget);
+
+    pdfJam.removePage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID);
+    daddy->removeChild(pageWidget);
+
+    int spos = copiedPages.indexOf(pageWidget);
+    if (spos!=-1){
+        copiedPages.remove(spos);
+    }
+    pageChilds.remove(pageWidget->getName());
+
+
+    // PLS ACTIVATE THIS LINE ONCE EVERYTHING HAS BEEN FIXED
+    // :D :D :D :D :D :D
+    //delete page;
+
+}
+
+
 void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
+    emit checkPagePreviewExisted(pageWidget->getPage());
+
     PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
     int pageID = daddy->indexChild(pageWidget);
@@ -235,6 +284,7 @@ void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
     }
     pageChilds.remove(pageWidget->getName());
 
+
     // PLS ACTIVATE THIS LINE ONCE EVERYTHING HAS BEEN FIXED
     // :D :D :D :D :D :D
     //delete page;
@@ -251,7 +301,6 @@ void PDFTableWidget::cutPage(PDFPageWidget* pageWidget){
     int pageID = daddy->indexChild(pageWidget);
 
     pdfJam.cutPage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID, id);
-
 }
 
 void PDFTableWidget::clearClipboard(){
@@ -300,7 +349,7 @@ void PDFTableWidget::rotatePage(PDFPageWidget* pageWidget) {
     emit checkPreviewUpdate(pageWidget->getPage(), pageWidget->getRotation());
 }
 
-void PDFTableWidget::rotateSelectedPages() {
+void PDFTableWidget::rotateSelected() {
     for (int i = 0; i < selectedPages.size(); i++) {
         rotatePage(selectedPages.at(i));
     }

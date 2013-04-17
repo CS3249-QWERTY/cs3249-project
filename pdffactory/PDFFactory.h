@@ -20,13 +20,11 @@ class PDFFactory: public QMainWindow
 public:
     PDFFactory();
 
-protected:
-    //void closeEvent(QCloseEvent *event);
-
 private slots:
     void openFile();
     void exportFile();
-    //bool exportAllFiles();
+    void exportAllFiles();
+    void about();
 
 private:
     void createWidgets();
@@ -41,6 +39,7 @@ private:
     QAction *cutAction;
 	QAction *copyAction;
     QAction *pasteAction;
+    QAction *deleteAction;
     QAction *rotateAction;
     QAction *aboutAction;
 

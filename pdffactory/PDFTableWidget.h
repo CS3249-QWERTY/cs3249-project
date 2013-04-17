@@ -46,6 +46,7 @@ private:
 signals:
     void previewUpdate(Poppler::Page*, Poppler::Page::Rotation);
     void checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation);
+    void checkPagePreviewExisted(Poppler::Page*);
 
 private slots:
     void fileRemoveButtonClicked(PDFFileWidget*);
@@ -53,9 +54,6 @@ private slots:
     void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
 
     void fileClicked(PDFFileWidget*, QMouseEvent*);
-
-public slots:
-    void rotateSelectedPages();
 
 private:
     QVector<PDFPageWidget*> selectedPages;
@@ -67,12 +65,15 @@ public:
     QVector<int> getSelectedIndices();
     QVector<QString> getSelectedFileNames();
 
-    //bool operator()(PDFPageWidget* e1, PDFPageWidget* e2);
+    QVector<PDFFileWidget*> getVisibleFiles();
+    QVector<int> getVisibleIndices();
+    QVector<QString> getVisibleFileNames();
 
 public:
     void moveSelectedPages(QString, QString);
     void moveSelectedPages(QString, PDFPageWidget* page);
     void deletePage(PDFPageWidget* pageWidget);
+    void deletePageSkipSelection(PDFPageWidget* pageWidget);
     void copyPage(PDFPageWidget* pageWidget);
     void pastePage(PDFFileWidget* fileWidget, int pageID);
     void rotatePage(PDFPageWidget* pageWidget);
@@ -81,6 +82,7 @@ public:
     bool hasClipboard(){ return copiedPages.size() > 0; }
 
 public slots:
+    void rotateSelected();
     void copySelected();
     void cutSelected();
     void deleteSelected();
