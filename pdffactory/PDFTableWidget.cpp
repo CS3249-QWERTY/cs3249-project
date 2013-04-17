@@ -123,7 +123,8 @@ void PDFTableWidget::cutSelected(){
 }
 void PDFTableWidget::deleteSelected(){
     for (int i = 0;i<selectedPages.size();i++)
-        deletePage(selectedPages.at(i));
+        deletePageSkipSelection(selectedPages.at(i));
+    selectedPages.clear();
 }
 
 void PDFTableWidget::fileClicked(PDFFileWidget* sender, QMouseEvent* event) {
@@ -238,6 +239,30 @@ void PDFTableWidget::pageDropped(PDFPageWidget *sender, QDropEvent *event, QStri
 void PDFTableWidget::moveSelectedPages(QString pathFrom, PDFPageWidget* page){
     moveSelectedPages(pathFrom, page->getName());
 }
+
+void PDFTableWidget::deletePageSkipSelection(PDFPageWidget* pageWidget){
+    emit checkPagePreviewExisted(pageWidget->getPage());
+
+    PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
+    int daddyID = fileWidgets.indexOf(daddy);
+    int pageID = daddy->indexChild(pageWidget);
+
+    pdfJam.removePage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID);
+    daddy->removeChild(pageWidget);
+
+    int spos = copiedPages.indexOf(pageWidget);
+    if (spos!=-1){
+        copiedPages.remove(spos);
+    }
+    pageChilds.remove(pageWidget->getName());
+
+
+    // PLS ACTIVATE THIS LINE ONCE EVERYTHING HAS BEEN FIXED
+    // :D :D :D :D :D :D
+    //delete page;
+
+}
+
 
 void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
     emit checkPagePreviewExisted(pageWidget->getPage());
