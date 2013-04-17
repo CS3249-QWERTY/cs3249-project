@@ -274,6 +274,12 @@ void PDFTableWidget::rotatePage(PDFPageWidget* pageWidget) {
     emit checkPreviewUpdate(pageWidget->getPage(), pageWidget->getRotation());
 }
 
+void PDFTableWidget::rotateSelectedPages() {
+    for (int i = 0; i < selectedPages.size(); i++) {
+        rotatePage(selectedPages.at(i));
+    }
+}
+
 void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
     if (selectedPages.size() == 0)
         return;
