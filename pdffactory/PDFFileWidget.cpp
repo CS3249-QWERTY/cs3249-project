@@ -23,13 +23,14 @@ PagesContainerWidget::PagesContainerWidget(QWidget *parent) {
 
     setLayout(mainLayout);
 }
+
 void PagesContainerWidget::ShowContextMenu(const QPoint& pos){
     // paste exclusive menu
     if (((PDFTableWidget*)ancestor)->hasClipboard()){
         QPoint globalPos = this->mapToGlobal(pos);
 
         QMenu myMenu;
-        myMenu.addAction("Paste");
+        myMenu.addAction(QIcon(":/images/remove.png"), "Paste");
 
         QAction* selectedItem = myMenu.exec(globalPos);
         if (selectedItem)
