@@ -236,9 +236,14 @@ void PDFTableWidget::pastePage(PDFFileWidget* file, int pageID){
     }
 }
 
-void PDFTableWidget::rotatePage(PDFPageWidget* page) {
-    page->rotate90();
-    emit checkPreviewUpdate(page->getPage(), page->getRotation());
+void PDFTableWidget::rotatePage(PDFPageWidget* pageWidget) {
+    pageWidget->rotate90();
+
+    int fileIndex = fileWidgets.indexOf((PDFFileWidget *)pageWidget->getFather());
+    int pageIndex = fileWidgets.at(fileIndex)->indexChild(pageWidget);
+    pdfJam.rotatePage(fileIndex, pageIndex, 90);
+
+    emit checkPreviewUpdate(pageWidget->getPage(), pageWidget->getRotation());
 }
 
 void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
