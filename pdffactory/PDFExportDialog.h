@@ -39,9 +39,17 @@ public:
     void setFilesToExport(QVector<PDFFileWidget*> fileWidgets, QVector<QString> fileNames, QVector<int> fileIndices);
 
 private slots:
+    void fileListChanged(int);
     void btnSaveClicked();
     void btnSaveAllClicked();
     void btnCancelClicked();
+    void txtRowChanged(const QString &);
+    void txtColChanged(const QString &);
+    void txtLeftChanged(const QString &);
+    void txtRightChanged(const QString &);
+    void chkLandscapeChanged(int);
+    void chkTwoSideChanged(int);
+
 };
 
 #endif // PDFEXPORTDIALOG_H
