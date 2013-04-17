@@ -98,11 +98,17 @@ void PDFFactory::createActions()
     pasteAction->setStatusTip(tr("Paste clipboard's contents into current selection"));
     //connect(pasteAction, SIGNAL(triggered()), textEdit, SLOT(paste()));
 
+    deleteAction = new QAction(tr("&Delete"), this);
+    deleteAction->setIcon(QIcon(":/images/delete.png"));
+    deleteAction->setShortcut(tr("Ctrl+D"));
+    deleteAction->setStatusTip(tr("Delete selected contents"));
+    connect(deleteAction, SIGNAL(triggered()), pdfTableView, SLOT(deleteSelected()));
+
     rotateAction = new QAction(tr("&Rotate"), this);
     rotateAction->setIcon(QIcon(":/images/rotate.png"));
     rotateAction->setShortcut(tr("Ctrl+R"));
     rotateAction->setStatusTip(tr("Rotate selected pages"));
-    connect(rotateAction, SIGNAL(triggered()), pdfTableView, SLOT(rotateSelectedPages()));
+    connect(rotateAction, SIGNAL(triggered()), pdfTableView, SLOT(rotateSelected()));
 
     aboutAction = new QAction(tr("A&bout"), this);
     aboutAction->setIcon(QIcon(":/images/about.png"));
@@ -121,6 +127,8 @@ void PDFFactory::createToolBars()
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
+    editToolBar->addSeparator();
+    editToolBar->addAction(deleteAction);
     editToolBar->setIconSize(QSize(48, 48));
 
     toolsToolBar = new QToolBar(tr("Tools"));

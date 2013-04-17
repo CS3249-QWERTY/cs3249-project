@@ -41,6 +41,7 @@ private:
     QAction *cutAction;
 	QAction *copyAction;
     QAction *pasteAction;
+    QAction *deleteAction;
     QAction *rotateAction;
     QAction *aboutAction;
 

@@ -55,9 +55,6 @@ private slots:
 
     void fileClicked(PDFFileWidget*, QMouseEvent*);
 
-public slots:
-    void rotateSelectedPages();
-
 private:
     QVector<PDFPageWidget*> selectedPages;
     QVector<PDFFileWidget*> selectedFiles;
@@ -82,6 +79,7 @@ public:
     bool hasClipboard(){ return copiedPages.size() > 0; }
 
 public slots:
+    void rotateSelected();
     void copySelected();
     void cutSelected();
     void deleteSelected();
