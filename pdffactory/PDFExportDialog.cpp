@@ -123,18 +123,43 @@ void PDFExportDialog::btnSaveClicked() {
                                                     tr("Save PDF file"), ".",
                                                     tr("PDF file (*.pdf)"));
     if (!fileName.isEmpty()) {
+        QSize nup;
+        if (option.at(0).toBool())
+            nup = QSize(option.at(2).toInt(), option.at(1).toInt());
+        else
+            nup = QSize(option.at(1).toInt(), option.at(2).toInt());
+
         pdfJam->exportFile(fileIndices.at(selectedIndex), fileWidgets.at(selectedIndex)->getChildCount(), fileName,
-                           QSize(option.at(1).toInt(), option.at(2).toInt()),
+                           nup,
                            option.at(0).toBool(), option.at(5).toBool(),
                            option.at(3).toInt(), option.at(4).toInt());
-
 
         QMessageBox::information(this, tr("PDFFactory"), tr("Exported succesfully to\n%1.").arg(fileName));
     }
 }
 
 void PDFExportDialog::btnSaveAllClicked() {
+    PDFJam *pdfJam = new PDFJam();
+    bool ok;
+    for (int i = 0; i < fileNames.size(); i++) {
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                                        tr("Save PDF file"), ".",
+                                                        tr("PDF file (*.pdf)"));
 
+        QSize nup;
+        if (chkLandscape->isChecked())
+            nup = QSize(txtCol->text().toInt(&ok), txtRow->text().toInt(&ok));
+        else
+            nup = QSize(txtRow->text().toInt(&ok), txtCol->text().toInt(&ok));
+
+        if (!fileName.isEmpty()) {
+            pdfJam->exportFile(fileIndices.at(i), fileWidgets.at(i)->getChildCount(), fileName,
+                               nup,
+                               chkLandscape->isChecked(), chkTwoSideOffset->isChecked(),
+                               txtLeftOffset->text().toInt(&ok), txtRightOffset->text().toInt(&ok));
+            QMessageBox::information(this, tr("PDFFactory"), tr("Exported succesfully to\n%1.").arg(fileName));
+        }
+    }
 }
 
 void PDFExportDialog::btnCancelClicked() {
