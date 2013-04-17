@@ -41,7 +41,8 @@ class PDFTableWidget: public QFrame
         QHash<QString, PDFPageWidget*> pageChilds;
 
     signals:
-        void previewUpdate(Poppler::Page*);
+        void previewUpdate(Poppler::Page*, Poppler::Page::Rotation);
+        void checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation);
 
     private slots:
         void fileRemoveButtonClicked(PDFFileWidget*);
@@ -68,6 +69,7 @@ class PDFTableWidget: public QFrame
         void deletePage(PDFPageWidget* page);
         void copyPage(PDFPageWidget* page);
         void pastePage(PDFFileWidget* file, int pageID);
+        void rotatePage(PDFPageWidget* page);
         bool hasClipboard(){ return copiedPages.size() > 0; }
 
 };

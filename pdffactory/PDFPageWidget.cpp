@@ -1,5 +1,6 @@
 #include <QtGlobal>
 #include <QtGui>
+#include "ThumbGen.h"
 #include "PDFPageWidget.h"
 #include "PDFTableWidget.h"
 
@@ -7,6 +8,7 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QFrame(parent)
 {
     selected = false;
+    rotation = 0;
     setAcceptDrops(true);
 
     this->resize(150, 150);
@@ -29,8 +31,6 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     btnDelete->setIcon(QPixmap::fromImage(QImage("images/remove.png")));
     btnDelete->hide();
     topHBox->addWidget(btnDelete, 1, Qt::AlignRight);
-
-
 
     QHBoxLayout *bottomHBox = new QHBoxLayout();
     btnCut = new QPushButton("", this);
@@ -57,20 +57,42 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
 void PDFPageWidget::setAncestor(QWidget* ancestor){
     this->ancestor = ancestor;
     ((PDFTableWidget*)ancestor)->registerPage(this);
-    connect(this, SIGNAL(previewUpdate(Poppler::Page*)), ancestor, SIGNAL(previewUpdate(Poppler::Page*)));
     connect(this, SIGNAL(pageClicked(PDFPageWidget*, QMouseEvent*, QString)), ancestor, SLOT(pageClicked(PDFPageWidget*, QMouseEvent*, QString)));
     connect(this, SIGNAL(pageDropped(PDFPageWidget*, QDropEvent*, QString, QString)), ancestor, SLOT(pageDropped(PDFPageWidget*, QDropEvent*, QString, QString)));
     connect(btnDelete, SIGNAL(clicked()), this, SLOT(pageDelete()));
     connect(btnCopy, SIGNAL(clicked()), this, SLOT(pageCopy()));
+    connect(btnRotate, SIGNAL(clicked()), this, SLOT(pageRotate()));
 }
 
 void PDFPageWidget::pageDelete(){
     ((PDFTableWidget*)ancestor)->deletePage(this);
 }
+
 void PDFPageWidget::pageCopy(){
     ((PDFTableWidget*)ancestor)->copyPage(this);
 }
 
+void PDFPageWidget::pageRotate(){
+    ((PDFTableWidget*)ancestor)->rotatePage(this);
+}
+
+void PDFPageWidget::rotate90() {
+    rotation += 90;
+    if (rotation == 360) rotation = 0;
+
+    ThumbGen *tgen = new ThumbGen();
+    double dpi=tgen->calcDpi(pPage,size());
+
+    image = pPage->renderToImage(dpi, dpi, -1, -1, -1, -1, getRotation());
+    setThumbnail(image);
+}
+
+Poppler::Page::Rotation PDFPageWidget::getRotation() {
+    if (rotation == 0) return Poppler::Page::Rotate0;
+    else if (rotation == 90) return Poppler::Page::Rotate90;
+    else if (rotation == 180) return Poppler::Page::Rotate180;
+    else if (rotation == 270) return Poppler::Page::Rotate270;
+}
 
 void PDFPageWidget::setFather(QWidget *father){
     this->father = father;
@@ -96,7 +118,6 @@ void PDFPageWidget::setSelected(bool select) {
 void PDFPageWidget::mousePressEvent(QMouseEvent *event) {
     if (pPage!=NULL){
         emit pageClicked(this, event, path);
-        emit previewUpdate(pPage);
     }
 }
 

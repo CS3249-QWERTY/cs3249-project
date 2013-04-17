@@ -26,7 +26,7 @@ void PDFPreviewWidget::regenImage() {
     dpi2= targetSize.width()/(float)oriSize.width()*oriDpi;
     dpi = dpi<dpi2?dpi:dpi2;
 
-    previewImage = pPage->renderToImage(dpi,dpi);
+    previewImage = pPage->renderToImage(dpi,dpi, -1, -1, -1, -1, rotation);
 }
 
 void PDFPreviewWidget::regenPixmap() {
@@ -39,12 +39,19 @@ void PDFPreviewWidget::repositionPixmap() {
     currentPixmapPos = QPoint((size().width() - pixmap.width()) / 2, (size().height() - pixmap.height()) / 2);
 }
 
-void PDFPreviewWidget::previewUpdate(Poppler::Page* pp) {
+void PDFPreviewWidget::previewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
     pPage = pp;
+    this->rotation = rotation;
     regenImage();
     regenPixmap();
     repositionPixmap();
     update();
+}
+
+void PDFPreviewWidget::checkPreviewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
+    if (pPage != NULL && pPage == pp) {
+        previewUpdate(pp, rotation);
+    }
 }
 
 void PDFPreviewWidget::resizeEvent(QResizeEvent *event) {

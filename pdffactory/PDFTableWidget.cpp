@@ -145,6 +145,7 @@ void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QStr
         } else {
             if (!sender->isSelected()) {
                 sender->setSelected(true);
+                emit previewUpdate(sender->getPage(), sender->getRotation());
 
                 PDFFileWidget* senderF = (PDFFileWidget*)sender->getFather();
                 int senderPID = senderF->indexChild(sender);
@@ -233,6 +234,11 @@ void PDFTableWidget::pastePage(PDFFileWidget* file, int pageID){
 
         file->insertChildAt(pageWidget,pageID);
     }
+}
+
+void PDFTableWidget::rotatePage(PDFPageWidget* page) {
+    page->rotate90();
+    emit checkPreviewUpdate(page->getPage(), page->getRotation());
 }
 
 void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){

@@ -50,7 +50,8 @@ void PDFFactory::createWidgets()
     splitter->setStretchFactor(1, 0.5);
     layout->addWidget(splitter);
 
-    connect(pdfTableView, SIGNAL(previewUpdate(Poppler::Page*)), pdfPreview, SLOT(previewUpdate(Poppler::Page*)));
+    connect(pdfTableView, SIGNAL(previewUpdate(Poppler::Page*, Poppler::Page::Rotation)), pdfPreview, SLOT(previewUpdate(Poppler::Page*, Poppler::Page::Rotation)));
+    connect(pdfTableView, SIGNAL(checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation)), pdfPreview, SLOT(checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation)));
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));
     setWindowTitle(tr("PDF Factory"));

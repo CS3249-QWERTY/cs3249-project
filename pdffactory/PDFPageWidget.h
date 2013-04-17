@@ -28,6 +28,8 @@ public:
     void setPopplerPage(Poppler::Page*);
     void setAncestor(QWidget *ancestor);
     void setFather(QWidget *father);
+    void rotate90();
+    Poppler::Page::Rotation getRotation();
     QWidget* getFather() const { return father;}
     void registerName(QString name) { path = name;}
     QString getName() { return path;}
@@ -36,6 +38,7 @@ public:
     bool isSelected() {return selected;}
 
     Poppler::Page* getPage(){return pPage;}
+
 protected:
     void paintEvent(QPaintEvent *event);
     void enterEvent(QEvent *event);
@@ -55,15 +58,18 @@ private:
     QPixmap          pixmap;
     QPushButton     *btnRotate, *btnCut, *btnCopy, *btnDelete;
 
+    int             rotation;
+
     bool selected;
 
 signals:
     void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
     void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
-    void previewUpdate(Poppler::Page* );
+
 private slots:
     void pageDelete();
     void pageCopy();
+    void pageRotate();
 };
 
 #endif // PDFPAGEWIDGET_H

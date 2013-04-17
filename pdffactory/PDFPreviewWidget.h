@@ -23,7 +23,8 @@ public slots:
     void regenImage();
     void regenPixmap();
     void repositionPixmap();
-    void previewUpdate(Poppler::Page*);
+    void previewUpdate(Poppler::Page*, Poppler::Page::Rotation);
+    void checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation);
 
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -33,10 +34,13 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
+public:
+    Poppler::Page* pPage;
+
 private:
     QImage previewImage;
     QPixmap pixmap;
-    Poppler::Page* pPage;
+    Poppler::Page::Rotation rotation;
 
     QSize currentPixmapSize;
     QPoint currentPixmapPos;

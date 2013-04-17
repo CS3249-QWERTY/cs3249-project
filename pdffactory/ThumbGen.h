@@ -23,9 +23,7 @@ protected:
 
         QMutex mutex;
 
-
-
-private:
+public:
         double calcDpi(Poppler::Page *pdfPage, QSize targetSize);
 
 signals:
