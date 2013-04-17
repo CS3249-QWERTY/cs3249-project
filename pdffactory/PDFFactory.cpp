@@ -161,5 +161,11 @@ void PDFFactory::openFile() {
 
 void PDFFactory::exportFile() {
     PDFExportDialog *exportDialog = new PDFExportDialog();
-    exportDialog->show();
+
+    QVector<PDFFileWidget*> selectedFiles = pdfTableView->getSelectedFiles();
+    if (selectedFiles.size() > 0) {
+        exportDialog->setFilesToExport(selectedFiles, pdfTableView->getSelectedFileNames(), pdfTableView->getSelectedIndices());
+        exportDialog->show();
+    }
+
 }

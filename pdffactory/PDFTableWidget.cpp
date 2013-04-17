@@ -63,6 +63,16 @@ QVector<int> PDFTableWidget::getSelectedIndices() {
     for (int i = 0; i < selectedFiles.size(); i++) {
         retVector.append(fileWidgets.indexOf(selectedFiles.at(i)));
     }
+    return retVector;
+}
+
+QVector<QString> PDFTableWidget::getSelectedFileNames() {
+    QVector<QString> retVector;
+    QVector<int> indices = getSelectedIndices();
+    for (int i = 0; i < indices.size(); i++) {
+        retVector.append(fileNames.at(indices.at(i)));
+    }
+    return retVector;
 }
 
 void PDFTableWidget::registerPage(PDFPageWidget* child){

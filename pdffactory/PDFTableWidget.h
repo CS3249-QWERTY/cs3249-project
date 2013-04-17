@@ -57,6 +57,7 @@ class PDFTableWidget: public QFrame
     public:
         QVector<PDFFileWidget*> getSelectedFiles();
         QVector<int> getSelectedIndices();
+        QVector<QString> getSelectedFileNames();
 
         //bool operator()(PDFPageWidget* e1, PDFPageWidget* e2);
 
