@@ -132,15 +132,26 @@ void PDFTableWidget::pageClicked(PDFPageWidget *sender, QMouseEvent* event, QStr
     if (event->button() == Qt::LeftButton){
         // Handle selection
         if (selectedPages.size() > 0 && event->modifiers() != Qt::ControlModifier) {
-            // Handle drag
-            QDrag *drag = new QDrag(this);
-            QMimeData *mimeData = new QMimeData;
 
-            mimeData->setText(path);
-            drag->setMimeData(mimeData);
-            drag->setPixmap(QPixmap(":/images/copy.png"));
+            if (sender->isSelected() ){
+                QDrag *drag = new QDrag(this);
+                QMimeData *mimeData = new QMimeData;
 
-            drag->exec();
+                mimeData->setText(path);
+                drag->setMimeData(mimeData);
+                drag->setPixmap(QPixmap(":/images/copy.png"));
+
+                drag->exec();
+            }else {
+                for (int i = 0; i < selectedPages.size(); i++) {
+                    selectedPages.at(i)->setSelected(false);
+                }
+                selectedPages.clear();
+                sender->setSelected(true);
+
+                selectedPages.insert(0,sender);
+                emit previewUpdate(sender->getPage(), sender->getRotation());
+            }
 
         } else {
             if (!sender->isSelected()) {
