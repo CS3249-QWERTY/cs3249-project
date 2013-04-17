@@ -125,18 +125,15 @@ void PDFTableWidget::fileClicked(PDFFileWidget* sender, QMouseEvent* event) {
 }
 
 void PDFTableWidget::fileRemoveButtonClicked(PDFFileWidget* sender) {
-    selectedFiles.remove(selectedFiles.indexOf(sender));
+    if (selectedFiles.indexOf(sender) > 0)
+        selectedFiles.remove(selectedFiles.indexOf(sender));
 
-    QVector<int> pagesToRemove;
-    for (int i = 0; i < selectedPages.size(); i++) {
-        if (selectedPages.at(i)->getFather() == sender) {
-            pagesToRemove.append(i);
-        }
-    }
-
-    for (int i = 0; i < pagesToRemove.size(); i++) {
-        selectedPages.at(pagesToRemove.at(i))->setSelected(false);
-        selectedPages.remove(pagesToRemove.at(i));
+    for (int i = 0; i < sender->getChildCount(); i++) {
+        PDFPageWidget *pageWidget = sender->pagesContainerWidget->pageWidgets.at(i);
+        pageWidget->setSelected(false);
+        emit checkPagePreviewExisted(pageWidget->getPage());
+        if (selectedPages.indexOf(pageWidget) > 0)
+            selectedPages.remove(selectedPages.indexOf(pageWidget));
     }
 
     // Handle remove file
@@ -216,6 +213,8 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, PDFPageWidget* page){
 }
 
 void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
+    emit checkPagePreviewExisted(pageWidget->getPage());
+
     PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
     int pageID = daddy->indexChild(pageWidget);
@@ -233,6 +232,7 @@ void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
     }
     pageChilds.remove(pageWidget->getName());
 
+
     // PLS ACTIVATE THIS LINE ONCE EVERYTHING HAS BEEN FIXED
     // :D :D :D :D :D :D
     //delete page;
@@ -249,7 +249,6 @@ void PDFTableWidget::cutPage(PDFPageWidget* pageWidget){
     int pageID = daddy->indexChild(pageWidget);
 
     pdfJam.cutPage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID, id);
-
 }
 
 void PDFTableWidget::clearClipboard(){

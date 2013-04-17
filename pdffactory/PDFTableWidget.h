@@ -43,6 +43,7 @@ private:
 signals:
     void previewUpdate(Poppler::Page*, Poppler::Page::Rotation);
     void checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation);
+    void checkPagePreviewExisted(Poppler::Page*);
 
 private slots:
     void fileRemoveButtonClicked(PDFFileWidget*);

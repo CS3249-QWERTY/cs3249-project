@@ -25,6 +25,7 @@ public slots:
     void repositionPixmap();
     void previewUpdate(Poppler::Page*, Poppler::Page::Rotation);
     void checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation);
+    void checkPagePreviewExisted(Poppler::Page*);
 
 protected:
     void wheelEvent(QWheelEvent *event);

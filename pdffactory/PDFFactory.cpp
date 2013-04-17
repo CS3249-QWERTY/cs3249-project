@@ -52,6 +52,7 @@ void PDFFactory::createWidgets()
 
     connect(pdfTableView, SIGNAL(previewUpdate(Poppler::Page*, Poppler::Page::Rotation)), pdfPreview, SLOT(previewUpdate(Poppler::Page*, Poppler::Page::Rotation)));
     connect(pdfTableView, SIGNAL(checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation)), pdfPreview, SLOT(checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation)));
+    connect(pdfTableView, SIGNAL(checkPagePreviewExisted(Poppler::Page*)), pdfPreview, SLOT(checkPagePreviewExisted(Poppler::Page*)));
 
     setWindowIcon(QIcon(":/images/pdffactory.png"));
     setWindowTitle(tr("PDF Factory"));

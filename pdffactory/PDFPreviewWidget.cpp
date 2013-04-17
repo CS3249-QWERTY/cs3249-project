@@ -54,6 +54,17 @@ void PDFPreviewWidget::checkPreviewUpdate(Poppler::Page* pp, Poppler::Page::Rota
     }
 }
 
+void PDFPreviewWidget::checkPagePreviewExisted(Poppler::Page* pp) {
+    if (pPage != NULL && pPage == pp) {
+        pPage = NULL;
+        rotation = Poppler::Page::Rotate0;
+
+        QPainter painter(this);
+        painter.drawPixmap(QRect(0, 0, 0, 0), pixmap);
+        update();
+    }
+}
+
 void PDFPreviewWidget::resizeEvent(QResizeEvent *event) {
     if (pPage!=NULL) {
         repositionPixmap();
