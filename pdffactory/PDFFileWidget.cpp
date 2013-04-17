@@ -35,9 +35,11 @@ void PagesContainerWidget::ShowContextMenu(const QPoint& pos){
         if (selectedItem)
         {
             int page = (pos.x() / 169);
-/*
-            for (int i = 0;i< pageWidgets.size();i++)
-                qDebug() << pageWidgets.at(i)->geometry();*/
+            if (pageWidgets.size()>=2)
+                page = (pos.x() / (pageWidgets.at(1)->geometry().x() -
+                            pageWidgets.at(0)->geometry().x()) );
+            else //guess
+                page = (pos.x() / 169 );
 
 
             PDFTableWidget *grandpa = (PDFTableWidget*) ancestor;
