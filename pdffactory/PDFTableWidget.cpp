@@ -84,6 +84,21 @@ void PDFTableWidget::registerPage(PDFPageWidget* child){
     child->registerName(name);
 }
 
+void PDFTableWidget::copySelected(){
+    for (int i = 0;i<selectedPages.size();i++)
+        copyPage(selectedPages.at(i));
+}
+void PDFTableWidget::cutSelected(){
+    for (int i = 0;i<selectedPages.size();i++){
+        cutPage(selectedPages.at(i));
+        i=-1;
+    }
+}
+void PDFTableWidget::deleteSelected(){
+    for (int i = 0;i<selectedPages.size();i++)
+        deletePage(selectedPages.at(i));
+}
+
 void PDFTableWidget::fileClicked(PDFFileWidget* sender, QMouseEvent* event) {
     if (event->button() == Qt::LeftButton){
         if (event->modifiers() != Qt::ControlModifier) {

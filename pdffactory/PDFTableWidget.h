@@ -20,61 +20,66 @@ class PDFFileWidget;
 class PDFTableWidget: public QFrame
 {
     Q_OBJECT
-    public:
-        PDFTableWidget(QWidget *parent = 0);
-        void loadFile (QString fileName);
-        void registerPage(PDFPageWidget *child);
+public:
+    PDFTableWidget(QWidget *parent = 0);
+    void loadFile (QString fileName);
+    void registerPage(PDFPageWidget *child);
 
-    public:
-        PDFJam pdfJam;
+public:
+    PDFJam pdfJam;
 
-    private:
-        QVBoxLayout     *outerLayout;
-        QScrollArea     *scrollArea;
-        QWidget         *containerWidget;
-        QVBoxLayout     *containerLayout;
+private:
+    QVBoxLayout     *outerLayout;
+    QScrollArea     *scrollArea;
+    QWidget         *containerWidget;
+    QVBoxLayout     *containerLayout;
 
-        QVector<Poppler::Document*> files;
-        QVector<QString>            fileNames;
-        QVector<PDFFileWidget*>     fileWidgets;
+    QVector<Poppler::Document*> files;
+    QVector<QString>            fileNames;
+    QVector<PDFFileWidget*>     fileWidgets;
 
-        QHash<QString, PDFPageWidget*> pageChilds;
+    QHash<QString, PDFPageWidget*> pageChilds;
 
-    signals:
-        void previewUpdate(Poppler::Page*, Poppler::Page::Rotation);
-        void checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation);
+signals:
+    void previewUpdate(Poppler::Page*, Poppler::Page::Rotation);
+    void checkPreviewUpdate(Poppler::Page*, Poppler::Page::Rotation);
 
-    private slots:
-        void fileRemoveButtonClicked(PDFFileWidget*);
-        void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
-        void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
+private slots:
+    void fileRemoveButtonClicked(PDFFileWidget*);
+    void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
+    void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
 
-        void fileClicked(PDFFileWidget*, QMouseEvent*);
+    void fileClicked(PDFFileWidget*, QMouseEvent*);
 
-    public slots:
-        void rotateSelectedPages();
+public slots:
+    void rotateSelectedPages();
 
-    private:
-        QVector<PDFPageWidget*> selectedPages;
-        QVector<PDFFileWidget*> selectedFiles;
+private:
+    QVector<PDFPageWidget*> selectedPages;
+    QVector<PDFFileWidget*> selectedFiles;
 
-        QVector<PDFPageWidget*> copiedPages;
-    public:
-        QVector<PDFFileWidget*> getSelectedFiles();
-        QVector<int> getSelectedIndices();
-        QVector<QString> getSelectedFileNames();
+    QVector<PDFPageWidget*> copiedPages;
+public:
+    QVector<PDFFileWidget*> getSelectedFiles();
+    QVector<int> getSelectedIndices();
+    QVector<QString> getSelectedFileNames();
 
-        //bool operator()(PDFPageWidget* e1, PDFPageWidget* e2);
+    //bool operator()(PDFPageWidget* e1, PDFPageWidget* e2);
 
-    public:
-        void moveSelectedPages(QString, QString);
-        void moveSelectedPages(QString, PDFPageWidget* page);
-        void deletePage(PDFPageWidget* pageWidget);
-        void copyPage(PDFPageWidget* pageWidget);
-        void pastePage(PDFFileWidget* fileWidget, int pageID);
-        void rotatePage(PDFPageWidget* pageWidget);
-        void cutPage(PDFPageWidget* pageWidget);
-        void clearClipboard();
-        bool hasClipboard(){ return copiedPages.size() > 0; }
+public:
+    void moveSelectedPages(QString, QString);
+    void moveSelectedPages(QString, PDFPageWidget* page);
+    void deletePage(PDFPageWidget* pageWidget);
+    void copyPage(PDFPageWidget* pageWidget);
+    void pastePage(PDFFileWidget* fileWidget, int pageID);
+    void rotatePage(PDFPageWidget* pageWidget);
+    void cutPage(PDFPageWidget* pageWidget);
+    void clearClipboard();
+    bool hasClipboard(){ return copiedPages.size() > 0; }
+
+public slots:
+    void copySelected();
+    void cutSelected();
+    void deleteSelected();
 };
 #endif

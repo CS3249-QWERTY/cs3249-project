@@ -83,13 +83,13 @@ void PDFFactory::createActions()
     cutAction->setIcon(QIcon(":/images/cut.png"));
     cutAction->setShortcut(tr("Ctrl+X"));
     cutAction->setStatusTip(tr("Cut selected contents to clipboard"));
-    //connect(cutAction, SIGNAL(triggered()), textEdit, SLOT(cut()));
+    connect(cutAction, SIGNAL(triggered()), pdfTableView, SLOT(cutSelected()));
 
     copyAction = new QAction(tr("&Copy"), this);
     copyAction->setIcon(QIcon(":/images/copy.png"));
     copyAction->setShortcut(tr("Ctrl+C"));
     copyAction->setStatusTip(tr("Copy selected contents to clipboard"));
-    //connect(copyAction, SIGNAL(triggered()), textEdit, SLOT(copy()));
+    connect(copyAction, SIGNAL(triggered()), pdfTableView, SLOT(copySelected()));
 
     pasteAction = new QAction(tr("&Paste"), this);
     pasteAction->setIcon(QIcon(":/images/paste.png"));
