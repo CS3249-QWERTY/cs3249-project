@@ -129,10 +129,10 @@ void PDFExportDialog::btnSaveClicked() {
         else
             nup = QSize(option.at(1).toInt(), option.at(2).toInt());
 
-        pdfJam->exportFile(fileIndices.at(selectedIndex), fileWidgets.at(selectedIndex)->getChildCount(), fileName,
-                           nup,
-                           option.at(0).toBool(), option.at(5).toBool(),
-                           option.at(3).toInt(), option.at(4).toInt());
+        //pdfJam->exportFile(fileIndices.at(selectedIndex), fileWidgets.at(selectedIndex)->getChildCount(), fileName,
+                           //nup,
+                           //option.at(0).toBool(), option.at(5).toBool(),
+                           //option.at(3).toInt(), option.at(4).toInt());
 
         QMessageBox::information(this, tr("PDFFactory"), tr("Exported succesfully to\n%1.").arg(fileName));
     }
@@ -153,10 +153,10 @@ void PDFExportDialog::btnSaveAllClicked() {
             nup = QSize(txtRow->text().toInt(&ok), txtCol->text().toInt(&ok));
 
         if (!fileName.isEmpty()) {
-            pdfJam->exportFile(fileIndices.at(i), fileWidgets.at(i)->getChildCount(), fileName,
-                               nup,
-                               chkLandscape->isChecked(), chkTwoSideOffset->isChecked(),
-                               txtLeftOffset->text().toInt(&ok), txtRightOffset->text().toInt(&ok));
+            //pdfJam->exportFile(fileIndices.at(i), fileWidgets.at(i)->getChildCount(), fileName,
+                               //nup,
+                               //chkLandscape->isChecked(), chkTwoSideOffset->isChecked(),
+                               //txtLeftOffset->text().toInt(&ok), txtRightOffset->text().toInt(&ok));
             QMessageBox::information(this, tr("PDFFactory"), tr("Exported succesfully to\n%1.").arg(fileName));
         }
     }
