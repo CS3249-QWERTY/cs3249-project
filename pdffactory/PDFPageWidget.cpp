@@ -26,7 +26,7 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
 
     btnDelete = new QPushButton("", this);
     btnDelete->setObjectName("rotate");
-    btnDelete->setIcon(QPixmap::fromImage(QImage("images/rotate.png")));
+    btnDelete->setIcon(QPixmap::fromImage(QImage("images/remove.png")));
     btnDelete->hide();
     topHBox->addWidget(btnDelete, 1, Qt::AlignRight);
 
