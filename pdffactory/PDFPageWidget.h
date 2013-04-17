@@ -25,7 +25,9 @@ public:
     QSize sizeHint() const;
 
     void setThumbnail(QImage pageImage);
+    void setOriginInfo(QString path,int num){pageNo = num;oriFilePath=path;};
     void setPopplerPage(Poppler::Page*);
+    void setThumbPopplerPage(Poppler::Page*);
     void setAncestor(QWidget *ancestor);
     void setFather(QWidget *father);
     void rotate90();
@@ -33,11 +35,15 @@ public:
     QWidget* getFather() const { return father;}
     void registerName(QString name) { path = name;}
     QString getName() { return path;}
+    int getPageNo() { return pageNo;}
+    QString getOriFilePath() { return oriFilePath;}
+    Poppler::Page* getNewThumbPopplerPage();
 
     void setSelected(bool select);
     bool isSelected() {return selected;}
 
-    Poppler::Page* getPage(){return pPage;}
+    Poppler::Page* getPage(){return previewPage;}
+    Poppler::Page* getThumbPage(){return thumbPage;}
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -50,11 +56,13 @@ protected:
 private:
     //QVector<QPushButton> buttons;
     QString         path;
+    int             pageNo;
+    QString         oriFilePath;
     QWidget         *ancestor;
     QWidget         *father;
 
     QImage           image;
-    Poppler::Page   *pPage;
+    Poppler::Page   *previewPage,*thumbPage;
     QPixmap          pixmap;
     QPushButton     *btnRotate, *btnCut, *btnCopy, *btnDelete;
 

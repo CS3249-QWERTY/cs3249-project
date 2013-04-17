@@ -66,6 +66,7 @@ void PDFPageWidget::setAncestor(QWidget* ancestor){
 }
 
 void PDFPageWidget::pageCut(){
+    ((PDFTableWidget*)ancestor)->clearClipboard();
     ((PDFTableWidget*)ancestor)->cutPage(this);
 }
 
@@ -74,6 +75,7 @@ void PDFPageWidget::pageDelete(){
 }
 
 void PDFPageWidget::pageCopy(){
+    ((PDFTableWidget*)ancestor)->clearClipboard();
     ((PDFTableWidget*)ancestor)->copyPage(this);
 }
 
@@ -86,9 +88,9 @@ void PDFPageWidget::rotate90() {
     if (rotation == 360) rotation = 0;
 
     ThumbGen *tgen = new ThumbGen();
-    double dpi=tgen->calcDpi(pPage,size());
+    double dpi=tgen->calcDpi(thumbPage,size());
 
-    image = pPage->renderToImage(dpi, dpi, -1, -1, -1, -1, getRotation());
+    image = thumbPage->renderToImage(dpi, dpi, -1, -1, -1, -1, getRotation());
     setThumbnail(image);
 }
 
@@ -104,8 +106,17 @@ void PDFPageWidget::setFather(QWidget *father){
 }
 
 void PDFPageWidget::setPopplerPage(Poppler::Page* pp) {
-    pPage = pp;
+    previewPage = pp;
 }
+Poppler::Page* PDFPageWidget::getNewThumbPopplerPage(){
+    Poppler::Document *thumbDoc = Poppler::Document::load(oriFilePath);
+    thumbDoc->setRenderHint(Poppler::Document::TextAntialiasing);
+    return thumbDoc->page(pageNo);
+}
+void PDFPageWidget::setThumbPopplerPage(Poppler::Page* pp) {
+    thumbPage = pp;
+}
+
 
 void PDFPageWidget::setThumbnail(QImage pageImage) {
     image = pageImage;
@@ -121,7 +132,7 @@ void PDFPageWidget::setSelected(bool select) {
 }
 
 void PDFPageWidget::mousePressEvent(QMouseEvent *event) {
-    if (pPage!=NULL){
+    if (previewPage!=NULL){
         emit pageClicked(this, event, path);
     }
 }
