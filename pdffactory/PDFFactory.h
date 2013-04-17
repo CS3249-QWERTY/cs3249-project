@@ -26,7 +26,7 @@ protected:
 private slots:
     void openFile();
     void exportFile();
-    //bool exportAllFiles();
+    void exportAllFiles();
 
 private:
     void createWidgets();

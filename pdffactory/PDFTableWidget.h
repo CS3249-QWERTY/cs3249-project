@@ -65,7 +65,9 @@ public:
     QVector<int> getSelectedIndices();
     QVector<QString> getSelectedFileNames();
 
-    //bool operator()(PDFPageWidget* e1, PDFPageWidget* e2);
+    QVector<PDFFileWidget*> getVisibleFiles();
+    QVector<int> getVisibleIndices();
+    QVector<QString> getVisibleFileNames();
 
 public:
     void moveSelectedPages(QString, QString);

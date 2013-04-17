@@ -78,7 +78,7 @@ void PDFFactory::createActions()
     exportAllAction->setIcon(QIcon(":/images/exportall.png"));
     exportAllAction->setShortcut(tr("Shift+Ctrl+S"));
     exportAllAction->setStatusTip(tr("Export all to multiple PDF files"));
-    //connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveAs()));
+    connect(exportAllAction, SIGNAL(triggered()), this, SLOT(exportAllFiles()));
 
     cutAction = new QAction(tr("C&ut"), this);
     cutAction->setIcon(QIcon(":/images/cut.png"));
@@ -193,5 +193,15 @@ void PDFFactory::exportFile() {
         exportDialog->setFilesToExport(selectedFiles, pdfTableView->getSelectedFileNames(), pdfTableView->getSelectedIndices());
         exportDialog->show();
     }
+}
 
+void PDFFactory::exportAllFiles() {
+    PDFExportDialog *exportDialog = new PDFExportDialog();
+
+    QVector<PDFFileWidget*> visibleFiles = pdfTableView->getVisibleFiles();
+
+    if (visibleFiles.size() > 0) {
+        exportDialog->setFilesToExport(visibleFiles, pdfTableView->getVisibleFileNames(), pdfTableView->getVisibleIndices());
+        exportDialog->show();
+    }
 }

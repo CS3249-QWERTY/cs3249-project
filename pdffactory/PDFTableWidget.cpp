@@ -75,6 +75,33 @@ QVector<QString> PDFTableWidget::getSelectedFileNames() {
     return retVector;
 }
 
+QVector<PDFFileWidget*> PDFTableWidget::getVisibleFiles() {
+    QVector<PDFFileWidget*> retVector;
+    for (int i = 0; i < fileWidgets.size(); i++) {
+        if (fileWidgets.at(i)->isVisible())
+            retVector.append(fileWidgets.at(i));
+    }
+    return retVector;
+}
+
+QVector<int> PDFTableWidget::getVisibleIndices() {
+    QVector<int> retVector;
+    QVector<PDFFileWidget*> visibleFiles = getVisibleFiles();
+    for (int i = 0; i < visibleFiles.size(); i++) {
+        retVector.append(fileWidgets.indexOf(visibleFiles.at(i)));
+    }
+    return retVector;
+}
+
+QVector<QString> PDFTableWidget::getVisibleFileNames() {
+    QVector<QString> retVector;
+    QVector<int> indices = getVisibleIndices();
+    for (int i = 0; i < indices.size(); i++) {
+        retVector.append(fileNames.at(indices.at(i)));
+    }
+    return retVector;
+}
+
 void PDFTableWidget::registerPage(PDFPageWidget* child){
     //come up with a new name here
     QString name = QString("/home/pdfpage").append(QString::number(pageChilds.size()));
