@@ -62,6 +62,11 @@ void PDFPageWidget::setAncestor(QWidget* ancestor){
     connect(btnDelete, SIGNAL(clicked()), this, SLOT(pageDelete()));
     connect(btnCopy, SIGNAL(clicked()), this, SLOT(pageCopy()));
     connect(btnRotate, SIGNAL(clicked()), this, SLOT(pageRotate()));
+    connect(btnCut, SIGNAL(clicked()), this, SLOT(pageCut()));
+}
+
+void PDFPageWidget::pageCut(){
+    ((PDFTableWidget*)ancestor)->cutPage(this);
 }
 
 void PDFPageWidget::pageDelete(){

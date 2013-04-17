@@ -70,6 +70,7 @@ class PDFTableWidget: public QFrame
         void copyPage(PDFPageWidget* pageWidget);
         void pastePage(PDFFileWidget* fileWidget, int pageID);
         void rotatePage(PDFPageWidget* pageWidget);
+        void cutPage(PDFPageWidget* pageWidget);
         bool hasClipboard(){ return copiedPages.size() > 0; }
 
 };

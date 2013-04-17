@@ -70,6 +70,7 @@ private slots:
     void pageDelete();
     void pageCopy();
     void pageRotate();
+    void pageCut();
 };
 
 #endif // PDFPAGEWIDGET_H
