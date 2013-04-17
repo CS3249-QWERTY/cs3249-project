@@ -59,17 +59,16 @@ void PDFJam::cutPage(int fileIndex,int numPages, int pageIndex,int slot=0) {
         return ;
     }
 
-    copyPage(fileIndex,numPages,pageIndex,slot);
+    copyPage(fileIndex,pageIndex,slot);
     removePage(fileIndex,numPages,pageIndex);
 
 }
-void PDFJam::copyPage(int fileIndex,int numPages, int pageIndex,int slot=0){
+void PDFJam::copyPage(int fileIndex,int pageIndex,int slot=0){
     QString cpTemp = "cp /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/clipboard%3.pdf";
     QString cmd = cpTemp.arg(QString::number(fileIndex)).arg(QString::number(pageIndex)).arg(QString::number(slot));
     pushCommand(cmd);
 }
 void PDFJam::pastePage(int fileIndex,int numPages, int pageIndex, int slot=0){
-    qDebug()<<"pasting page"<<fileIndex << " " << pageIndex<<slot;
     //TODO: check if clipboard file exists
     QString cmd = "";
     QString mvTemp = "mv /tmp/pdffactory/%1/%2.pdf /tmp/pdffactory/%3/%4.pdf ";

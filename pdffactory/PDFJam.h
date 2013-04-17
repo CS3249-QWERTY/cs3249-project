@@ -20,7 +20,7 @@ public:
     void movePage(int , int , int , int , int , int );
 
     void pastePage(int ,int , int ,int);
-    void copyPage(int ,int , int , int );
+    void copyPage(int , int , int );
     void cutPage(int ,int , int ,int);
 
     bool removePage(int ,int , int );

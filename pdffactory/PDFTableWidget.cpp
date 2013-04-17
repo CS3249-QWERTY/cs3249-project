@@ -167,6 +167,53 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, PDFPageWidget* page){
     moveSelectedPages(pathFrom, page->getName());
 }
 
+void PDFTableWidget::deletePage(PDFPageWidget* page){
+    PDFFileWidget *daddy = (PDFFileWidget*)page->getFather();
+    int daddyID = fileWidgets.indexOf(daddy);
+    int pageID = daddy->indexChild(page);
+
+    pdfJam.removePage(daddyID, daddy->pagesContainerWidget->pageWidgets.size(),pageID);
+    daddy->removeChild(page);
+
+    int spos = selectedPages.indexOf(page);
+    if (spos!=-1){
+        selectedPages.remove(spos);
+    }
+    pageChilds.remove(page->getName());
+
+    // PLS ACTIVATE THIS LINE ONCE EVERYTHING HAS BEEN FIXED
+    // :D :D :D :D :D :D
+    //delete page;
+
+}
+
+void PDFTableWidget::copyPage(PDFPageWidget* page){
+    copiedPages.clear();
+    copiedPages.push_back(page);
+
+    PDFFileWidget *daddy = (PDFFileWidget*)page->getFather();
+    int daddyID = fileWidgets.indexOf(daddy);
+    int pageID = daddy->indexChild(page);
+
+    pdfJam.copyPage(daddyID, pageID,0);
+}
+
+void PDFTableWidget::pastePage(PDFFileWidget* file, int pageID){
+    if (copiedPages.size() > 0){
+        PDFPageWidget* page =copiedPages.at(0);
+
+        PDFPageWidget* pageWidget = new PDFPageWidget();
+        pageWidget->setAncestor(this);
+        pageWidget->setFather(page->getFather());
+        pageWidget->setPopplerPage(page->getPage());
+
+        int fileID = fileWidgets.indexOf(file);
+        pdfJam.pastePage(fileID, file->pagesContainerWidget->pageWidgets.size(), pageID, 0);
+
+        file->insertChildAt(pageWidget,pageID);
+    }
+}
+
 void PDFTableWidget::moveSelectedPages(QString pathFrom, QString pathTo){
     if (selectedPages.size() == 0)
         return;

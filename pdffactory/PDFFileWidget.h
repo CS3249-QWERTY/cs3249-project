@@ -36,6 +36,8 @@ class PagesContainerWidget : public QWidget {
 
         void addPageWidget(PDFPageWidget *pageWidget);
         void setAncestor(QWidget* ancestor){ this-> ancestor = ancestor;}
+        void setFather(QWidget* father){this->father = father;}
+        QWidget* getFather(){return father;}
 
     protected:
         void dragEnterEvent(QDragEnterEvent *event);
@@ -44,6 +46,9 @@ class PagesContainerWidget : public QWidget {
     private:
         int getPagesCount() const;
         QWidget *ancestor;
+        QWidget *father;
+    private slots:
+        void ShowContextMenu(const QPoint&);
 };
 
 // ========================================

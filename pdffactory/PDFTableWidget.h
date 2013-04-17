@@ -54,12 +54,17 @@ class PDFTableWidget: public QFrame
         QVector<PDFPageWidget*> selectedPages;
         QVector<PDFFileWidget*> selectedFiles;
 
+        QVector<PDFPageWidget*> copiedPages;
 
         //bool operator()(PDFPageWidget* e1, PDFPageWidget* e2);
 
     public :
         void moveSelectedPages(QString, QString);
         void moveSelectedPages(QString, PDFPageWidget* page);
+        void deletePage(PDFPageWidget* page);
+        void copyPage(PDFPageWidget* page);
+        void pastePage(PDFFileWidget* file, int pageID);
+        bool hasClipboard(){ return copiedPages.size() > 0; }
 
 };
 #endif

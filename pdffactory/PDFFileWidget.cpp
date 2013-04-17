@@ -17,15 +17,43 @@ PagesContainerWidget::PagesContainerWidget(QWidget *parent) {
     setAcceptDrops(true);
     mainLayout = new QHBoxLayout();
 
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint&)),
+            this, SLOT(ShowContextMenu(const QPoint&)));
+
     setLayout(mainLayout);
 }
+void PagesContainerWidget::ShowContextMenu(const QPoint& pos){
+    // paste exclusive menu
+    if (((PDFTableWidget*)ancestor)->hasClipboard()){
+        QPoint globalPos = this->mapToGlobal(pos);
 
+        QMenu myMenu;
+        myMenu.addAction("Paste");
+
+        QAction* selectedItem = myMenu.exec(globalPos);
+        if (selectedItem)
+        {
+            int page = (pos.x() / (CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH));
+
+            PDFTableWidget *grandpa = (PDFTableWidget*) ancestor;
+            grandpa->pastePage((PDFFileWidget*)father, page);
+        }
+        else
+        {
+            // nothing was chosen
+        }
+    }
+
+}
 int PagesContainerWidget::getPagesCount() const {
     return pageWidgets.size();
 }
 
 QSize PagesContainerWidget::sizeHint() const {
-    return QSize((CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH) * getPagesCount(), CHILD_AREA_HEIGHT + 30);
+    QSize temp = QSize((CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH) * getPagesCount(), CHILD_AREA_HEIGHT + 30);
+    qDebug() << temp;
+    return temp;
 }
 
 void PagesContainerWidget::addPageWidget(PDFPageWidget *pageWidget){
@@ -73,6 +101,7 @@ PDFFileWidget::PDFFileWidget(QWidget *parent):QFrame(parent){
     topLayout->addWidget(removeButton, 0, 2);
 
     pagesContainerWidget = new PagesContainerWidget();
+    pagesContainerWidget->setFather(this);
     scrollArea = new QScrollArea();
     scrollArea->setWidget(pagesContainerWidget);
     scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -167,7 +196,9 @@ void PDFFileWidget::setDocument(Poppler::Document* document, QString fileName){
 int PDFFileWidget::removeChild(PDFPageWidget* child){
     int pos = pagesContainerWidget->pageWidgets.indexOf(child);
     pagesContainerWidget->pageWidgets.remove(pos);
-    pagesContainerWidget->mainLayout->removeItem(pagesContainerWidget->mainLayout->itemAt(pos));
+    pagesContainerWidget->mainLayout->removeWidget(child);
+    child->hide();
+    //pagesContainerWidget->mainLayout->removeItem(pagesContainerWidget->mainLayout->itemAt(pos));
 
     pagesContainerWidget->adjustSize();
     return pos;
@@ -182,6 +213,10 @@ void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
     child->setFather(this);
     pagesContainerWidget->mainLayout->insertWidget(pos, child);
     pagesContainerWidget->pageWidgets.insert(pos,child);
+    tgen.render(child,child->getPage());
+    tgen.start();
+    child->show();
+
 
     pagesContainerWidget->adjustSize();
 }

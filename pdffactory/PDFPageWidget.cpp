@@ -24,6 +24,14 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     btnRotate->hide();
     topHBox->addWidget(btnRotate, 0, Qt::AlignLeft);
 
+    btnDelete = new QPushButton("", this);
+    btnDelete->setObjectName("rotate");
+    btnDelete->setIcon(QPixmap::fromImage(QImage("images/rotate.png")));
+    btnDelete->hide();
+    topHBox->addWidget(btnDelete, 1, Qt::AlignRight);
+
+
+
     QHBoxLayout *bottomHBox = new QHBoxLayout();
     btnCut = new QPushButton("", this);
     btnCut->setObjectName("cut");
@@ -52,7 +60,17 @@ void PDFPageWidget::setAncestor(QWidget* ancestor){
     connect(this, SIGNAL(previewUpdate(Poppler::Page*)), ancestor, SIGNAL(previewUpdate(Poppler::Page*)));
     connect(this, SIGNAL(pageClicked(PDFPageWidget*, QMouseEvent*, QString)), ancestor, SLOT(pageClicked(PDFPageWidget*, QMouseEvent*, QString)));
     connect(this, SIGNAL(pageDropped(PDFPageWidget*, QDropEvent*, QString, QString)), ancestor, SLOT(pageDropped(PDFPageWidget*, QDropEvent*, QString, QString)));
+    connect(btnDelete, SIGNAL(clicked()), this, SLOT(pageDelete()));
+    connect(btnCopy, SIGNAL(clicked()), this, SLOT(pageCopy()));
 }
+
+void PDFPageWidget::pageDelete(){
+    ((PDFTableWidget*)ancestor)->deletePage(this);
+}
+void PDFPageWidget::pageCopy(){
+    ((PDFTableWidget*)ancestor)->copyPage(this);
+}
+
 
 void PDFPageWidget::setFather(QWidget *father){
     this->father = father;
@@ -95,6 +113,7 @@ void PDFPageWidget::leaveEvent(QEvent *event) {
     btnRotate->hide();
     btnCut->hide();
     btnCopy->hide();
+    btnDelete->hide();
 
     this->setFrameStyle(QFrame::Plain);
 }
@@ -103,6 +122,7 @@ void PDFPageWidget::enterEvent(QEvent *event) {
     btnRotate->show();
     btnCut->show();
     btnCopy->show();
+    btnDelete->show();
 
     this->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 }

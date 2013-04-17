@@ -35,6 +35,7 @@ public:
     void setSelected(bool select);
     bool isSelected() {return selected;}
 
+    Poppler::Page* getPage(){return pPage;}
 protected:
     void paintEvent(QPaintEvent *event);
     void enterEvent(QEvent *event);
@@ -52,7 +53,7 @@ private:
     QImage           image;
     Poppler::Page   *pPage;
     QPixmap          pixmap;
-    QPushButton     *btnRotate, *btnCut, *btnCopy;
+    QPushButton     *btnRotate, *btnCut, *btnCopy, *btnDelete;
 
     bool selected;
 
@@ -60,6 +61,9 @@ signals:
     void pageClicked(PDFPageWidget*, QMouseEvent*, QString);
     void pageDropped(PDFPageWidget*, QDropEvent*, QString, QString);
     void previewUpdate(Poppler::Page* );
+private slots:
+    void pageDelete();
+    void pageCopy();
 };
 
 #endif // PDFPAGEWIDGET_H
