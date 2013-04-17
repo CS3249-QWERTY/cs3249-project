@@ -1,15 +1,27 @@
 #include <QtGui>
 #include "PDFPreviewWidget.h"
-
+PreviewGen pgen;
 PDFPreviewWidget::PDFPreviewWidget(QWidget *parent) :
     QFrame(parent)
 {
+
     setCursor(Qt::OpenHandCursor);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     pPage = NULL;
     currentPixmapSize = QSize(0,0);
+    connect(&pgen, SIGNAL(updatePreview(QImage)),
+            this, SLOT(updateImage(QImage)));
+
+
 }
 
+void PDFPreviewWidget::updateImage(QImage qimg) {
+    qDebug() << "received";
+    previewImage = qimg;
+    regenPixmap();
+    repositionPixmap();
+    update();
+}
 void PDFPreviewWidget::regenImage() {
     double dpi;
     double dpi2;
@@ -26,7 +38,11 @@ void PDFPreviewWidget::regenImage() {
     dpi2= targetSize.width()/(float)oriSize.width()*oriDpi;
     dpi = dpi<dpi2?dpi:dpi2;
 
-    previewImage = pPage->renderToImage(dpi,dpi, -1, -1, -1, -1, rotation);
+    //previewImage = pPage->renderToImage(dpi,dpi, -1, -1, -1, -1, rotation);
+    pgen.render(pPage,dpi,rotation);
+    pgen.start();
+
+
 }
 
 void PDFPreviewWidget::regenPixmap() {
@@ -43,9 +59,9 @@ void PDFPreviewWidget::previewUpdate(Poppler::Page* pp, Poppler::Page::Rotation 
     pPage = pp;
     this->rotation = rotation;
     regenImage();
-    regenPixmap();
-    repositionPixmap();
-    update();
+    //regenPixmap();
+    //repositionPixmap();
+    //update();
 }
 
 void PDFPreviewWidget::checkPreviewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
