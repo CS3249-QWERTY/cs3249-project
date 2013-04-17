@@ -113,6 +113,7 @@ void PDFFactory::createActions()
     aboutAction = new QAction(tr("A&bout"), this);
     aboutAction->setIcon(QIcon(":/images/about.png"));
     aboutAction->setStatusTip(tr("About this program"));
+    connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 }
 
 void PDFFactory::createToolBars()
@@ -204,4 +205,8 @@ void PDFFactory::exportAllFiles() {
         exportDialog->setFilesToExport(visibleFiles, pdfTableView->getVisibleFileNames(), pdfTableView->getVisibleIndices());
         exportDialog->show();
     }
+}
+
+void PDFFactory::about() {
+    QMessageBox::information(this, tr("PDFFactory"), tr("PDFFactory version 0.1.0"));
 }
