@@ -15,7 +15,6 @@ class QWheelEvent;
 class QPaintEvent;
 class QMouseEvent;
 class PreviewGen;
-class QDebug;
 
 class PDFPreviewWidget : public QFrame
 {
@@ -52,8 +51,9 @@ private:
     QPoint lastPixmapPos;
     QPoint dragStartPos;
 
-    private slots:
-        void updateImage(QImage);
+private slots:
+    void updateImage(QImage);
+
 signals:
     void updatePreview(QImage);
 };

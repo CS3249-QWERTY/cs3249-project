@@ -222,8 +222,6 @@ void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
     child->setFather(this);
     pagesContainerWidget->mainLayout->insertWidget(pos, child);
     pagesContainerWidget->pageWidgets.insert(pos,child);
-    int rotateTimes = child->getIntRotation()/90;
-    qDebug()<< "roattetimes " << rotateTimes;
     child->show();
 
     pagesContainerWidget->adjustSize();

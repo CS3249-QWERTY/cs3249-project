@@ -241,7 +241,8 @@ void PDFTableWidget::moveSelectedPages(QString pathFrom, PDFPageWidget* page){
 }
 
 void PDFTableWidget::deletePageSkipSelection(PDFPageWidget* pageWidget){
-    emit checkPagePreviewExisted(pageWidget->getPage());
+    if (pageWidget->isSelected())
+        emit checkPagePreviewExisted(pageWidget->getPage());
 
     PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
@@ -263,9 +264,9 @@ void PDFTableWidget::deletePageSkipSelection(PDFPageWidget* pageWidget){
 
 }
 
-
 void PDFTableWidget::deletePage(PDFPageWidget* pageWidget){
-    emit checkPagePreviewExisted(pageWidget->getPage());
+    if (pageWidget->isSelected())
+        emit checkPagePreviewExisted(pageWidget->getPage());
 
     PDFFileWidget *daddy = (PDFFileWidget*)pageWidget->getFather();
     int daddyID = fileWidgets.indexOf(daddy);
@@ -346,8 +347,8 @@ void PDFTableWidget::rotatePage(PDFPageWidget* pageWidget) {
     int pageIndex = fileWidgets.at(fileIndex)->indexChild(pageWidget);
     pdfJam.rotatePage(fileIndex, pageIndex, pageWidget->getIntRotation());
 
-    qDebug()<<"PDFTableWidget"<<pageWidget->getRotation();
-    emit checkPreviewUpdate(pageWidget->getPage(), pageWidget->getRotation());
+    if (pageWidget->isSelected())
+        emit checkPreviewUpdate(pageWidget->getPage(), pageWidget->getRotation());
 }
 
 void PDFTableWidget::rotateSelected() {

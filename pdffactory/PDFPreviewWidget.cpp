@@ -1,6 +1,8 @@
 #include <QtGui>
 #include "PDFPreviewWidget.h"
+
 PreviewGen pgen;
+
 PDFPreviewWidget::PDFPreviewWidget(QWidget *parent) :
     QFrame(parent)
 {
@@ -11,17 +13,15 @@ PDFPreviewWidget::PDFPreviewWidget(QWidget *parent) :
     currentPixmapSize = QSize(0,0);
     connect(&pgen, SIGNAL(updatePreview(QImage)),
             this, SLOT(updateImage(QImage)));
-
-
 }
 
 void PDFPreviewWidget::updateImage(QImage qimg) {
-    qDebug() << "received";
     previewImage = qimg;
     regenPixmap();
     repositionPixmap();
     update();
 }
+
 void PDFPreviewWidget::regenImage() {
     double dpi;
     double dpi2;
@@ -41,8 +41,6 @@ void PDFPreviewWidget::regenImage() {
     //previewImage = pPage->renderToImage(dpi,dpi, -1, -1, -1, -1, rotation);
     pgen.render(pPage,dpi,rotation);
     pgen.start();
-
-
 }
 
 void PDFPreviewWidget::regenPixmap() {
@@ -56,7 +54,6 @@ void PDFPreviewWidget::repositionPixmap() {
 }
 
 void PDFPreviewWidget::previewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
-    qDebug()<<"previewUpdate in previewwidet"<< rotation;
     pPage = pp;
     this->rotation = rotation;
     currentPixmapSize = this->size();
@@ -67,18 +64,20 @@ void PDFPreviewWidget::previewUpdate(Poppler::Page* pp, Poppler::Page::Rotation 
 }
 
 void PDFPreviewWidget::checkPreviewUpdate(Poppler::Page* pp, Poppler::Page::Rotation rotation) {
+    //if (pPage != NULL && pPage == pp) {
         previewUpdate(pp, rotation);
+    //}
 }
 
 void PDFPreviewWidget::checkPagePreviewExisted(Poppler::Page* pp) {
-    if (pPage != NULL && pPage == pp) {
+    //if (pPage != NULL && pPage == pp) {
         pPage = NULL;
         rotation = Poppler::Page::Rotate0;
 
         QPainter painter(this);
         painter.drawPixmap(QRect(0, 0, 0, 0), pixmap);
         update();
-    }
+    //}
 }
 
 void PDFPreviewWidget::resizeEvent(QResizeEvent *event) {
