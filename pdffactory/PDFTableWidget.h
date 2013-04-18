@@ -71,6 +71,7 @@ public:
     void moveSelectedPages(QString, QString);
     void moveSelectedPages(QString, PDFPageWidget* page);
     void deletePage(PDFPageWidget* pageWidget);
+    void deletePageSkipSelection(PDFPageWidget* pageWidget);
     void copyPage(PDFPageWidget* pageWidget);
     void pastePage(PDFFileWidget* fileWidget, int pageID);
     void rotatePage(PDFPageWidget* pageWidget);
