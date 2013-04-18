@@ -222,6 +222,8 @@ void PDFFileWidget::insertChildAt(PDFPageWidget* child, int pos){
     child->setFather(this);
     pagesContainerWidget->mainLayout->insertWidget(pos, child);
     pagesContainerWidget->pageWidgets.insert(pos,child);
+    tgen.render(child,child->getNewThumbPopplerPage());
+    tgen.start();
     child->show();
 
     pagesContainerWidget->adjustSize();

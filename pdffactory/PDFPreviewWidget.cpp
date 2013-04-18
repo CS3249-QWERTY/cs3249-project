@@ -45,7 +45,7 @@ void PDFPreviewWidget::regenImage() {
 
 void PDFPreviewWidget::regenPixmap() {
     pixmap = QPixmap::fromImage(previewImage);
-    pixmap = pixmap.scaled(currentPixmapSize, Qt::KeepAspectRatio);
+    pixmap = pixmap.scaled(currentPixmapSize, Qt::KeepAspectRatioByExpanding);
     currentPixmapSize = pixmap.size();
 }
 
