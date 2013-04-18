@@ -21,8 +21,11 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     // is landscape
     landscapeBox = new QGroupBox("Output Orientation");
     QVBoxLayout *landscapeLayout = new QVBoxLayout();
-    chkLandscape = new QCheckBox("Landscape");
-    connect(chkLandscape, SIGNAL(stateChanged(int)), this, SLOT(chkLandscapeChanged(int)));
+    chkPortrait = new QRadioButton("Portrait");
+    chkPortrait->setChecked(true);
+    chkLandscape = new QRadioButton("Landscape");
+    connect(chkLandscape, SIGNAL(toggled(bool)), this, SLOT(chkLandscapeChanged(bool)));
+    landscapeLayout->addWidget(chkPortrait);
     landscapeLayout->addWidget(chkLandscape);
     landscapeBox->setLayout(landscapeLayout);
 
@@ -197,7 +200,7 @@ void PDFExportDialog::txtLeftChanged(const QString &txt) {
     options.insert(fileList->currentRow(), option);
 }
 
-void PDFExportDialog::chkLandscapeChanged(int state) {
+void PDFExportDialog::chkLandscapeChanged(bool state) {
     QVector<QVariant> option = options.at(fileList->currentRow());
     option.remove(0);
     option.insert(0, QVariant(chkLandscape->isChecked()));

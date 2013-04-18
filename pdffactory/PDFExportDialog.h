@@ -9,7 +9,7 @@ class QGridLayout;
 class QGroupBox;
 class QListWidget;
 class QLineEdit;
-class QCheckBox;
+class QRadioButton;
 
 class PDFExportDialog : public QDialog
 {
@@ -33,7 +33,7 @@ private:
 
     QListWidget *fileList;
     QLineEdit *txtRow, *txtCol;
-    QCheckBox *chkLandscape;
+    QRadioButton *chkPortrait, *chkLandscape;
     QLineEdit *txtLeftOffset;
 
 public:
@@ -47,7 +47,7 @@ private slots:
     void txtRowChanged(const QString &);
     void txtColChanged(const QString &);
     void txtLeftChanged(const QString &);
-    void chkLandscapeChanged(int);
+    void chkLandscapeChanged(bool);
     void nupBoxToggled(bool);
     void offsetBoxToggled(bool);
 };
