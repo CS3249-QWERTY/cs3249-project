@@ -19,7 +19,7 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     mainLayout->addWidget(fileListBox, 0, 0, 4, 2);
 
     // is landscape
-    landscapeBox = new QGroupBox("Output Orientation");
+    landscapeBox = new QGroupBox("Output orientation");
     QVBoxLayout *landscapeLayout = new QVBoxLayout();
     chkPortrait = new QRadioButton("Portrait");
     chkPortrait->setChecked(true);
@@ -35,8 +35,8 @@ PDFExportDialog::PDFExportDialog(QWidget *parent) :
     nupBox->setChecked(false);
     connect(nupBox, SIGNAL(toggled(bool)), this, SLOT(nupBoxToggled(bool)));
     QGridLayout *nupLayout = new QGridLayout();
-    QLabel *lblRow = new QLabel("Row:");
-    QLabel *lblCol = new QLabel("Col:");
+    QLabel *lblRow = new QLabel("Col:");
+    QLabel *lblCol = new QLabel("Row:");
     txtRow = new QLineEdit("1");
     connect(txtRow, SIGNAL(textEdited(const QString &)), this, SLOT(txtRowChanged(const QString &)));
     txtCol = new QLineEdit("1");
@@ -122,9 +122,9 @@ void PDFExportDialog::btnSaveClicked() {
                                                     tr("PDF file (*.pdf)"));
     if (!fileName.isEmpty()) {
         QSize nup;
-        if (option.at(0).toBool())
-            nup = QSize(option.at(3).toInt(), option.at(2).toInt());
-        else
+        //if (option.at(0).toBool())
+            //nup = QSize(option.at(3).toInt(), option.at(2).toInt());
+        //else
             nup = QSize(option.at(2).toInt(), option.at(3).toInt());
 
         pdfJam.exportFile(fileIndices.at(selectedIndex), fileWidgets.at(selectedIndex)->getChildCount(), fileName,
@@ -144,9 +144,9 @@ void PDFExportDialog::btnSaveAllClicked() {
                                                         tr("PDF file (*.pdf)"));
 
         QSize nup;
-        if (chkLandscape->isChecked())
-            nup = QSize(txtCol->text().toInt(&ok), txtRow->text().toInt(&ok));
-        else
+        //if (chkLandscape->isChecked())
+            //nup = QSize(txtCol->text().toInt(&ok), txtRow->text().toInt(&ok));
+        //else
             nup = QSize(txtRow->text().toInt(&ok), txtCol->text().toInt(&ok));
 
         if (!fileName.isEmpty()) {
