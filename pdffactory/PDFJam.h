@@ -26,10 +26,10 @@ public:
 
     bool removePage(int ,int , int );
     bool rotatePage(int,int,int);
-    void makeFolder(QString);
 protected:
     void run();
 private:
+    void makeCleanFolder(QString);
     QVector<QString> cmdQueue;
     QString nextCommand();
     bool isQueueEmpty();
