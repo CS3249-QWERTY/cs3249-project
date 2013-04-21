@@ -4,6 +4,9 @@
 #include "PDFPageWidget.h"
 #include "PDFTableWidget.h"
 
+#define PAGE_WIDTH      150
+#define PAGE_HEIGHT     150
+
 PDFPageWidget::PDFPageWidget(QWidget *parent) :
     QFrame(parent)
 {
@@ -11,9 +14,9 @@ PDFPageWidget::PDFPageWidget(QWidget *parent) :
     rotation = 0;
     setAcceptDrops(true);
 
-    this->resize(150, 150);
-    this->setMinimumSize(150, 150);
-    this->setMaximumSize(150, 150);
+    this->resize(PAGE_WIDTH, PAGE_HEIGHT);
+    this->setMinimumSize(PAGE_WIDTH, PAGE_HEIGHT);
+    this->setMaximumSize(PAGE_WIDTH, PAGE_HEIGHT);
     this->setAutoFillBackground(true);
 
     this->setMouseTracking(true);

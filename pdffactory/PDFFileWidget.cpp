@@ -8,9 +8,11 @@
 #define COLLAPSE_BUTTON_WIDTH   32
 #define COLLAPSE_BUTTON_HEIGHT  32
 
-#define CHILD_AREA_WIDTH     150
-#define CHILD_AREA_HEIGHT    150
-#define CHILD_AREA_SIDE_MARGIN 20
+#define CHILD_AREA_WIDTH        150
+#define CHILD_AREA_HEIGHT       150
+#define CHILD_AREA_SIDE_MARGIN  20
+
+#define DEFAULT_CHILD_SIZE      169
 
 PagesContainerWidget::PagesContainerWidget(QWidget *parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -25,7 +27,6 @@ PagesContainerWidget::PagesContainerWidget(QWidget *parent) {
 }
 
 void PagesContainerWidget::ShowContextMenu(const QPoint& pos){
-    // paste exclusive menu
     if (((PDFTableWidget*)ancestor)->hasClipboard()){
         QPoint globalPos = this->mapToGlobal(pos);
 
@@ -35,20 +36,17 @@ void PagesContainerWidget::ShowContextMenu(const QPoint& pos){
         QAction* selectedItem = myMenu.exec(globalPos);
         if (selectedItem)
         {
-            int page = (pos.x() / 169);
+            int page;
+
             if (pageWidgets.size()>=2)
                 page = (pos.x() / (pageWidgets.at(1)->geometry().x() -
                             pageWidgets.at(0)->geometry().x()) );
-            else //guess
-                page = (pos.x() / 169 );
+            else
+                page = (pos.x() / DEFAULT_CHILD_SIZE );
 
 
-            PDFTableWidget *grandpa = (PDFTableWidget*) ancestor;
-            grandpa->pastePage((PDFFileWidget*)father, page);
-        }
-        else
-        {
-            // nothing was chosen
+            PDFTableWidget *tableview = (PDFTableWidget*) ancestor;
+            tableview->pastePage((PDFFileWidget*)father, page);
         }
     }
 
@@ -77,7 +75,6 @@ void PagesContainerWidget::dropEvent(QDropEvent *event) {
    int page = (pos.x() / (CHILD_AREA_SIDE_MARGIN + CHILD_AREA_WIDTH));
    ((PDFTableWidget*)ancestor)->moveSelectedPages(event->mimeData()->text()  , pageWidgets.at(page));
    event->acceptProposedAction();
-
 }
 
 // ======================================================================
